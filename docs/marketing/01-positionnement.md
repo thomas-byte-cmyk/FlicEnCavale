@@ -156,6 +156,31 @@ disperser la manif ! » : c'est **apolitique et ça doit le rester**.
 | Rester apolitique | Rebondir sur une actu police/manif |
 | Gérard est à pied | Toute allusion à la conduite |
 
+## 1.4 bis 🌍 Communication en anglais : le cliché français comme identité
+
+**Décision de l'utilisateur** : le côté très français est un **atout**, on le garde comme
+identité, y compris à l'international. Vu de l'étranger, l'argument principal est
+**« le village français cliché »** : gendarme au képi, baguettes, vaches, tracteurs, grèves
+et manifs, croissants, pétanque, ronds-points. Le public anglophone adore ce folklore
+(« so French », « oh là là ») ; on l'assume avec tendresse, sans moquerie méchante.
+
+**Mots-clés à utiliser en anglais** : *French village*, *gendarme*, *kepi*, *baguette*,
+*croissant*, *strike*, *cows*, *roundabout*, *pétanque*, *Oh là là*, *the most French game ever*.
+
+### Références trop franco-françaises à éviter (ou à traduire) en anglais
+
+| Référence | Pourquoi | À la place |
+| --- | --- | --- |
+| **Sainte-Geneviève** (fête des gendarmes) | Inconnue hors de France | « the brigade party » |
+| **Pastis** | Peu connu, et c'est de l'alcool | « slippery puddle » (garder « pastis » dans le jeu si la session CODE le souhaite, mais pas dans la com) |
+| **« Souffler dans le ballon »** | Expression intraduisible | « take a breath test » |
+| **Grades** (maréchal des logis, adjudant, brigadier…) | Ne veulent rien dire en anglais | Trainee → Sergeant → Captain → General (au choix de la session CODE) |
+| **Cédez le passage**, PV, procès-verbal | Termes administratifs | « Give way » sign, « fine », « police report » |
+| **Louis de Funès / Gendarme de Saint-Tropez** | Référence culte en France, inconnue ailleurs (sauf en Allemagne / Europe de l'Est) | Ne pas citer en anglais |
+| **Beaujolais, vin, apéro** | Alcool + public jeune de Poki | Ne pas citer |
+| **Actualité sociale réelle** (réformes, grèves précises, slogans réels) | Politique, vieillit vite | Grèves et manifs **génériques et absurdes** (« LESS FINES, MORE PÉTANQUE! ») |
+| **« Flic »** (argot) | Inconnu en anglais | Garder « Flic en Cavale » comme nom exotique, ou « Cop on the Run » |
+
 ## 1.5 Nom et slogans
 
 ### Le nom
