@@ -10,3 +10,6 @@ Thumbs.db
 *.log
 .vscode/
 .idea/
+
+# Rapports de tests
+coverage/

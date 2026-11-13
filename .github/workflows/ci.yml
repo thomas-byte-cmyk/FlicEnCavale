@@ -1,0 +1,26 @@
+# Vérification automatique des autres branches (pas de publication).
+# À chaque envoi sur une branche autre que main, ou sur une pull request,
+# GitHub lance les tests et vérifie que le jeu se compile.
+# Résultat visible dans l'onglet "Actions" (✅ ou ❌).
+name: Tests
+
+on:
+  push:
+    branches-ignore: [main] # main est déjà testée par le workflow de publication
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build

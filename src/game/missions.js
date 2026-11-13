@@ -150,7 +150,11 @@ export class Missions {
         if (ev.kind === 'vin') st.wineDrunk = true;
       }
       if (ev.type === 'jump' || ev.type === 'slide' || ev.type === 'smash' || ev.type === 'flash' || ev.type === 'slip') st[ev.type]++;
-      if (ev.type === 'hit') st.lastHitAt = game.distance;
+      if (ev.type === 'hit') {
+        // On enregistre d'abord la série en cours (jusqu'au choc), puis on repart de zéro
+        st.noHit = Math.max(st.noHit, game.distance - st.lastHitAt);
+        st.lastHitAt = game.distance;
+      }
       if (ev.type === 'pass' && PASS_STATS[ev.obstacle.type]) st[PASS_STATS[ev.obstacle.type]]++;
     }
     st.distance = game.distance;

@@ -162,17 +162,22 @@ function pastis() {
   return g;
 }
 
+// Matériaux partagés par tous les agents (créés une seule fois : sinon chaque
+// agent en fabriquait de nouveaux qui n'étaient jamais libérés de la mémoire)
+const gloveMaterial = new THREE.MeshLambertMaterial({ color: '#ffffff' });
+const podiumMaterial = new THREE.MeshLambertMaterial({ color: '#f5f5f5' });
+
 /** Gendarme de la circulation, gants blancs et sifflet, face à Gérard. */
 function agent() {
   const g = makeGendarme({ nose: '#f29a85', mustache: '#d1d5db', kepiBand: '#ffffff' });
   g.rotation.y = Math.PI; // il nous regarde arriver
   const { armR, armL, head } = g.userData;
   // Gants blancs
-  armR.children[1].material = armL.children[1].material = new THREE.MeshLambertMaterial({ color: '#ffffff' });
+  armR.children[1].material = armL.children[1].material = gloveMaterial;
   armR.rotation.x = -2.8; // bras levé : "STOP !"
   head.add(at(box(0.06, 0.05, 0.14, '#9ca3af'), 0.04, -0.1, -0.3)); // sifflet
   // Petite estrade
-  const podium = at(new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.5, 0.2, 12), new THREE.MeshLambertMaterial({ color: '#f5f5f5' })), 0, 0.1, 0);
+  const podium = at(new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.5, 0.2, 12), podiumMaterial), 0, 0.1, 0);
   const wrapper = new THREE.Group();
   g.position.y = 0.2;
   wrapper.add(podium, g);

@@ -11,6 +11,20 @@ import { buildRow, rowLength } from './obstacles.js';
 import { GAME_OVER_PHRASES } from './texts.js';
 import { buildTutorial, TUTORIAL_END } from './tutorial.js';
 
+/**
+ * Pas de simulation maximal (secondes). Si une image a pris du retard
+ * (téléphone lent), on découpe le temps en petits pas : sinon, à grande vitesse,
+ * Gérard pourrait « traverser » un obstacle fin sans le toucher.
+ */
+export const MAX_STEP = 1 / 60;
+
+/** Retire d'un tableau, sans en recréer un nouveau, les éléments pour lesquels keep() est faux. */
+function keepOnly(arr, keep) {
+  let n = 0;
+  for (let i = 0; i < arr.length; i++) if (keep(arr[i])) arr[n++] = arr[i];
+  arr.length = n;
+}
+
 export class Game {
   /** @param {{ random?: () => number }} options */
   constructor({ random = Math.random } = {}) {
@@ -53,6 +67,7 @@ export class Game {
     this.tutorial = null; // étapes du tutoriel (première partie seulement)
     this.catchTimer = null; // compte à rebours du plaquage (ralenti)
     this.timeScale = 1; // 1 = vitesse normale, moins = ralenti
+    this.lastChantAt = null; // dernier cortège de manifestants qui a scandé
   }
 
   /** Multiplicateur de score actuel. */
@@ -162,7 +177,12 @@ export class Game {
    * @returns {Array} les événements survenus pendant cette image
    */
   update(dt) {
-    if (this.status === 'running') this.step(dt);
+    if (this.status === 'running' && dt > 0) {
+      // Découpe en petits pas égaux (voir MAX_STEP)
+      const steps = Math.ceil(dt / MAX_STEP);
+      const h = dt / steps;
+      for (let i = 0; i < steps && this.status === 'running'; i++) this.step(h);
+    }
     // On rend les événements accumulés (y compris ceux des actions du joueur) et on repart à zéro
     const events = this.events;
     this.events = [];
@@ -313,7 +333,8 @@ export class Game {
     }
 
     // On oublie les obstacles loin derrière
-    this.obstacles = this.obstacles.filter((o) => o.at + o.depth > this.distance - SPAWN.despawnBehind);
+    const limit = this.distance - SPAWN.despawnBehind;
+    keepOnly(this.obstacles, (o) => o.at + o.depth > limit);
   }
 
   /** Gérard percute un obstacle. */
@@ -375,9 +396,11 @@ export class Game {
   // ---------------------------------------------------------
 
   updatePendingActions(dt) {
+    if (!this.pendingActions.length) return;
     for (const a of this.pendingActions) a.delay -= dt;
     const ready = this.pendingActions.filter((a) => a.delay <= 0);
-    this.pendingActions = this.pendingActions.filter((a) => a.delay > 0);
+    if (!ready.length) return;
+    keepOnly(this.pendingActions, (a) => a.delay > 0);
     for (const a of ready) {
       this.applyAction(a.action);
       if (a.oops) this.emit('oops');
@@ -404,7 +427,8 @@ export class Game {
       const close = Math.abs(it.at - this.distance) < 0.9 && Math.abs(it.x - p.x) < 0.85 && p.y < 1.7;
       if (close) this.collect(it);
     }
-    this.items = this.items.filter((it) => !it.taken && it.at > this.distance - SPAWN.despawnBehind);
+    const limit = this.distance - SPAWN.despawnBehind;
+    keepOnly(this.items, (it) => !it.taken && it.at > limit);
   }
 
   /** Gérard ramasse un objet. */

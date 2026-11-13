@@ -9,7 +9,9 @@ const KEY = 'flicencavale.best';
 /** Lit le meilleur score (0 si rien n'est sauvegardé ou si c'est impossible). */
 export function loadBestScore() {
   try {
-    return Number(localStorage.getItem(KEY)) || 0;
+    const n = Math.floor(Number(localStorage.getItem(KEY)));
+    // Valeur abîmée (texte, négatif, infini…) : on repart de zéro
+    return Number.isFinite(n) && n > 0 ? n : 0;
   } catch {
     return 0; // navigation privée, stockage bloqué…
   }
@@ -49,7 +51,8 @@ const TUTORIAL_KEY = 'flicencavale.tutorialDone';
 export function loadMissions() {
   try {
     const list = JSON.parse(localStorage.getItem(MISSIONS_KEY) || '[]');
-    return Array.isArray(list) ? list : [];
+    // On ne garde que des identifiants valides (texte), sans doublons
+    return Array.isArray(list) ? [...new Set(list.filter((id) => typeof id === 'string'))] : [];
   } catch {
     return [];
   }

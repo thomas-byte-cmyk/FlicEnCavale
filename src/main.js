@@ -16,6 +16,7 @@ import { Input } from './input/Input.js';
 import { UI } from './ui/UI.js';
 import { Sound } from './audio/Sound.js';
 import { vibrate } from './platform/haptics.js';
+import { QualityGovernor } from './platform/quality.js';
 import {
   loadBestScore,
   saveBestScore,
@@ -36,6 +37,11 @@ let best = loadBestScore();
 let muted = loadMuted();
 let sirenTimer = 0; // délai avant le prochain "pin-pon"
 let paused = false;
+let gameOverTimer = null; // délai avant l'écran de fin (annulable)
+
+// Résolution adaptative : si le téléphone rame, on dessine moins de pixels
+const quality = new QualityGovernor(window.devicePixelRatio || 1);
+renderer.renderer.setPixelRatio(quality.ratio);
 
 sound.setMuted(muted);
 
@@ -65,6 +71,7 @@ const input = new Input(document.getElementById('app'), (action) => game.handleA
 
 /** Lance une partie. Le tutoriel se joue automatiquement à la toute première partie. */
 function startGame({ tutorial = !loadTutorialDone() } = {}) {
+  clearTimeout(gameOverTimer); // au cas où un écran de fin était encore en attente
   sound.unlock(); // le son ne peut démarrer qu'après un clic de l'utilisateur
   renderer.reset();
   narrator.reset();
@@ -173,17 +180,31 @@ function endGame(ev) {
   }
   // On laisse un moment pour admirer le plaquage avant d'afficher l'écran de fin
   const distance = game.distance;
-  setTimeout(() => ui.showGameOver({ score, distance, best, newBest, phrase: ev.phrase ?? '', missions }), 1200);
+  gameOverTimer = setTimeout(() => ui.showGameOver({ score, distance, best, newBest, phrase: ev.phrase ?? '', missions }), 1200);
 }
 
 // --- Boucle principale ---
 let last = performance.now();
 function frame(now) {
-  // dt = temps écoulé (secondes), plafonné si l'image a pris du retard
-  const realDt = paused ? 0 : Math.min(0.05, (now - last) / 1000);
+  // On redemande l'image suivante tout de suite : même si une erreur survient
+  // plus bas, le jeu ne se fige pas définitivement.
+  requestAnimationFrame(frame);
+  const frameTime = (now - last) / 1000;
   last = now;
+  // dt = temps écoulé (secondes), plafonné si l'image a pris du retard
+  // (Game.update découpe ensuite ce temps en petits pas pour rester précis)
+  const realDt = paused ? 0 : Math.min(0.05, Math.max(0, frameTime));
   // Ralenti au moment d'être attrapé
   const dt = realDt * game.timeScale;
+
+  // Fluidité : on ne mesure que pendant la course (les menus ne comptent pas)
+  if (!paused && game.status === 'running') {
+    const ratio = quality.sample(frameTime);
+    if (ratio !== null) {
+      renderer.renderer.setPixelRatio(ratio);
+      renderer.resize();
+    }
+  }
 
   const events = game.update(dt);
   handleEvents(events);
@@ -207,12 +228,32 @@ function frame(now) {
     }
   }
   renderer.render(game, dt);
-
-  requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
 
-window.addEventListener('resize', () => renderer.resize());
+// --- Redimensionnement et rotation de l'écran ---
+// Sur téléphone, la taille de l'écran n'est pas toujours à jour au moment de
+// l'événement (surtout sur iPhone après une rotation) : on recalcule à l'image
+// suivante, puis encore une fois un peu plus tard pour être sûr.
+let resizeQueued = false;
+let lastSize = '';
+function applyResize() {
+  resizeQueued = false;
+  const size = `${window.innerWidth}x${window.innerHeight}`;
+  if (size === lastSize) return;
+  lastSize = size;
+  renderer.resize();
+}
+function queueResize() {
+  if (!resizeQueued) {
+    resizeQueued = true;
+    requestAnimationFrame(applyResize);
+  }
+  setTimeout(applyResize, 300);
+}
+window.addEventListener('resize', queueResize);
+window.addEventListener('orientationchange', queueResize);
+window.visualViewport?.addEventListener('resize', queueResize);
 
 // Quand on quitte l'onglet ou l'appli, le jeu se met en pause
 document.addEventListener('visibilitychange', () => {

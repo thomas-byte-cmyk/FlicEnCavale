@@ -83,6 +83,12 @@ permettra plus tard de réutiliser le jeu dans une application mobile.
 
 `npm run build` fabrique la version finale dans le dossier `dist/`.
 
+`npm test` lance les tests automatiques de la logique du jeu (dossier `tests/`, avec
+[Vitest](https://vitest.dev)). Ils vérifient par exemple que chaque rangée d'obstacles
+a toujours une solution, que les bonus et missions marchent, et que la sauvegarde
+résiste à des données abîmées. Sur GitHub, ces tests tournent tout seuls avant chaque
+publication : si l'un d'eux échoue, le jeu en ligne n'est pas mis à jour (onglet **Actions**).
+
 ## 🌍 Activer GitHub Pages (une seule fois)
 
 1. Sur github.com, ouvrir le dépôt **FlicEnCavale** → **Settings** → **Pages**.
