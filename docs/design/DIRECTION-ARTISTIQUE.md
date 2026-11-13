@@ -17,7 +17,7 @@ Humour : tout ressemble à des objets « officiels » détournés (plaque de rue
 
 ## Style
 - **Autocollant / BD** : contour encre 2–3 px + ombre portée nette (pas de flou) sur tous les éléments d'interface.
-- **Typo** : polices déjà installées sur les appareils (aucun fichier téléchargé) — titres arrondis très gras, textes système, `Courier` pour le procès-verbal.
+- **Typo** : titres en **Lilita One** (licence libre OFL, paquet npm `@fontsource/lilita-one`, intégrée au jeu sans appel à Internet) ; textes en police système ; `Courier` pour le procès-verbal.
 - **3D** : formes simples à facettes, couleurs franches ; les obstacles doivent trancher sur le bitume gris (ex. radar jaune).
 
 ## Écrans

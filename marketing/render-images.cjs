@@ -9,9 +9,14 @@ const pub = (f) => path.join(root, 'public', f);
 const icon = fs.readFileSync(pub('icon.svg'), 'utf8');
 const og = fs.readFileSync(path.join(__dirname, 'og-image.svg'), 'utf8');
 
+// Police Lilita One (la même que dans le jeu), intégrée directement dans la page
+const fontFile = path.join(root, 'node_modules/@fontsource/lilita-one/files/lilita-one-latin-400-normal.woff2');
+const fontCss = `@font-face{font-family:'Lilita One';src:url(data:font/woff2;base64,${fs.readFileSync(fontFile).toString('base64')}) format('woff2');}`;
+
 async function shot(page, html, w, h, out) {
   await page.setViewportSize({ width: w, height: h });
-  await page.setContent(`<html><body style="margin:0;background:transparent">${html}</body></html>`);
+  await page.setContent(`<html><head><style>${fontCss}</style></head><body style="margin:0;background:transparent">${html}</body></html>`);
+  await page.evaluate(() => document.fonts.ready);
   await page.screenshot({ path: out, omitBackground: true });
 }
 
