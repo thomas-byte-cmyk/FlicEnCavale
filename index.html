@@ -42,19 +42,19 @@
           <div class="hud-left">
             <!-- Le score façon plaque de rue bleue -->
             <div id="hud-plate" class="hud-score plate">
-              <div class="hud-label">Score</div>
+              <div class="hud-label" data-i18n="hudScore">Score</div>
               <div id="hud-score" class="hud-value">0</div>
               <div id="hud-mult" class="hud-mult hidden">×2</div>
             </div>
             <div class="gauges">
               <div class="gauge" id="gauge-drunk-row">
                 <span class="gauge-icon" aria-hidden="true">🍷</span>
-                <span class="gauge-name">Ivresse</span>
+                <span class="gauge-name" data-i18n="gaugeDrunk">Ivresse</span>
                 <div class="gauge-bar"><div id="gauge-drunk" class="gauge-fill drunk"></div></div>
               </div>
               <div class="gauge" id="gauge-chase-row">
                 <span class="gauge-icon" aria-hidden="true">🚓</span>
-                <span class="gauge-name">Collègues</span>
+                <span class="gauge-name" data-i18n="gaugeChase">Collègues</span>
                 <div class="gauge-bar"><div id="gauge-chase" class="gauge-fill chase"></div></div>
               </div>
             </div>
@@ -62,7 +62,7 @@
           </div>
           <div class="hud-right">
             <div class="hud-best">🏆 <span id="hud-best">0</span></div>
-            <button id="btn-mute" class="icon-btn" aria-label="Couper le son">🔊</button>
+            <button id="btn-mute" class="icon-btn" aria-label="Couper le son" data-i18n-aria="mute">🔊</button>
           </div>
         </div>
       </div>
@@ -80,47 +80,49 @@
 
       <!-- Écran titre : le logo en haut, Gérard (en 3D) au milieu, le bouton en bas -->
       <section id="title-screen" class="screen screen-title">
+        <!-- Bouton de langue (provisoire, session CODE : DESIGN lui donne sa place définitive) -->
+        <button id="btn-lang" class="icon-btn lang-btn" data-i18n="langButton" data-i18n-aria="langButtonLabel" aria-label="Play in English">EN</button>
         <header class="title-top">
           <h1 class="logo" aria-label="FlicEnCavale">
             <span class="logo-flic">Flic</span><span class="logo-en">en</span><span class="logo-cavale">Cavale</span>
           </h1>
           <div class="tricolore" aria-hidden="true"><i></i><i></i><i></i></div>
           <p class="pitch">
-            <span class="pitch-long">Gérard a un peu trop fêté la Sainte-Geneviève, patronne des gendarmes.</span>
-            Ses collègues veulent lui faire souffler dans le ballon.
-            <strong>Cours, Gérard, cours&nbsp;!</strong>
+            <span class="pitch-long" data-i18n="pitchLong">Gérard a un peu trop fêté la Sainte-Geneviève, patronne des gendarmes.</span>
+            <span data-i18n="pitchShort">Ses collègues veulent lui faire souffler dans le ballon.
+            <strong>Cours, Gérard, cours&nbsp;!</strong></span>
           </p>
         </header>
         <div class="card sheet">
           <div class="grade-box">
             <div class="grade-stripes" aria-hidden="true"></div>
             <div>
-              <div class="grade-label">Grade de Gérard</div>
+              <div class="grade-label" data-i18n="gradeLabel">Grade de Gérard</div>
               <div id="title-grade" class="grade-name">Gendarme stagiaire</div>
               <div id="title-grade-next" class="grade-next"></div>
             </div>
-            <div class="grade-best" title="Meilleur score">🏆<strong id="title-best">0</strong></div>
+            <div class="grade-best" title="Meilleur score" data-i18n-title="bestScore">🏆<strong id="title-best">0</strong></div>
           </div>
           <div class="missions">
-            <div class="missions-title">🎯 Missions <span class="muted">(en une seule partie)</span></div>
+            <div class="missions-title" data-i18n="missionsTitle">🎯 Missions <span class="muted">(en une seule partie)</span></div>
             <ul id="title-missions" class="missions-list"></ul>
           </div>
-          <button id="btn-play" class="btn-primary">C'est parti&nbsp;!</button>
+          <button id="btn-play" class="btn-primary" data-i18n="play">C'est parti&nbsp;!</button>
           <details class="howto">
-            <summary>Comment jouer&nbsp;?</summary>
+            <summary data-i18n="howto">Comment jouer&nbsp;?</summary>
             <ul class="controls">
-              <li><span>👈 👉</span> Glisse pour changer de voie</li>
-              <li><span>👆</span> Glisse vers le haut pour sauter</li>
-              <li><span>👇</span> Glisse vers le bas pour te baisser</li>
-              <li class="kbd-hint"><span>⌨️</span> Sur ordi : les flèches</li>
+              <li data-i18n="ctrlLanes"><span>👈 👉</span> Glisse pour changer de voie</li>
+              <li data-i18n="ctrlJump"><span>👆</span> Glisse vers le haut pour sauter</li>
+              <li data-i18n="ctrlSlide"><span>👇</span> Glisse vers le bas pour te baisser</li>
+              <li class="kbd-hint" data-i18n="ctrlKeys"><span>⌨️</span> Sur ordi : les flèches</li>
             </ul>
             <ul class="bonus-list">
-              <li>☕ <b>Café</b> : dessoûle et sème les collègues</li>
-              <li>🍷 <b>Verre de rouge</b> : des points… mais ça tourne</li>
-              <li>🥐 <b>Croissant</b> : invincible un moment</li>
-              <li>🎖️ <b>Képi doré</b> : score multiplié</li>
+              <li data-i18n="bonusCafe">☕ <b>Café</b> : dessoûle et sème les collègues</li>
+              <li data-i18n="bonusVin">🍷 <b>Verre de rouge</b> : un piège ! Aucun point, et ça tourne…</li>
+              <li data-i18n="bonusCroissant">🥐 <b>Croissant</b> : invincible un moment</li>
+              <li data-i18n="bonusKepi">🎖️ <b>Képi doré</b> : score multiplié</li>
             </ul>
-            <button id="btn-tutorial" class="btn-secondary">Refaire l'entraînement</button>
+            <button id="btn-tutorial" class="btn-secondary" data-i18n="tutorialAgain">Refaire l'entraînement</button>
           </details>
         </div>
       </section>
@@ -129,25 +131,25 @@
       <section id="gameover-screen" class="screen hidden">
         <div class="card pv">
           <div class="pv-head">
-            <span>Gendarmerie du village</span>
-            <span>P.-V. n°&nbsp;<span id="go-pv">0000</span></span>
+            <span data-i18n="pvStation">Gendarmerie du village</span>
+            <span><span data-i18n="pvNumber">P.-V. n°&nbsp;</span><span id="go-pv">0000</span></span>
           </div>
-          <div class="pv-title">Procès-verbal</div>
-          <div class="stamp go-title">Rattrapé&nbsp;!</div>
-          <p class="pv-motif"><span class="pv-field">Motif</span> Délit de fuite en état d'ébriété festive.</p>
+          <div class="pv-title" data-i18n="pvTitle">Procès-verbal</div>
+          <div class="stamp go-title" data-i18n="caughtStamp">Rattrapé&nbsp;!</div>
+          <p class="pv-motif" data-i18n="pvMotif"><span class="pv-field">Motif</span> Délit de fuite en état d'ébriété festive.</p>
           <p id="go-phrase" class="go-phrase"></p>
           <div class="go-stats">
-            <div><span class="go-label">Score</span><span id="go-score" class="go-value">0</span></div>
-            <div><span class="go-label">Distance</span><span id="go-distance" class="go-value">0 m</span></div>
-            <div><span class="go-label">Record</span><span id="go-best" class="go-value">0</span></div>
+            <div><span class="go-label" data-i18n="statScore">Score</span><span id="go-score" class="go-value">0</span></div>
+            <div><span class="go-label" data-i18n="statDistance">Distance</span><span id="go-distance" class="go-value">0 m</span></div>
+            <div><span class="go-label" data-i18n="statBest">Record</span><span id="go-best" class="go-value">0</span></div>
           </div>
-          <div id="go-newbest" class="go-newbest hidden">🏆 Nouveau record&nbsp;!</div>
+          <div id="go-newbest" class="go-newbest hidden" data-i18n="newBest">🏆 Nouveau record&nbsp;!</div>
           <div class="missions">
-            <div class="missions-title">🎯 Missions — <span id="go-grade"></span></div>
+            <div class="missions-title"><span data-i18n="missionsGo">🎯 Missions —&nbsp;</span><span id="go-grade"></span></div>
             <ul id="go-missions" class="missions-list"></ul>
           </div>
-          <button id="btn-replay" class="btn-primary">Rejouer</button>
-          <button id="btn-home" class="btn-secondary">Écran titre</button>
+          <button id="btn-replay" class="btn-primary" data-i18n="replay">Rejouer</button>
+          <button id="btn-home" class="btn-secondary" data-i18n="home">Écran titre</button>
         </div>
       </section>
     </div>

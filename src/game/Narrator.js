@@ -15,7 +15,9 @@ import {
   MISC_LINES,
   MILESTONE_LINES,
   PROTEST_SLOGANS,
+  FLASH_LINE,
 } from './texts.js';
+import { fill } from '../i18n/index.js';
 
 const MILESTONE_EVERY = 500; // un message tous les 500 m
 
@@ -77,7 +79,7 @@ export class Narrator {
           if (PICKUP_LINES[ev.kind]) popup(this.pick(PICKUP_LINES[ev.kind]), ev.kind === 'vin' ? '' : 'good', true);
           break;
         case 'flash':
-          popup(`Flashé à ${Math.round(game.speed * 3.6)} km/h… à pied !`, '', true);
+          popup(fill(FLASH_LINE, { kmh: Math.round(game.speed * 3.6), mph: Math.round(game.speed * 2.237) }), '', true);
           break;
         case 'slip':
           popup(this.pick(MISC_LINES.slip), 'bad', true);

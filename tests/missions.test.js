@@ -64,6 +64,25 @@ describe('missions', () => {
     expect(m.stats.noHit).toBe(100); // les 100 premiers mètres restent le record
   });
 
+  it('nouvelle mission : se faire siffler par les agents (remplace « boire du vin »)', () => {
+    const ids = Array.from({ length: 26 }, (_, i) => missionAt(i).id);
+    expect(ids).not.toContain('vin1');
+    expect(ids).toContain('whistle1');
+    const before = ids.slice(0, ids.indexOf('whistle1'));
+    const m = new Missions(before); // whistle1 est la prochaine mission
+    m.startRun();
+    expect(m.active[0].id).toBe('whistle1');
+    const whistle = { type: 'whistle' };
+    expect(m.update(fakeGame(0), [whistle, whistle]).done).toHaveLength(0);
+    expect(m.update(fakeGame(0), [whistle]).done.map((d) => d.id)).toEqual(['whistle1']);
+  });
+
+  it('une ancienne sauvegarde avec « vin1 » garde son grade', () => {
+    const m = new Missions(['dist1', 'vin1']);
+    expect(m.completedCount).toBe(2);
+    expect(m.grade.name).toBe('Gendarme');
+  });
+
   it('accepte une sauvegarde contenant des missions inconnues', () => {
     const m = new Missions(['mission-qui-nexiste-plus']);
     expect(m.active.map((a) => a.id)).toEqual(['dist1', 'coin1', 'jump1']);

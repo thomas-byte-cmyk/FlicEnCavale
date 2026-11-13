@@ -82,3 +82,22 @@ export function saveTutorialDone() {
     /* rien */
   }
 }
+
+const LANG_KEY = 'flicencavale.lang';
+
+/** Langue choisie par le joueur ('fr', 'en'), ou null s'il n'a jamais choisi. */
+export function loadLang() {
+  try {
+    return localStorage.getItem(LANG_KEY);
+  } catch {
+    return null;
+  }
+}
+
+export function saveLang(code) {
+  try {
+    localStorage.setItem(LANG_KEY, code);
+  } catch {
+    /* rien */
+  }
+}

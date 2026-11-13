@@ -445,7 +445,7 @@ export class Game {
         this.addDrunk(DRUNK.coffee);
         this.gap = Math.min(CHASE.max, this.gap + CHASE.coffeeBonus);
         break;
-      case 'vin':
+      case 'vin': // un piège : pas (ou peu) de points, mais l'ivresse monte
         this.bonusPoints += SCORE.wine * m;
         this.addDrunk(DRUNK.wine);
         break;

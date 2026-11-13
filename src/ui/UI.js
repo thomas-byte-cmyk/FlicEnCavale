@@ -3,6 +3,8 @@
 // Tout ce qui est du texte affiché par-dessus la 3D passe par ici.
 // =========================================================
 
+import { t } from '../i18n/index.js';
+
 const $ = (id) => document.getElementById(id);
 
 export class UI {
@@ -62,8 +64,8 @@ export class UI {
       const g = missions.grade;
       this.el.titleGrade.textContent = g.name;
       this.el.titleGradeNext.textContent = g.next
-        ? `Prochain grade : ${g.next.name} (${missions.completedCount}/${g.next.missions} missions)`
-        : 'Grade maximum atteint. Respect, mon Général !';
+        ? t('nextGrade', { name: g.next.name, done: missions.completedCount, need: g.next.missions })
+        : t('maxGrade');
       this.renderMissions(this.el.titleMissions, missions, false);
     }
     this.el.title.classList.remove('hidden');
@@ -183,7 +185,7 @@ export class UI {
     if (showProgress) for (const m of missions.doneThisRun) add('✅', m.text, '', 'done');
     for (const m of missions.active) {
       // Mission arrivée pendant la partie : elle comptera à la prochaine (seulement utile en fin de partie)
-      if (m.fresh && showProgress) add('🆕', m.text, 'prochaine partie', 'fresh');
+      if (m.fresh && showProgress) add('🆕', m.text, t('nextRun'), 'fresh');
       else add('⬜', m.text, showProgress ? `${missions.progress(m)}/${m.target}` : '');
     }
   }

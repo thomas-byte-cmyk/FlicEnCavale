@@ -210,9 +210,10 @@ describe('Game : bonus et ivresse', () => {
     expect(g.drunk).toBeLessThan(50 + DRUNK.coffee + 1);
     expect(g.gap).toBeGreaterThan(CHASE.start);
   });
-  it("vin : beaucoup de points mais l'ivresse monte", () => {
+  it("vin : un piège, aucun point mais l'ivresse monte", () => {
     const { g, ev } = pickup('vin');
-    expect(ev.points).toBe(SCORE.wine);
+    expect(SCORE.wine).toBe(0);
+    expect(ev.points).toBe(0);
     expect(g.drunk).toBeGreaterThan(50 + DRUNK.wine - 1);
   });
   it('képi : score doublé', () => {

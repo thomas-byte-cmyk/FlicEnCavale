@@ -1019,3 +1019,14 @@ summary:focus-visible {
     margin-top: 10px;
   }
 }
+
+/* Bouton de langue FR/EN — placement PROVISOIRE (session CODE), à reprendre par DESIGN */
+.lang-btn {
+  position: absolute;
+  top: max(12px, env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
+  z-index: 3;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--encre);
+}

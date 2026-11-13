@@ -29,18 +29,26 @@ Le jeu est publié automatiquement sur GitHub Pages à chaque mise à jour de la
   flaque de pastis (ça fait glisser sur la voie d'à côté), cortège de manifestants avec
   pancartes (contourner : on ne peut ni sauter ni glisser).
 - **Bonus** : 🍫 médailles en chocolat (points), ☕ café (dessoûle + éloigne les collègues),
-  🍷 verre de rouge (beaucoup de points mais l'ivresse monte), 🥐 croissant (invincible),
+  🍷 verre de rouge (un piège : aucun point, et l'ivresse monte), 🥐 croissant (invincible),
   🎖️ képi doré (score ×2).
 - **Ivresse** (jauge 🍷) : plus elle est haute, plus Gérard titube, plus la caméra tangue
   et plus ses réactions sont lentes et imprécises.
 
 - **Missions** : 3 défis à la fois (« Bois 2 cafés », « Contourne 3 manifs »…) à réussir en une partie.
   Chaque mission réussie fait monter Gérard en grade, de Gendarme stagiaire jusqu'à Général.
-  La liste des missions est dans `src/game/missions.js`.
+  La liste des missions est dans `src/game/missions.js` (leurs textes dans `src/i18n/`).
 - **Première partie** : un petit entraînement montre les gestes. On peut le refaire depuis
   « Comment jouer ? » sur l'écran titre.
 
-Pour ajouter des blagues : tout est dans `src/game/texts.js`.
+- **Pause** : si on quitte l'appli ou l'onglet (appel, notification…), la partie se met en pause.
+  Elle reprend quand on appuie sur « Reprendre », après un compte à rebours 3-2-1.
+  Sur ordinateur, les touches Échap ou P mettent en pause et relancent.
+- **Langues** : français et anglais. La langue du téléphone est détectée automatiquement
+  (français si le téléphone est en français, anglais sinon). Le bouton FR/EN de l'écran
+  titre permet de changer, et le choix est mémorisé.
+
+Pour ajouter des blagues : tout est dans `src/i18n/fr.js` (français) et `src/i18n/en.js` (anglais).
+La version anglaise n'est pas une traduction mot à mot : l'humour est adapté.
 Pour régler la difficulté : tout est dans `src/config.js`.
 
 ## 🧱 Technique
@@ -58,7 +66,9 @@ src/
   input/         → les CONTRÔLES (swipe et clavier)
   audio/         → les SONS générés en code
   ui/            → l'INTERFACE (écrans, score, bulles)
-  platform/      → ce qui dépend du navigateur (sauvegarde du record)
+  platform/      → ce qui dépend du navigateur (sauvegarde, qualité d'image, futur portail Poki)
+  i18n/          → les TEXTES dans chaque langue (fr.js, en.js)
+tests/           → les tests automatiques de la logique (npm test)
 ```
 
 La logique (`game/`) ne dépend ni de Three.js ni du navigateur : c'est ce qui

@@ -1,6 +1,6 @@
 // =========================================================
 // Contrôles : transforme les gestes (swipe) et les touches du clavier
-// en 4 actions simples : 'left', 'right', 'up', 'down'.
+// en actions simples : 'left', 'right', 'up', 'down' (et 'pause' au clavier).
 // Le reste du jeu ne connaît que ces actions : pour une future appli mobile,
 // il suffira de remplacer ce fichier.
 // =========================================================
@@ -20,6 +20,8 @@ const KEY_TO_ACTION = {
   KeyZ: 'up', // clavier AZERTY
   KeyS: 'down',
   Space: 'up',
+  Escape: 'pause', // pause / reprise au clavier
+  KeyP: 'pause',
 };
 
 export class Input {
