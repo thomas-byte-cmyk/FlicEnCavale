@@ -8,6 +8,8 @@ import { World } from './World.js';
 import { makeGendarme, animateRunner, makeBlobShadow } from './characters.js';
 import { createObstacleModel } from './obstacleModels.js';
 import { Chasers } from './Chasers.js';
+import { createItemModel } from './itemModels.js';
+import { mat } from './shapes.js';
 
 const SKY = '#8fd3ff';
 
@@ -39,6 +41,20 @@ export class Renderer {
     this.scene.add(this.player, this.playerShadow);
 
     this.chasers = new Chasers(this.scene);
+
+    // Bulle dorée autour de Gérard quand il est invincible (croissant)
+    this.shield = new THREE.Mesh(
+      new THREE.SphereGeometry(1.15, 16, 12),
+      new THREE.MeshBasicMaterial({ color: '#ffe082', transparent: true, opacity: 0.35, depthWrite: false, blending: THREE.AdditiveBlending }),
+    );
+    this.shield.visible = false;
+    this.scene.add(this.shield);
+    // Képi : bleu normalement, doré avec le multiplicateur
+    this.kepiMesh = this.player.userData.kepi.children[0];
+    this.kepiNormal = this.kepiMesh.material;
+    this.kepiGold = mat('#f5c518');
+
+    this.itemMeshes = new Map(); // numéro d'objet → objet 3D
 
     this.obstacleMeshes = new Map(); // numéro d'obstacle → objet 3D
     this.runPhase = 0;
@@ -122,6 +138,29 @@ export class Renderer {
     }
   }
 
+  /** Crée / déplace / supprime les objets 3D des médailles et bonus. */
+  syncItems(game) {
+    const alive = new Set();
+    for (const it of game.items) {
+      alive.add(it.id);
+      let mesh = this.itemMeshes.get(it.id);
+      if (!mesh) {
+        mesh = createItemModel(it.kind);
+        this.itemMeshes.set(it.id, mesh);
+        this.scene.add(mesh);
+      }
+      // Les objets flottent et tournent sur eux-mêmes
+      mesh.position.set(it.x, 0.95 + Math.sin(this.time * 3 + it.id) * 0.1, -(it.at - game.distance));
+      mesh.userData.model.rotation.y = this.time * 2.5 + it.id;
+    }
+    for (const [id, mesh] of this.itemMeshes) {
+      if (!alive.has(id)) {
+        this.scene.remove(mesh);
+        this.itemMeshes.delete(id);
+      }
+    }
+  }
+
   /**
    * Dessine une image.
    * @param {import('../game/Game.js').Game} game
@@ -133,6 +172,8 @@ export class Renderer {
 
     this.world.update(game.distance);
     this.syncObstacles(game);
+    this.syncItems(game);
+    const drunk = game.drunkRatio ?? 0;
 
     // --- Gérard ---
     if (game.status === 'running') this.runPhase += dt * game.speed * 1.25;
@@ -143,8 +184,18 @@ export class Renderer {
     animateRunner(this.player, this.runPhase, {
       sliding: game.sliding,
       jumping: !p.grounded,
-      wobble: 0,
+      // Titubement : toujours un peu, beaucoup quand il est ivre
+      wobble: Math.sin(this.time * 2.3) * (0.06 + drunk * 0.22),
     });
+    // Bonus visibles sur Gérard
+    this.shield.visible = game.invincibleTime > 0;
+    if (this.shield.visible) {
+      this.shield.position.set(p.x, p.y + 1.0, 0);
+      this.shield.scale.setScalar(1 + Math.sin(this.time * 10) * 0.05);
+      // Clignote juste avant la fin
+      if (game.invincibleTime < 1.2) this.shield.visible = Math.floor(this.time * 10) % 2 === 0;
+    }
+    this.kepiMesh.material = game.multiplierTime > 0 ? this.kepiGold : this.kepiNormal;
     // Attrapé : Gérard s'étale par terre
     if (game.status === 'over') {
       this.player.userData.body.rotation.x = -1.45;
@@ -161,8 +212,11 @@ export class Renderer {
     this.shake = Math.max(0, this.shake - dt);
     const shakeX = (Math.random() - 0.5) * this.shake;
     const shakeY = (Math.random() - 0.5) * this.shake;
-    this.camera.position.set(this.camX + shakeX, 3.9 + shakeY, 6.4);
-    this.camera.lookAt(this.camX * 0.6, 1.0, -9);
+    // Ivresse : la caméra tangue et roule (le monde penche !)
+    const sway = Math.sin(this.time * 1.1) * drunk * 0.9;
+    this.camera.position.set(this.camX + shakeX + sway * 0.4, 3.9 + shakeY + Math.sin(this.time * 1.7) * drunk * 0.25, 6.4);
+    this.camera.lookAt(this.camX * 0.6 + sway, 1.0, -9);
+    this.camera.rotation.z += Math.sin(this.time * 0.9) * (0.015 + drunk * 0.1);
 
     this.renderer.render(this.scene, this.camera);
   }

@@ -5,7 +5,8 @@
 // que le rendu, l'interface et le son écoutent.
 // =========================================================
 
-import { LANES, PLAYER, SPEED, SCORE, SPAWN, CHASE } from '../config.js';
+import { LANES, PLAYER, SPEED, SCORE, SPAWN, CHASE, DRUNK, BONUS } from '../config.js';
+import { fillGap } from './items.js';
 import { buildRow, rowLength } from './obstacles.js';
 import { GAME_OVER_PHRASES } from './texts.js';
 
@@ -22,6 +23,7 @@ export class Game {
     this.time = 0; // temps de course écoulé
     this.distance = 0; // mètres parcourus
     this.speed = SPEED.start;
+    this.distancePoints = 0; // points gagnés en courant
     this.bonusPoints = 0; // points gagnés avec les objets
     this.events = []; // événements de l'image en cours
 
@@ -39,6 +41,23 @@ export class Game {
     this.hurtTime = 0; // temps de clignotement après un choc (pas de nouveau choc)
 
     this.gap = CHASE.start; // avance de Gérard sur ses collègues (0 = attrapé !)
+
+    this.items = []; // médailles et bonus présents dans la rue
+    this.drunk = DRUNK.start; // ivresse de 0 à 100
+    this.invincibleTime = 0; // temps restant d'invincibilité (croissant)
+    this.multiplierTime = 0; // temps restant du multiplicateur (képi doré)
+    this.pendingActions = []; // actions retardées par l'ivresse
+    this.swayX = 0; // décalage latéral dû au titubement
+  }
+
+  /** Multiplicateur de score actuel. */
+  get multiplier() {
+    return this.multiplierTime > 0 ? BONUS.multiplier : 1;
+  }
+
+  /** Ivresse entre 0 et 1 (pratique pour les calculs). */
+  get drunkRatio() {
+    return this.drunk / DRUNK.max;
   }
 
   /** Avance sur les poursuivants, entre 0 (attrapé) et 1 (loin devant). */
@@ -53,7 +72,7 @@ export class Game {
 
   /** Score total = distance + objets ramassés. */
   get score() {
-    return Math.floor(this.distance * SCORE.perMeter + this.bonusPoints);
+    return Math.floor(this.distancePoints + this.bonusPoints);
   }
 
   get sliding() {
@@ -63,7 +82,18 @@ export class Game {
   /** Reçoit une action du joueur : 'left' | 'right' | 'up' | 'down'. */
   handleAction(action) {
     if (this.status !== 'running') return;
-    this.applyAction(action);
+    // Plus Gérard est ivre, plus ses réflexes sont lents et imprécis
+    const sloppiness = Math.max(0, (this.drunk - DRUNK.sloppyThreshold) / (DRUNK.max - DRUNK.sloppyThreshold));
+    if (sloppiness <= 0) {
+      this.applyAction(action);
+      return;
+    }
+    const delay = this.random() * sloppiness * 0.28; // réaction en retard (jusqu'à 0,28 s)
+    this.pendingActions.push({ action, delay });
+    // Parfois, un changement de voie part trop loin (il fait deux voies d'un coup !)
+    if ((action === 'left' || action === 'right') && this.random() < sloppiness * 0.3) {
+      this.pendingActions.push({ action, delay: delay + 0.12, oops: true });
+    }
   }
 
   /** Applique réellement une action (séparé pour pouvoir la retarder plus tard). */
@@ -113,25 +143,35 @@ export class Game {
    * @returns {Array} les événements survenus pendant cette image
    */
   update(dt) {
+    if (this.status === 'running') this.step(dt);
+    // On rend les événements accumulés (y compris ceux des actions du joueur) et on repart à zéro
+    const events = this.events;
     this.events = [];
-    if (this.status !== 'running') return this.events;
+    return events;
+  }
+
+  /** Une étape de simulation. */
+  step(dt) {
 
     this.time += dt;
     this.speed = Math.min(SPEED.max, this.speed + SPEED.accel * dt);
     this.distance += this.speed * dt;
+    this.distancePoints += this.speed * dt * SCORE.perMeter * this.multiplier;
 
+    this.updatePendingActions(dt);
+    this.updateDrunk(dt);
     this.updatePlayer(dt);
     this.spawnAhead();
     this.updateObstacles(dt);
+    this.updateItems();
     this.updateChase(dt);
-    return this.events;
   }
 
   updatePlayer(dt) {
     const p = this.player;
 
     // Déplacement latéral en douceur vers la voie visée
-    const targetX = LANES[p.lane];
+    const targetX = LANES[p.lane] + this.swayX;
     const k = 1 - Math.exp(-PLAYER.laneChangeSpeed * dt);
     p.x += (targetX - p.x) * k;
 
@@ -161,7 +201,10 @@ export class Game {
       this.obstacles.push(...row);
       // Plus on va vite, plus on espace les rangées (pour avoir le temps de réagir)
       const gap = SPAWN.minGap + this.random() * (SPAWN.maxGap - SPAWN.minGap);
+      const rowEnd = this.nextRowAt + rowLength(row) / 2;
       this.nextRowAt += rowLength(row) + gap + this.speed * 0.35;
+      // Médailles et bonus dans l'espace libre avant la rangée suivante
+      this.items.push(...fillGap(this.random, rowEnd + 3, this.nextRowAt - 4, SPAWN.bonusChance));
     }
   }
 
@@ -215,6 +258,14 @@ export class Game {
 
   /** Gérard percute un obstacle. */
   hitObstacle(o) {
+    // Invincible (croissant) : Gérard envoie valser l'obstacle sans rien sentir
+    if (this.invincibleTime > 0) {
+      o.hit = true;
+      o.hitTime = this.time;
+      this.bonusPoints += 20 * this.multiplier;
+      this.emit('smash', { obstacle: o });
+      return;
+    }
     if (this.hurtTime > 0) return; // encore sonné par le choc précédent
     o.hit = true;
     o.hitTime = this.time;
@@ -244,11 +295,78 @@ export class Game {
     this.emit('gameover', { phrase });
   }
 
+  // ---------------------------------------------------------
+  // IVRESSE ET BONUS
+  // ---------------------------------------------------------
+
+  updatePendingActions(dt) {
+    for (const a of this.pendingActions) a.delay -= dt;
+    const ready = this.pendingActions.filter((a) => a.delay <= 0);
+    this.pendingActions = this.pendingActions.filter((a) => a.delay > 0);
+    for (const a of ready) {
+      this.applyAction(a.action);
+      if (a.oops) this.emit('oops');
+    }
+  }
+
+  updateDrunk(dt) {
+    this.drunk = Math.max(0, this.drunk - DRUNK.decay * dt);
+    if (this.invincibleTime > 0) this.invincibleTime = Math.max(0, this.invincibleTime - dt);
+    if (this.multiplierTime > 0) this.multiplierTime = Math.max(0, this.multiplierTime - dt);
+    // Titubement : Gérard zigzague un peu, d'autant plus qu'il est ivre
+    const r = this.drunkRatio;
+    this.swayX = Math.sin(this.time * 1.9) * (0.08 + r * 0.3) + Math.sin(this.time * 3.3) * r * 0.07;
+  }
+
+  addDrunk(amount) {
+    this.drunk = Math.min(DRUNK.max, Math.max(0, this.drunk + amount));
+  }
+
+  updateItems() {
+    const p = this.player;
+    for (const it of this.items) {
+      if (it.taken) continue;
+      const close = Math.abs(it.at - this.distance) < 0.9 && Math.abs(it.x - p.x) < 0.85 && p.y < 1.7;
+      if (close) this.collect(it);
+    }
+    this.items = this.items.filter((it) => !it.taken && it.at > this.distance - SPAWN.despawnBehind);
+  }
+
+  /** Gérard ramasse un objet. */
+  collect(it) {
+    it.taken = true;
+    const m = this.multiplier;
+    switch (it.kind) {
+      case 'coin':
+        this.bonusPoints += SCORE.coin * m;
+        break;
+      case 'cafe':
+        this.bonusPoints += SCORE.coffee * m;
+        this.addDrunk(DRUNK.coffee);
+        this.gap = Math.min(CHASE.max, this.gap + CHASE.coffeeBonus);
+        break;
+      case 'vin':
+        this.bonusPoints += SCORE.wine * m;
+        this.addDrunk(DRUNK.wine);
+        break;
+      case 'croissant':
+        this.bonusPoints += SCORE.croissant * m;
+        this.invincibleTime = BONUS.invincibleDuration;
+        break;
+      case 'kepi':
+        this.bonusPoints += SCORE.kepi * m;
+        this.multiplierTime = BONUS.multiplierDuration;
+        break;
+    }
+    this.emit('pickup', { kind: it.kind });
+  }
+
   /** Flaque de pastis : ça glisse, Gérard part sur le côté. */
   slip() {
     const p = this.player;
     const options = [p.lane - 1, p.lane + 1].filter((l) => l >= 0 && l <= 2);
     p.lane = options[Math.floor(this.random() * options.length)];
+    this.addDrunk(DRUNK.pastis); // rien qu'à l'odeur…
     this.emit('slip');
   }
 }
