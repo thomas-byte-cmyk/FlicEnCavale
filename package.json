@@ -9,7 +9,9 @@
     "build": "vite build",
     "preview": "vite preview --host",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "build:poki": "vite build --mode poki",
+    "zip:poki": "vite build --mode poki && node scripts/zip-poki.mjs"
   },
   "dependencies": {
     "@fontsource/lilita-one": "^5.3.0",

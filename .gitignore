@@ -13,3 +13,7 @@ Thumbs.db
 
 # Rapports de tests
 coverage/
+
+# Version Poki (se régénère avec "npm run zip:poki")
+dist-poki/
+FlicEnCavale-poki.zip

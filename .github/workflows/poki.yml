@@ -1,0 +1,34 @@
+# Fabrique la version Poki du jeu, prête à envoyer.
+# Se lance tout seul à chaque mise à jour de main, ou à la main
+# (onglet Actions → « Version Poki » → Run workflow).
+# Résultat : en bas de la page de l'exécution, rubrique « Artifacts »,
+# un fichier FlicEnCavale-poki à télécharger. C'est un .zip avec index.html
+# à la racine : c'est lui qu'on envoie à Poki (voir docs/poki/SOUMISSION.md).
+name: Version Poki
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  poki:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build:poki
+      # Le contenu de dist-poki/ est mis dans un zip téléchargeable (index.html à la racine)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: FlicEnCavale-poki
+          path: dist-poki/
+          retention-days: 30

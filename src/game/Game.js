@@ -68,6 +68,7 @@ export class Game {
     this.catchTimer = null; // compte à rebours du plaquage (ralenti)
     this.timeScale = 1; // 1 = vitesse normale, moins = ralenti
     this.lastChantAt = null; // dernier cortège de manifestants qui a scandé
+    this.revived = false; // « Deuxième chance » déjà utilisée pendant cette partie ?
   }
 
   /** Multiplicateur de score actuel. */
@@ -389,6 +390,37 @@ export class Game {
     this.catchTimer = null;
     const phrase = GAME_OVER_PHRASES[Math.floor(this.random() * GAME_OVER_PHRASES.length)];
     this.emit('gameover', { phrase });
+  }
+
+  /** Peut-on offrir une « Deuxième chance » ? Une seule par partie, jamais pendant le tutoriel. */
+  get canRevive() {
+    return this.status === 'over' && !this.revived && !this.inTutorial;
+  }
+
+  /**
+   * « Deuxième chance » : Gérard s'échappe et la partie continue (même score, même distance).
+   * Les collègues sont repoussés, la rue juste devant est dégagée et Gérard
+   * clignote un moment (aucun choc possible) pour avoir le temps de repartir.
+   * @returns {boolean} vrai si la partie a repris
+   */
+  revive() {
+    if (!this.canRevive) return false;
+    this.revived = true;
+    this.status = 'running';
+    this.gap = CHASE.start;
+    this.catchTimer = null;
+    this.timeScale = 1;
+    this.hurtTime = 2; // clignote : pas de nouveau choc pendant 2 s
+    this.pendingActions = [];
+    const p = this.player;
+    p.y = 0;
+    p.vy = 0;
+    p.grounded = true;
+    p.slideTime = 0;
+    // On retire les obstacles des 30 prochains mètres
+    keepOnly(this.obstacles, (o) => o.at < this.distance - 2 || o.at > this.distance + 30);
+    this.emit('revive');
+    return true;
   }
 
   // ---------------------------------------------------------

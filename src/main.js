@@ -17,7 +17,17 @@ import { UI } from './ui/UI.js';
 import { Sound } from './audio/Sound.js';
 import { vibrate } from './platform/haptics.js';
 import { QualityGovernor } from './platform/quality.js';
-import { gameplayStart, gameplayStop, commercialBreak, registerGame, ALLOW_EXTERNAL_LINKS } from './platform/portal.js';
+import {
+  initPortal,
+  gameLoadingFinished,
+  gameplayStart,
+  gameplayStop,
+  commercialBreak,
+  rewardedBreak,
+  hasAds,
+  registerGame,
+  ALLOW_EXTERNAL_LINKS,
+} from './platform/portal.js';
 import { PauseController } from './game/pause.js';
 import { detectLang, setLang, getLang, t } from './i18n/index.js';
 import { translateDom } from './i18n/dom.js';
@@ -181,12 +191,13 @@ async function playWithBreak(options) {
   starting = true;
   try {
     if (gamesStarted > 0) {
+      // Pendant la pub : son coupé, contrôles bloqués (le jeu est déjà à l'arrêt entre deux parties)
       input.enabled = false;
       sound.suspend(true);
       await commercialBreak();
-      sound.suspend(false);
     }
   } finally {
+    sound.suspend(hidden); // le son revient, même si la pub a échoué
     starting = false;
   }
   gamesStarted++;
@@ -307,8 +318,57 @@ function endGame(ev) {
   }
   // On laisse un moment pour admirer le plaquage avant d'afficher l'écran de fin
   const distance = game.distance;
-  gameOverTimer = setTimeout(() => ui.showGameOver({ score, distance, best, newBest, phrase: ev.phrase ?? '', missions }), 1200);
+  gameOverTimer = setTimeout(() => {
+    ui.showGameOver({ score, distance, best, newBest, phrase: ev.phrase ?? '', missions });
+    showReviveOffer();
+  }, 1200);
 }
+
+// --- « Deuxième chance » (pub récompensée, version Poki uniquement) ---
+const reviveButton = document.getElementById('btn-revive');
+reviveButton?.addEventListener('pointerdown', (e) => e.stopPropagation()); // pas de swipe
+
+/** Affiche le bouton seulement si une pub est possible et que la chance n'a pas servi. */
+function showReviveOffer() {
+  if (!reviveButton) return;
+  reviveButton.disabled = false;
+  reviveButton.textContent = t('revive');
+  reviveButton.classList.toggle('hidden', !(hasAds() && game.canRevive));
+}
+
+let reviving = false;
+reviveButton?.addEventListener('click', async () => {
+  if (reviving || !game.canRevive) return;
+  reviving = true;
+  reviveButton.disabled = true;
+  reviveButton.textContent = t('reviveWaiting');
+  sound.suspend(true); // son coupé pendant la pub
+  let watched = false;
+  try {
+    watched = await rewardedBreak();
+  } finally {
+    sound.suspend(hidden);
+    reviving = false;
+  }
+  if (!watched || !game.revive()) {
+    // Pas de pub (ou pub interrompue) : pas de pénalité, l'écran de fin reste là
+    reviveButton.textContent = t('reviveFailed');
+    return;
+  }
+  reviveButton.classList.add('hidden');
+  input.enabled = true;
+  ui.showGame(best);
+  ui.popup(t('revived'), 'good');
+  sound.play('start');
+  sound.startMusic();
+  sirenTimer = 2;
+  gameplayStart();
+});
+
+
+// --- Kit Poki : démarré tout de suite, sans jamais bloquer le jeu ---
+// (absent sur GitHub Pages ou avec un bloqueur de pub : le jeu marche pareil, sans pub)
+initPortal(window);
 
 // --- Boucle principale ---
 let last = performance.now();
@@ -360,6 +420,8 @@ function frame(now) {
   renderer.render(game, dt);
 }
 requestAnimationFrame(frame);
+// Écran titre affiché et première image dessinée : on prévient Poki que le jeu est chargé
+requestAnimationFrame(() => requestAnimationFrame(() => gameLoadingFinished()));
 
 // --- Redimensionnement et rotation de l'écran ---
 // Sur téléphone, la taille de l'écran n'est pas toujours à jour au moment de

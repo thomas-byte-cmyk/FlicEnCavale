@@ -192,6 +192,52 @@ describe('Game : obstacles et poursuite', () => {
   });
 });
 
+describe('Game : deuxième chance', () => {
+  /** Partie perdue (sans tutoriel). */
+  function lostGame() {
+    const g = emptyGame();
+    run(g, 2);
+    g.gap = 0;
+    for (let i = 0; i < 600 && g.status === 'running'; i++) g.update((1 / 60) * g.timeScale);
+    expect(g.status).toBe('over');
+    return g;
+  }
+
+  it('repart avec le même score, les collègues repoussés et la rue dégagée', () => {
+    const g = lostGame();
+    const score = g.score;
+    g.obstacles.push(makeObstacle('barrique', 1, g.distance + 5), makeObstacle('barrique', 1, g.distance + 60));
+    expect(g.canRevive).toBe(true);
+    expect(g.revive()).toBe(true);
+    expect(types(g.update(0))).toContain('revive');
+    expect(g.status).toBe('running');
+    expect(g.score).toBe(score);
+    expect(g.gap).toBe(CHASE.start);
+    expect(g.timeScale).toBe(1);
+    expect(g.obstacles.map((o) => Math.round(o.at - g.distance))).toEqual([60]);
+    run(g, 1);
+    expect(g.score).toBeGreaterThan(score);
+  });
+
+  it('une seule fois par partie', () => {
+    const g = lostGame();
+    g.revive();
+    g.gap = 0;
+    for (let i = 0; i < 600 && g.status === 'running'; i++) g.update((1 / 60) * g.timeScale);
+    expect(g.status).toBe('over');
+    expect(g.canRevive).toBe(false);
+    expect(g.revive()).toBe(false);
+    g.start(); // nouvelle partie : la chance revient
+    expect(g.revived).toBe(false);
+  });
+
+  it("impossible tant que la partie n'est pas perdue", () => {
+    const g = emptyGame();
+    expect(g.canRevive).toBe(false);
+    expect(g.revive()).toBe(false);
+  });
+});
+
 describe('Game : bonus et ivresse', () => {
   const pickup = (kind) => {
     const g = emptyGame();
