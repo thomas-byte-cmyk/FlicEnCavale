@@ -11,8 +11,8 @@ import { Chasers } from './Chasers.js';
 import { createItemModel } from './itemModels.js';
 import { mat } from './shapes.js';
 import { Particles } from './Particles.js';
-
-const SKY = '#8fd3ff';
+import { Backdrop, makeSkyTexture } from './Backdrop.js';
+import { PALETTE } from './palette.js';
 
 export class Renderer {
   /** @param {HTMLCanvasElement} canvas */
@@ -22,18 +22,21 @@ export class Renderer {
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(SKY);
-    this.scene.fog = new THREE.Fog(SKY, 45, 125);
+    // Ciel dégradé (bleu en haut, doré à l'horizon) ; le brouillard prend la couleur de l'horizon
+    this.scene.background = makeSkyTexture();
+    this.scene.fog = new THREE.Fog(PALETTE.horizon, 50, 130);
 
     this.camera = new THREE.PerspectiveCamera(70, 1, 0.1, 200);
 
     // Lumières : une lumière d'ambiance ciel/sol + un soleil
-    this.scene.add(new THREE.HemisphereLight('#dff3ff', '#9c7b55', 1.6));
-    const sun = new THREE.DirectionalLight('#fff4d6', 1.6);
+    this.scene.add(new THREE.HemisphereLight('#e3f2ff', '#a07a52', 1.5));
+    // Soleil de fin d'après-midi, un peu doré, qui vient de côté (volumes plus lisibles)
+    const sun = new THREE.DirectionalLight('#ffe9c2', 1.8);
     sun.position.set(-6, 12, 4);
     this.scene.add(sun);
 
     this.world = new World(this.scene);
+    this.backdrop = new Backdrop(this.scene);
 
     // Gérard : nez bien rouge et ventre de bon vivant
     this.player = makeGendarme({ nose: '#e0282e', belly: 1.12, mustache: '#3a2414' });
@@ -44,9 +47,10 @@ export class Renderer {
     this.chasers = new Chasers(this.scene);
 
     // Bulle dorée autour de Gérard quand il est invincible (croissant)
+    // (BackSide : on ne dessine que l'arrière de la bulle, Gérard reste net et coloré devant)
     this.shield = new THREE.Mesh(
-      new THREE.SphereGeometry(1.15, 16, 12),
-      new THREE.MeshBasicMaterial({ color: '#ffe082', transparent: true, opacity: 0.35, depthWrite: false, blending: THREE.AdditiveBlending }),
+      new THREE.SphereGeometry(1.15, 18, 12),
+      new THREE.MeshBasicMaterial({ color: '#ffd54a', transparent: true, opacity: 0.45, depthWrite: false, side: THREE.BackSide, blending: THREE.AdditiveBlending }),
     );
     this.shield.visible = false;
     this.scene.add(this.shield);
@@ -75,10 +79,11 @@ export class Renderer {
     const aspect = w / h;
     this.camera.aspect = aspect;
     // En portrait, l'écran est étroit : on élargit le champ de vision
-    // pour toujours voir les 3 voies.
-    const wantedHorizontal = THREE.MathUtils.degToRad(64);
+    // pour voir les 3 voies… mais pas trop, sinon les obstacles deviennent minuscules.
+    this.portrait = aspect < 0.8;
+    const wantedHorizontal = THREE.MathUtils.degToRad(this.portrait ? 52 : 64);
     const vertical = 2 * Math.atan(Math.tan(wantedHorizontal / 2) / aspect);
-    this.camera.fov = THREE.MathUtils.clamp(THREE.MathUtils.radToDeg(vertical), 55, 92);
+    this.camera.fov = THREE.MathUtils.clamp(THREE.MathUtils.radToDeg(vertical), 55, 84);
     this.camera.updateProjectionMatrix();
   }
 
@@ -209,6 +214,7 @@ export class Renderer {
     const p = game.player;
 
     this.world.update(game.distance);
+    this.backdrop.update(dt || 0.016);
     this.syncObstacles(game);
     this.syncItems(game);
     const drunk = game.drunkRatio ?? 0;
@@ -246,6 +252,13 @@ export class Renderer {
     this.playerShadow.position.x = p.x;
     this.playerShadow.scale.setScalar(Math.max(0.4, 1 - p.y * 0.3));
 
+    // Écran titre : Gérard se dandine sur place, face à la caméra
+    this.chasers.group.visible = game.status !== 'ready';
+    if (game.status === 'ready') {
+      this.renderTitle();
+      return;
+    }
+
     // --- Caméra : derrière et au-dessus de Gérard, elle le suit avec un léger retard ---
     this.camX += (p.x * 0.55 - this.camX) * (1 - Math.exp(-6 * dt));
     this.shake = Math.max(0, this.shake - dt);
@@ -253,10 +266,48 @@ export class Renderer {
     const shakeY = (Math.random() - 0.5) * this.shake;
     // Ivresse : la caméra tangue et roule (le monde penche !)
     const sway = Math.sin(this.time * 1.1) * drunk * 0.9;
-    this.camera.position.set(this.camX + shakeX + sway * 0.4, 3.9 + shakeY + Math.sin(this.time * 1.7) * drunk * 0.25, 6.4);
-    this.camera.lookAt(this.camX * 0.6 + sway, 1.0, -9);
+    // En portrait, la caméra monte un peu : plus de route visible, Gérard plus bas dans l'écran
+    const camY = this.portrait ? 4.8 : 3.9;
+    const camZ = this.portrait ? 6.8 : 6.4;
+    this.camera.position.set(this.camX + shakeX + sway * 0.4, camY + shakeY + Math.sin(this.time * 1.7) * drunk * 0.25, camZ);
+    this.camera.lookAt(this.camX * 0.6 + sway, this.portrait ? 0.2 : 1.0, -9);
     this.camera.rotation.z += Math.sin(this.time * 0.9) * (0.015 + drunk * 0.1);
 
+    this.renderer.render(this.scene, this.camera);
+  }
+
+  /** Écran titre : plan rapproché sur Gérard (et son nez rouge), ses collègues derrière. */
+  renderTitle() {
+    const t = this.time;
+    this.player.position.set(0, 0, 0);
+    this.player.rotation.y = Math.sin(t * 0.6) * 0.3; // il nous regarde (son visage est côté -z)
+    this.player.visible = true;
+    this.shield.visible = false;
+    this.player.userData.body.rotation.x = 0;
+    this.player.userData.body.position.set(0, 0, 0);
+    const { legL, legR, armL, armR, head, body } = this.player.userData;
+    // Petit pas de danse éméché
+    body.rotation.z = Math.sin(t * 2.2) * 0.12;
+    head.rotation.z = Math.sin(t * 2.2 + 0.6) * 0.2;
+    legL.rotation.x = Math.max(0, Math.sin(t * 4.4)) * 0.5;
+    legR.rotation.x = Math.max(0, -Math.sin(t * 4.4)) * 0.5;
+    armL.rotation.x = 0;
+    armR.rotation.x = -2.6 + Math.sin(t * 4.4) * 0.3; // il salue (ou trinque ?)
+    armL.rotation.z = -0.3;
+    armR.rotation.z = 0.2;
+    this.playerShadow.position.x = 0;
+    this.playerShadow.scale.setScalar(1);
+    this.kepiMesh.material = this.kepiNormal;
+    this.particles.update(0.016);
+
+    // Portrait : Gérard en haut de l'écran (la carte est en bas) ; paysage : Gérard à gauche
+    if (this.portrait) {
+      this.camera.position.set(Math.sin(t * 0.25) * 0.5, 1.5, -6.2);
+      this.camera.lookAt(0, 0.1, 2);
+    } else {
+      this.camera.position.set(-2.1 + Math.sin(t * 0.25) * 0.4, 1.7, -5.6);
+      this.camera.lookAt(-2.1, 1.25, 2);
+    }
     this.renderer.render(this.scene, this.camera);
   }
 }

@@ -6,41 +6,65 @@
       name="viewport"
       content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
     />
-    <meta name="theme-color" content="#1d4ed8" />
+    <title>FlicEnCavale</title>
+    <meta name="description" content="Gérard, gendarme un peu pompette, fuit ses collègues dans une rue de village sans fin. Un jeu de course burlesque et tout public, gratuit sur téléphone et ordinateur." />
+    <meta name="theme-color" content="#1f3a93" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="mobile-web-app-capable" content="yes" />
-    <title>FlicEnCavale</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚔</text></svg>" />
+    <meta name="apple-mobile-web-app-title" content="FlicEnCavale" />
+    <link rel="icon" type="image/svg+xml" href="icon.svg" />
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <!-- Aperçu quand on partage le lien (WhatsApp, Facebook, X, Messenger…) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:title" content="FlicEnCavale — Cours, Gérard, cours !" />
+    <meta property="og:description" content="Gérard, gendarme un peu pompette, fuit ses collègues qui veulent lui faire souffler dans le ballon. Jeu gratuit, tout public." />
+    <meta property="og:url" content="https://thomas-byte-cmyk.github.io/FlicEnCavale/" />
+    <meta property="og:image" content="https://thomas-byte-cmyk.github.io/FlicEnCavale/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Gérard le gendarme au nez rouge court dans une rue de village, poursuivi par ses collègues." />
+    <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body>
     <div id="app">
       <!-- La scène 3D est dessinée dans ce canvas -->
       <canvas id="scene"></canvas>
 
+      <!-- Voile rouge sur les bords : les collègues sont tout près / choc -->
+      <div id="vignette" class="vignette" aria-hidden="true"></div>
+
       <!-- HUD : informations affichées pendant la course -->
       <div id="hud" class="hud hidden">
         <div class="hud-top">
-          <div class="hud-score">
-            <div class="hud-label">Score</div>
-            <div id="hud-score" class="hud-value">0</div>
-            <div id="hud-mult" class="hud-mult hidden">×2</div>
+          <div class="hud-left">
+            <!-- Le score façon plaque de rue bleue -->
+            <div id="hud-plate" class="hud-score plate">
+              <div class="hud-label">Score</div>
+              <div id="hud-score" class="hud-value">0</div>
+              <div id="hud-mult" class="hud-mult hidden">×2</div>
+            </div>
+            <div class="gauges">
+              <div class="gauge" id="gauge-drunk-row">
+                <span class="gauge-icon" aria-hidden="true">🍷</span>
+                <span class="gauge-name">Ivresse</span>
+                <div class="gauge-bar"><div id="gauge-drunk" class="gauge-fill drunk"></div></div>
+              </div>
+              <div class="gauge" id="gauge-chase-row">
+                <span class="gauge-icon" aria-hidden="true">🚓</span>
+                <span class="gauge-name">Collègues</span>
+                <div class="gauge-bar"><div id="gauge-chase" class="gauge-fill chase"></div></div>
+              </div>
+            </div>
+            <div id="hud-effects" class="hud-effects"></div>
           </div>
           <div class="hud-right">
-            <div class="hud-best">Record <span id="hud-best">0</span></div>
+            <div class="hud-best">🏆 <span id="hud-best">0</span></div>
             <button id="btn-mute" class="icon-btn" aria-label="Couper le son">🔊</button>
           </div>
         </div>
-        <div class="gauges">
-          <div class="gauge">
-            <span class="gauge-icon">🍷</span>
-            <div class="gauge-bar"><div id="gauge-drunk" class="gauge-fill drunk"></div></div>
-          </div>
-          <div class="gauge">
-            <span class="gauge-icon">🚓</span>
-            <div class="gauge-bar"><div id="gauge-chase" class="gauge-fill chase"></div></div>
-          </div>
-        </div>
-        <div id="hud-effects" class="hud-effects"></div>
       </div>
 
       <!-- Phrases drôles qui s'affichent pendant la course -->
@@ -54,28 +78,36 @@
       <!-- Flash blanc (radar) -->
       <div id="flash" class="flash"></div>
 
-      <!-- Écran titre -->
-      <section id="title-screen" class="screen">
-        <div class="card">
-          <div class="logo">
-            <span class="logo-flic">Flic</span><span class="logo-en">En</span><span class="logo-cavale">Cavale</span>
-          </div>
+      <!-- Écran titre : le logo en haut, Gérard (en 3D) au milieu, le bouton en bas -->
+      <section id="title-screen" class="screen screen-title">
+        <header class="title-top">
+          <h1 class="logo" aria-label="FlicEnCavale">
+            <span class="logo-flic">Flic</span><span class="logo-en">en</span><span class="logo-cavale">Cavale</span>
+          </h1>
+          <div class="tricolore" aria-hidden="true"><i></i><i></i><i></i></div>
           <p class="pitch">
-            Gérard a un peu trop fêté la Sainte-Geneviève, patronne des gendarmes.
+            <span class="pitch-long">Gérard a un peu trop fêté la Sainte-Geneviève, patronne des gendarmes.</span>
             Ses collègues veulent lui faire souffler dans le ballon.
             <strong>Cours, Gérard, cours&nbsp;!</strong>
           </p>
+        </header>
+        <div class="card sheet">
           <div class="grade-box">
-            <div class="grade-label">Grade de Gérard</div>
-            <div id="title-grade" class="grade-name">Gendarme stagiaire</div>
-            <div id="title-grade-next" class="grade-next"></div>
+            <div class="grade-stripes" aria-hidden="true"></div>
+            <div>
+              <div class="grade-label">Grade de Gérard</div>
+              <div id="title-grade" class="grade-name">Gendarme stagiaire</div>
+              <div id="title-grade-next" class="grade-next"></div>
+            </div>
+            <div class="grade-best" title="Meilleur score">🏆<strong id="title-best">0</strong></div>
           </div>
           <div class="missions">
-            <div class="missions-title">🎯 Missions (en une seule partie)</div>
+            <div class="missions-title">🎯 Missions <span class="muted">(en une seule partie)</span></div>
             <ul id="title-missions" class="missions-list"></ul>
           </div>
+          <button id="btn-play" class="btn-primary">C'est parti&nbsp;!</button>
           <details class="howto">
-            <summary>Comment jouer ?</summary>
+            <summary>Comment jouer&nbsp;?</summary>
             <ul class="controls">
               <li><span>👈 👉</span> Glisse pour changer de voie</li>
               <li><span>👆</span> Glisse vers le haut pour sauter</li>
@@ -83,22 +115,26 @@
               <li class="kbd-hint"><span>⌨️</span> Sur ordi : les flèches</li>
             </ul>
             <ul class="bonus-list">
-              <li>☕ Café : dessoûle et sème les collègues</li>
-              <li>🍷 Verre de rouge : des points… mais ça tourne</li>
-              <li>🥐 Croissant : invincible un moment</li>
-              <li>🎖️ Képi doré : score multiplié</li>
+              <li>☕ <b>Café</b> : dessoûle et sème les collègues</li>
+              <li>🍷 <b>Verre de rouge</b> : des points… mais ça tourne</li>
+              <li>🥐 <b>Croissant</b> : invincible un moment</li>
+              <li>🎖️ <b>Képi doré</b> : score multiplié</li>
             </ul>
             <button id="btn-tutorial" class="btn-secondary">Refaire l'entraînement</button>
           </details>
-          <button id="btn-play" class="btn-primary">C'est parti&nbsp;!</button>
-          <div class="best-line">Meilleur score : <span id="title-best">0</span></div>
         </div>
       </section>
 
-      <!-- Écran de fin de partie -->
+      <!-- Écran de fin de partie : un procès-verbal, évidemment -->
       <section id="gameover-screen" class="screen hidden">
-        <div class="card">
-          <div class="go-title">Rattrapé&nbsp;!</div>
+        <div class="card pv">
+          <div class="pv-head">
+            <span>Gendarmerie du village</span>
+            <span>P.-V. n°&nbsp;<span id="go-pv">0000</span></span>
+          </div>
+          <div class="pv-title">Procès-verbal</div>
+          <div class="stamp go-title">Rattrapé&nbsp;!</div>
+          <p class="pv-motif"><span class="pv-field">Motif</span> Délit de fuite en état d'ébriété festive.</p>
           <p id="go-phrase" class="go-phrase"></p>
           <div class="go-stats">
             <div><span class="go-label">Score</span><span id="go-score" class="go-value">0</span></div>

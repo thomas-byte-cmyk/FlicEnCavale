@@ -118,10 +118,16 @@ export class Sound {
       case 'bump-wall':
         this.tone({ type: 'triangle', from: 140, to: 90, dur: 0.12, vol: 0.3 });
         break;
-      case 'coin':
-        this.tone({ type: 'square', from: 988, dur: 0.07, vol: 0.12 });
-        this.tone({ type: 'square', from: 1319, start: 0.07, dur: 0.14, vol: 0.12 });
+      case 'coin': {
+        // Médailles ramassées à la suite : la note monte (petite "gamme" gratifiante)
+        const now = this.ctx.currentTime;
+        this.coinStreak = now - (this.lastCoin ?? -9) < 0.9 ? Math.min((this.coinStreak ?? 0) + 1, 7) : 0;
+        this.lastCoin = now;
+        const k = Math.pow(2, [0, 2, 4, 5, 7, 9, 11, 12][this.coinStreak] / 12);
+        this.tone({ type: 'square', from: 988 * k, dur: 0.07, vol: 0.12 });
+        this.tone({ type: 'square', from: 1319 * k, start: 0.07, dur: 0.14, vol: 0.12 });
         break;
+      }
       case 'hit':
         this.noise({ dur: 0.3, vol: 0.7, freq: 900, freqTo: 120 });
         this.tone({ type: 'sine', from: 140, to: 50, dur: 0.3, vol: 0.7 });

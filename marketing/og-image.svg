@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <!-- Image de partage (Open Graph) de FlicEnCavale. Source : marketing/og-image.svg ; PNG généré : public/og-image.png -->
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4fa3e0"/>
+      <stop offset="0.55" stop-color="#9fd3f2"/>
+      <stop offset="0.8" stop-color="#fbe7c6"/>
+    </linearGradient>
+    <linearGradient id="road" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6b6c75"/>
+      <stop offset="1" stop-color="#47484f"/>
+    </linearGradient>
+    <filter id="sh" x="-10%" y="-10%" width="130%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="0" flood-color="#1b1b2f"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="630" fill="url(#sky)"/>
+  <!-- nuages -->
+  <g fill="#fff">
+    <ellipse cx="180" cy="90" rx="70" ry="26"/><ellipse cx="230" cy="78" rx="50" ry="28"/>
+    <ellipse cx="960" cy="70" rx="80" ry="24"/><ellipse cx="1010" cy="58" rx="46" ry="26"/>
+  </g>
+  <!-- clocher au bout de la rue -->
+  <g transform="translate(860 150)">
+    <rect x="-26" y="70" width="52" height="170" fill="#efe1c3"/>
+    <path d="M-34 72 L0 -40 L34 72 Z" fill="#5b6478"/>
+    <rect x="-2" y="-62" width="4" height="26" fill="#c9a227"/><rect x="-9" y="-54" width="18" height="4" fill="#c9a227"/>
+    <circle cx="0" cy="118" r="13" fill="#fff" stroke="#1b1b2f" stroke-width="2"/>
+    <path d="M0 118 v-8 M0 118 h6" stroke="#1b1b2f" stroke-width="2"/>
+  </g>
+  <!-- maisons (perspective) -->
+  <path d="M520 630 L520 120 L640 70 L800 290 L800 390 Z" fill="#f2c58f"/>
+  <path d="M520 120 L640 70 L660 96 L540 150 Z" fill="#c8553d"/>
+  <path d="M1200 630 L1200 90 L1060 60 L920 290 L920 390 Z" fill="#f7b7a3"/>
+  <path d="M1200 90 L1060 60 L1040 90 L1200 128 Z" fill="#c8553d"/>
+  <g fill="#9fd4f5" stroke="#1f3a93" stroke-width="6">
+    <path d="M580 200 L640 190 L640 260 L580 276 Z"/><path d="M690 230 L730 226 L730 280 L690 288 Z"/>
+    <path d="M1150 190 L1090 184 L1090 256 L1150 270 Z"/><path d="M1020 222 L985 220 L985 272 L1020 280 Z"/>
+  </g>
+  <!-- route -->
+  <path d="M800 390 L920 390 L1200 630 L520 630 Z" fill="url(#road)"/>
+  <path d="M845 390 L760 630 M875 390 L960 630" stroke="#fff" stroke-width="6" stroke-dasharray="30 26"/>
+  <!-- guirlande tricolore -->
+  <path d="M500 40 Q860 150 1200 40" stroke="#1b1b2f" stroke-width="3" fill="none"/>
+  <g stroke="#1b1b2f" stroke-width="2">
+    <path d="M540 54 l26 6 l-17 26 Z" fill="#1f3a93"/><path d="M610 74 l26 5 l-15 27 Z" fill="#fff"/>
+    <path d="M680 90 l26 4 l-14 27 Z" fill="#e63946"/><path d="M750 100 l26 2 l-12 28 Z" fill="#1f3a93"/>
+    <path d="M820 104 l26 0 l-13 28 Z" fill="#fff"/><path d="M890 104 l26 -1 l-12 28 Z" fill="#e63946"/>
+    <path d="M960 99 l26 -3 l-10 28 Z" fill="#1f3a93"/><path d="M1030 88 l26 -5 l-9 28 Z" fill="#fff"/>
+    <path d="M1100 72 l26 -6 l-8 28 Z" fill="#e63946"/>
+  </g>
+  <!-- Gérard (tête géante) -->
+  <g transform="translate(505 105) scale(0.9)">
+    <g transform="rotate(-6 256 290)">
+      <!-- oreilles -->
+      <circle cx="132" cy="300" r="30" fill="#f2c29b" stroke="#1b1b2f" stroke-width="10"/>
+      <circle cx="380" cy="300" r="30" fill="#f2c29b" stroke="#1b1b2f" stroke-width="10"/>
+      <!-- visage -->
+      <ellipse cx="256" cy="300" rx="122" ry="128" fill="#f2c29b" stroke="#1b1b2f" stroke-width="12"/>
+      <!-- joues roses (pompette) -->
+      <ellipse cx="180" cy="335" rx="26" ry="16" fill="#f28b82" opacity="0.8"/>
+      <ellipse cx="332" cy="335" rx="26" ry="16" fill="#f28b82" opacity="0.8"/>
+      <!-- yeux un peu dans le vague -->
+      <ellipse cx="208" cy="282" rx="16" ry="20" fill="#1b1b2f"/>
+      <ellipse cx="304" cy="282" rx="16" ry="20" fill="#1b1b2f"/>
+      <circle cx="213" cy="275" r="5" fill="#fff"/>
+      <circle cx="309" cy="275" r="5" fill="#fff"/>
+      <path d="M186 254 q22 -10 44 2" stroke="#1b1b2f" stroke-width="9" fill="none" stroke-linecap="round"/>
+      <path d="M282 256 q22 -12 44 -2" stroke="#1b1b2f" stroke-width="9" fill="none" stroke-linecap="round"/>
+      <!-- moustache -->
+      <path d="M256 352 C226 336 186 342 168 372 C200 366 226 374 256 364 C286 374 312 366 344 372 C326 342 286 336 256 352 Z" fill="#3a2414" stroke="#1b1b2f" stroke-width="8" stroke-linejoin="round"/>
+      <!-- nez rouge -->
+      <circle cx="256" cy="322" r="34" fill="#e63946" stroke="#1b1b2f" stroke-width="10"/>
+      <circle cx="244" cy="310" r="9" fill="#ffffff" opacity="0.75"/>
+      <!-- sourire -->
+      <path d="M226 392 q30 22 60 0" stroke="#1b1b2f" stroke-width="9" fill="none" stroke-linecap="round"/>
+      <!-- képi -->
+      <path d="M140 212 L152 112 Q256 82 360 112 L372 212 Z" fill="#141c3a" stroke="#1b1b2f" stroke-width="12" stroke-linejoin="round"/>
+      <rect x="134" y="196" width="244" height="30" rx="8" fill="#e8e8e8" stroke="#1b1b2f" stroke-width="10"/>
+      <path d="M150 226 Q256 266 362 226 L350 246 Q256 280 162 246 Z" fill="#000000" stroke="#1b1b2f" stroke-width="8" stroke-linejoin="round"/>
+      <!-- grenade de la gendarmerie, en or -->
+      <circle cx="256" cy="160" r="20" fill="#f2b705" stroke="#1b1b2f" stroke-width="6"/>
+      <path d="M244 142 q12 -30 24 0" fill="#f2b705" stroke="#1b1b2f" stroke-width="6"/>
+    </g>
+  </g>
+  <!-- bulle des collègues -->
+  <g transform="translate(940 515) rotate(3)" filter="url(#sh)">
+    <rect x="0" y="0" width="230" height="86" rx="20" fill="#fff" stroke="#1f3a93" stroke-width="6"/>
+    <path d="M40 2 l-22 -34 l50 34 Z" fill="#fff" stroke="#1f3a93" stroke-width="6" stroke-linejoin="round"/>
+    <rect x="30" y="3" width="44" height="8" fill="#fff"/>
+    <text x="115" y="38" text-anchor="middle" font-family="Arial Rounded MT Bold, Nunito, Arial, sans-serif" font-weight="900" font-size="26" fill="#1b1b2f">Gérard ! Souffle</text>
+    <text x="115" y="68" text-anchor="middle" font-family="Arial Rounded MT Bold, Nunito, Arial, sans-serif" font-weight="900" font-size="26" fill="#1b1b2f">dans le ballon !</text>
+  </g>
+  <!-- panneau gauche : logo + accroche -->
+  <g font-family="Arial Rounded MT Bold, Nunito, Arial Black, Arial, sans-serif" font-weight="900">
+    <g transform="translate(60 70) rotate(-6)" filter="url(#sh)">
+      <rect width="250" height="120" rx="22" fill="#1f3a93" stroke="#1b1b2f" stroke-width="7"/>
+      <text x="125" y="96" text-anchor="middle" font-size="100" fill="#fff" stroke="#1b1b2f" stroke-width="5" paint-order="stroke">Flic</text>
+    </g>
+    <text x="318" y="140" font-size="52" fill="#f6c945" stroke="#1b1b2f" stroke-width="5" paint-order="stroke" transform="rotate(-8 330 140)">en</text>
+    <g transform="translate(70 200) rotate(3)" filter="url(#sh)">
+      <rect width="400" height="130" rx="22" fill="#e63946" stroke="#1b1b2f" stroke-width="7"/>
+      <text x="200" y="104" text-anchor="middle" font-size="104" fill="#fff" stroke="#1b1b2f" stroke-width="5" paint-order="stroke">Cavale</text>
+    </g>
+    <g transform="translate(72 380)">
+      <rect width="180" height="12" fill="#1f3a93" stroke="#1b1b2f" stroke-width="3"/>
+      <rect x="60" width="60" height="12" fill="#fff" stroke="#1b1b2f" stroke-width="3"/>
+      <rect x="120" width="60" height="12" fill="#e63946" stroke="#1b1b2f" stroke-width="3"/>
+    </g>
+    <text x="70" y="452" font-size="46" fill="#1b1b2f">Cours, Gérard, cours !</text>
+    <text x="72" y="500" font-family="system-ui, Arial, sans-serif" font-weight="700" font-size="25" fill="#1b1b2f">Un gendarme pompette fuit ses collègues</text>
+    <text x="72" y="532" font-family="system-ui, Arial, sans-serif" font-weight="700" font-size="25" fill="#1b1b2f">dans une rue de village sans fin.</text>
+    <g transform="translate(70 556)" filter="url(#sh)">
+      <rect width="400" height="50" rx="14" fill="#f6c945" stroke="#1b1b2f" stroke-width="5"/>
+      <text x="200" y="34" text-anchor="middle" font-size="24" fill="#1b1b2f">Gratuit · Téléphone et ordi</text>
+    </g>
+  </g>
+</svg>
