@@ -90,9 +90,9 @@ const templates = new Map();
 const haloGeometry = new THREE.RingGeometry(0.35, 0.6, 20);
 const haloMaterial = new THREE.MeshBasicMaterial({ color: '#fff59d', transparent: true, opacity: 0.6, side: THREE.DoubleSide, depthWrite: false });
 
-// --- Le verre de vin est un PIÈGE : il doit se distinguer des bonus d'un coup d'œil ---
-// Pas d'or ni d'étincelles (réservés aux bonus) : un anneau rouge-violet qui pulse,
-// des spirales de vertige qui tournent au-dessus, et un verre qui tangue (voir Renderer).
+// --- Le verre de vin est un PARI RISQUÉ : « tentant mais dangereux » ---
+// Tentant : des étincelles dorées comme les bonus, et un anneau qui passe de l'or au violet.
+// Dangereux : des spirales de vertige qui tournent au-dessus et un verre qui tangue (voir Renderer).
 const trapRingGeometry = new THREE.RingGeometry(0.38, 0.72, 24);
 export const trapRingMaterial = new THREE.MeshBasicMaterial({ color: '#e63946', transparent: true, opacity: 0.85, side: THREE.DoubleSide, depthWrite: false });
 
@@ -127,7 +127,33 @@ function getSwirlTexture() {
 }
 let swirlMaterial = null;
 
-/** Ajoute au verre de vin ses signes de danger (anneau + 3 spirales). */
+/** Petite étoile dorée à 4 branches (étincelle), contour sombre pour rester lisible sur le ciel. */
+let sparkleTexture = null;
+function getSparkleTexture() {
+  if (sparkleTexture) return sparkleTexture;
+  const c = document.createElement('canvas');
+  c.width = c.height = 64;
+  const ctx = c.getContext('2d');
+  ctx.beginPath();
+  for (let i = 0; i < 8; i++) {
+    const a = (i * Math.PI) / 4 - Math.PI / 2;
+    const r = i % 2 ? 9 : 28;
+    ctx.lineTo(32 + Math.cos(a) * r, 32 + Math.sin(a) * r);
+  }
+  ctx.closePath();
+  ctx.fillStyle = '#f2b705';
+  ctx.strokeStyle = '#7a4b00';
+  ctx.lineWidth = 4;
+  ctx.lineJoin = 'round';
+  ctx.fill();
+  ctx.stroke();
+  sparkleTexture = new THREE.CanvasTexture(c);
+  sparkleTexture.colorSpace = THREE.SRGBColorSpace;
+  return sparkleTexture;
+}
+let sparkleMaterial = null;
+
+/** Ajoute au verre de vin ses signes : anneau or/violet, 3 spirales de vertige, 4 étincelles dorées. */
 function addTrapSigns(g) {
   const ring = new THREE.Mesh(trapRingGeometry, trapRingMaterial);
   ring.rotation.x = -Math.PI / 2;
@@ -141,7 +167,14 @@ function addTrapSigns(g) {
     g.add(sp);
     swirls.push(sp);
   }
-  g.userData.trap = { ring, swirls };
+  sparkleMaterial ??= new THREE.SpriteMaterial({ map: getSparkleTexture(), transparent: true, depthWrite: false });
+  const sparkles = [];
+  for (let i = 0; i < 4; i++) {
+    const sp = new THREE.Sprite(sparkleMaterial);
+    g.add(sp);
+    sparkles.push(sp);
+  }
+  g.userData.trap = { ring, swirls, sparkles };
 }
 
 export function createItemModel(kind) {

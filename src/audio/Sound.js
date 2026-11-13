@@ -162,11 +162,13 @@ export class Sound {
         this.tone({ type: 'sine', from: 660, to: 990, start: 0.4, dur: 0.15, vol: 0.2 });
         break;
       case 'vin':
-        // « Hic ! » bien net, puis un « wouuu » qui tangue et descend (la tête qui tourne)
-        this.tone({ type: 'triangle', from: 300, to: 900, dur: 0.09, vol: 0.45 });
-        this.noise({ start: 0.05, dur: 0.06, vol: 0.3, filter: 'bandpass', freq: 1500, q: 3 });
-        this.tone({ type: 'sine', from: 520, to: 180, start: 0.16, dur: 0.7, vol: 0.22, vibrato: 45, vibratoRate: 6 });
-        this.tone({ type: 'sine', from: 530, to: 186, start: 0.16, dur: 0.7, vol: 0.12, vibrato: 45, vibratoRate: 5.3 });
+        // « Ding-ding » du gros lot, puis « hic ! » et un « wouuu » qui tangue et descend
+        this.tone({ type: 'square', from: 1319, dur: 0.06, vol: 0.1 });
+        this.tone({ type: 'square', from: 1760, start: 0.06, dur: 0.1, vol: 0.1 });
+        this.tone({ type: 'triangle', from: 300, to: 900, start: 0.14, dur: 0.09, vol: 0.45 });
+        this.noise({ start: 0.19, dur: 0.06, vol: 0.3, filter: 'bandpass', freq: 1500, q: 3 });
+        this.tone({ type: 'sine', from: 520, to: 180, start: 0.3, dur: 0.7, vol: 0.22, vibrato: 45, vibratoRate: 6 });
+        this.tone({ type: 'sine', from: 530, to: 186, start: 0.3, dur: 0.7, vol: 0.12, vibrato: 45, vibratoRate: 5.3 });
         break;
       case 'croissant':
         [0, 4, 7, 12].forEach((n, i) => this.tone({ type: 'square', from: midiToHz(72 + n), start: i * 0.07, dur: 0.15, vol: 0.13 }));
