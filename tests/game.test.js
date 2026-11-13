@@ -253,6 +253,14 @@ describe('Game : bonus et ivresse', () => {
     expect(g.player.lane).toBe(2);
   });
 
+  it('un verre de rouge évité est signalé (mission « Évite les verres »)', () => {
+    const g = emptyGame();
+    g.items.push(makeItem('vin', 0, g.distance + 2)); // sur une autre voie : Gérard ne le prend pas
+    const evs = run(g, 0.6);
+    expect(evs.filter((e) => e.type === 'dodge' && e.kind === 'vin')).toHaveLength(1);
+    expect(types(evs)).not.toContain('pickup');
+  });
+
   it('flaque de pastis : glisse sur une voie voisine', () => {
     const g = emptyGame();
     g.obstacles.push(makeObstacle('pastis', 1, g.distance + 2));

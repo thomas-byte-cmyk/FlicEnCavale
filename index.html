@@ -80,8 +80,8 @@
 
       <!-- Écran titre : le logo en haut, Gérard (en 3D) au milieu, le bouton en bas -->
       <section id="title-screen" class="screen screen-title">
-        <!-- Bouton de langue (provisoire, session CODE : DESIGN lui donne sa place définitive) -->
-        <button id="btn-lang" class="icon-btn lang-btn" data-i18n="langButton" data-i18n-aria="langButtonLabel" aria-label="Play in English">EN</button>
+        <!-- Choix de langue FR/EN (place : DESIGN ; clic branché dans main.js) -->
+        <button id="btn-lang" class="lang-btn" data-i18n="langButton" data-i18n-aria="langButtonLabel" aria-label="Play in English">🇬🇧 EN</button>
         <header class="title-top">
           <h1 class="logo" aria-label="FlicEnCavale">
             <span class="logo-flic">Flic</span><span class="logo-en">en</span><span class="logo-cavale">Cavale</span>
@@ -136,7 +136,6 @@
           </div>
           <div class="pv-title" data-i18n="pvTitle">Procès-verbal</div>
           <div class="stamp go-title" data-i18n="caughtStamp">Rattrapé&nbsp;!</div>
-          <p class="pv-motif" data-i18n="pvMotif"><span class="pv-field">Motif</span> Délit de fuite en état d'ébriété festive.</p>
           <p id="go-phrase" class="go-phrase"></p>
           <div class="go-stats">
             <div><span class="go-label" data-i18n="statScore">Score</span><span id="go-score" class="go-value">0</span></div>
@@ -149,8 +148,19 @@
             <ul id="go-missions" class="missions-list"></ul>
           </div>
           <button id="btn-replay" class="btn-primary" data-i18n="replay">Rejouer</button>
+          <button id="btn-challenge" class="btn-challenge" data-i18n="challenge">📣 Défier un ami</button>
           <button id="btn-home" class="btn-secondary" data-i18n="home">Écran titre</button>
         </div>
+      </section>
+
+      <!-- Écran de pause : affiché quand on quitte l'appli, puis décompte 3-2-1 avant de reprendre -->
+      <section id="pause-screen" class="screen hidden">
+        <div class="card pause-card">
+          <div class="pause-title" data-i18n="pauseTitle">Pause</div>
+          <p class="pause-text" data-i18n="pauseText">Gérard reprend son souffle derrière une barrique…</p>
+          <button id="btn-resume" class="btn-primary" data-i18n="resume">▶ Reprendre</button>
+        </div>
+        <div id="pause-count" class="pause-count hidden" aria-live="assertive"></div>
       </section>
     </div>
 

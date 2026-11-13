@@ -424,6 +424,12 @@ export class Game {
     const p = this.player;
     for (const it of this.items) {
       if (it.taken) continue;
+      // Objet dépassé sans le prendre (utile pour la mission « Évite les verres de rouge »)
+      if (!it.passed && it.at < this.distance - 1) {
+        it.passed = true;
+        this.emit('dodge', { kind: it.kind });
+        continue;
+      }
       const close = Math.abs(it.at - this.distance) < 0.9 && Math.abs(it.x - p.x) < 0.85 && p.y < 1.7;
       if (close) this.collect(it);
     }

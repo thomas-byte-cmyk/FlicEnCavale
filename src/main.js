@@ -17,11 +17,10 @@ import { UI } from './ui/UI.js';
 import { Sound } from './audio/Sound.js';
 import { vibrate } from './platform/haptics.js';
 import { QualityGovernor } from './platform/quality.js';
-import { gameplayStart, gameplayStop } from './platform/portal.js';
+import { gameplayStart, gameplayStop, commercialBreak, registerGame, ALLOW_EXTERNAL_LINKS } from './platform/portal.js';
 import { PauseController } from './game/pause.js';
 import { detectLang, setLang, getLang, t } from './i18n/index.js';
 import { translateDom } from './i18n/dom.js';
-import { createPauseFallback } from './ui/pauseFallback.js';
 import {
   loadBestScore,
   saveBestScore,
@@ -36,7 +35,8 @@ import {
 } from './platform/storage.js';
 
 // Langue : celle choisie auparavant, sinon celle du navigateur
-setLang(detectLang(loadLang(), navigator.languages?.length ? navigator.languages : [navigator.language].filter(Boolean)));
+// (navigator.language d'abord : c'est aussi ce que demandent les portails comme Poki)
+setLang(detectLang(loadLang(), [navigator.language, ...(navigator.languages ?? [])].filter(Boolean)));
 translateDom(document);
 
 const game = new Game();
@@ -58,8 +58,8 @@ renderer.renderer.setPixelRatio(quality.ratio);
 sound.setMuted(muted);
 
 const ui = new UI({
-  onPlay: () => startGame(),
-  onTutorial: () => startGame({ tutorial: true }),
+  onPlay: () => playWithBreak(),
+  onTutorial: () => playWithBreak({ tutorial: true }),
   onHome: () => {
     resetPause();
     game.reset();
@@ -67,21 +67,27 @@ const ui = new UI({
     ui.showTitle(best, missions);
   },
   onToggleMute: () => {
-    muted = !muted;
-    saveMuted(muted);
-    ui.setMuted(muted);
+    setMuted(!muted);
     sound.unlock();
-    sound.setMuted(muted);
   },
 });
+
+/** Coupe / remet le son (bouton du HUD, et plus tard le portail de jeux). */
+function setMuted(value) {
+  muted = value;
+  saveMuted(muted);
+  ui.setMuted(muted);
+  sound.setMuted(muted);
+}
 ui.setMuted(muted);
 ui.showTitle(best, missions);
 
-// Écran de pause : celui de la session DESIGN s'il existe (ui.showPause…), sinon un écran provisoire
-const pauseView = typeof ui.showPause === 'function' ? ui : createPauseFallback();
+// Bouton « Défier un ami » : c'est un partage vers l'extérieur, interdit sur certains portails
+if (!ALLOW_EXTERNAL_LINKS) document.getElementById('btn-challenge')?.classList.add('hidden');
 
 // Bouton de langue FR ⇄ EN (écran titre)
 const langButton = document.getElementById('btn-lang');
+langButton?.classList.remove('hidden');
 langButton?.addEventListener('pointerdown', (e) => e.stopPropagation()); // pas de swipe
 langButton?.addEventListener('click', () => {
   setLang(getLang() === 'fr' ? 'en' : 'fr');
@@ -96,7 +102,8 @@ if (import.meta.env.DEV) Object.assign(window, { __game: game, __missions: missi
 
 const input = new Input(document.getElementById('app'), (action) => {
   if (action === 'pause') {
-    if (pause.state === 'paused') resumeGame();
+    // En pause : la touche lance le décompte 3-2-1 de l'écran de pause
+    if (pause.state === 'paused') ui.startCountdown();
     else pauseGame('user');
     return;
   }
@@ -105,19 +112,31 @@ const input = new Input(document.getElementById('app'), (action) => {
 
 // --- Pause ---
 
-/** Met la partie en pause (onglet caché, touche Échap/P, et plus tard publicité). */
+/**
+ * Met la partie en pause (onglet caché, touche Échap/P, et plus tard publicité).
+ * L'écran de pause (session DESIGN) gère le bouton « Reprendre » et le 3-2-1,
+ * puis appelle resumeGame(). Si on repasse en pause pendant le 3-2-1,
+ * l'écran de pause réapparaît (le décompte est annulé).
+ */
 function pauseGame(reason) {
   if (game.status !== 'running') return false;
-  if (!pause.pause(reason)) return false;
+  pause.pause(reason);
   sound.suspend(true);
   gameplayStop();
-  pauseView.showPause(() => resumeGame());
+  ui.showPause(() => resumeGame(), {
+    // Un « bip » à chaque chiffre du décompte (le son revient pour l'occasion)
+    onTick: () => {
+      if (!hidden) sound.suspend(false);
+      sound.play('lane');
+    },
+  });
   return true;
 }
 
-/** Reprend la partie après un compte à rebours 3-2-1. */
-function resumeGame(options) {
-  if (hidden || !pause.resume(options)) return false;
+/** Reprend la partie (le décompte 3-2-1 a déjà été affiché par l'écran de pause). */
+function resumeGame() {
+  if (hidden || !pause.resume({ countdown: 0 })) return false;
+  ui.hidePause();
   sound.suspend(false);
   return true;
 }
@@ -125,21 +144,48 @@ function resumeGame(options) {
 /** Oublie toute pause en cours (nouvelle partie, retour au titre). */
 function resetPause() {
   pause.reset();
-  pauseView?.hidePause();
+  ui.hidePause();
 }
 
 function handlePauseEvents(events) {
   for (const ev of events) {
-    if (ev.type === 'countdown') {
-      pauseView.showCountdown(ev.n);
-      sound.play('lane');
-    } else if (ev.type === 'resumed') {
-      pauseView.hidePause();
+    if (ev.type === 'resumed') {
       ui.popup(t('countdownGo'), 'good');
       sound.play('start');
       gameplayStart();
     }
   }
+}
+
+/** Le joueur peut-il agir (gestes, clavier) ? Utilisé par le portail de jeux. */
+function setControlsEnabled(on) {
+  input.enabled = on && game.status === 'running';
+}
+
+// Commandes accessibles au futur SDK du portail (Poki…)
+registerGame({ pause: () => pauseGame('portal'), resume: resumeGame, setMuted, setControlsEnabled });
+
+/**
+ * Lance une partie, avec une pause publicitaire possible avant
+ * (sauf pour la toute première partie). Aujourd'hui, la pub ne fait rien.
+ */
+let gamesStarted = 0;
+let starting = false;
+async function playWithBreak(options) {
+  if (starting) return; // double-clic sur « Rejouer »
+  starting = true;
+  try {
+    if (gamesStarted > 0) {
+      input.enabled = false;
+      sound.suspend(true);
+      await commercialBreak();
+      sound.suspend(false);
+    }
+  } finally {
+    starting = false;
+  }
+  gamesStarted++;
+  startGame(options);
 }
 
 /** Lance une partie. Le tutoriel se joue automatiquement à la toute première partie. */

@@ -12,7 +12,7 @@ export default {
 
   // --- Interface (écrans, boutons, messages) ---
   ui: {
-    langButton: 'EN', // le bouton affiche l'AUTRE langue, celle qu'on obtient en cliquant
+    langButton: '🇬🇧 EN', // le bouton affiche l'AUTRE langue, celle qu'on obtient en cliquant
     langButtonLabel: 'Play in English',
     hudScore: 'Score',
     gaugeDrunk: 'Ivresse',
@@ -38,7 +38,6 @@ export default {
     pvNumber: 'P.-V. n°&nbsp;',
     pvTitle: 'Procès-verbal',
     caughtStamp: 'Rattrapé&nbsp;!',
-    pvMotif: '<span class="pv-field">Motif</span> Délit de fuite en état d’ébriété festive.',
     statScore: 'Score',
     statDistance: 'Distance',
     statBest: 'Record',
@@ -46,6 +45,11 @@ export default {
     missionsGo: '🎯 Missions —&nbsp;',
     replay: 'Rejouer',
     home: 'Écran titre',
+    // « Défier un ami » (fin de partie)
+    challenge: '📣 Défier un ami',
+    challengeText: '🚔 J’ai fait {score} points à FlicEnCavale : Gérard a tenu {distance} m avant de se faire rattraper. Tu fais mieux ?',
+    challengeCopied: '✅ Texte copié, colle-le à un ami !',
+    challengeFailed: '😕 Copie impossible sur cet appareil',
     nextGrade: 'Prochain grade : {name} ({done}/{need} missions)',
     maxGrade: 'Grade maximum atteint. Respect, mon Général !',
     nextRun: 'prochaine partie',
@@ -58,8 +62,8 @@ export default {
     promoted: '⭐ Gérard est promu {name} !',
     // Pause
     pauseTitle: 'Pause',
-    pauseText: 'Gérard reprend son souffle… ses collègues aussi.',
-    resume: 'Reprendre',
+    pauseText: 'Gérard reprend son souffle derrière une barrique…',
+    resume: '▶ Reprendre',
     countdownGo: 'Cours !',
   },
 
@@ -100,6 +104,7 @@ export default {
     slide: 'Glisse {n} fois',
     croissant: ['Mange un croissant', 'Mange {n} croissants'],
     noWine: 'Cours {n} m sans boire de vin',
+    dodgeVin: 'Évite {n} verres de rouge',
     whistle: 'Fais-toi siffler par {n} gendarmes de la circulation',
     passBarrique: 'Passe {n} barriques sans les toucher',
     kepi: ['Trouve un képi doré', 'Trouve {n} képis dorés'],

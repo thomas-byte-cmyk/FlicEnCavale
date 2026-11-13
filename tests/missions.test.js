@@ -7,7 +7,7 @@ const fakeGame = (distance = 0) => ({ distance });
 describe('missions', () => {
   it('missionAt : les missions ne finissent jamais et deviennent plus dures', () => {
     const first = missionAt(0);
-    const again = missionAt(26); // même mission, deuxième tour
+    const again = missionAt(27); // même mission, deuxième tour
     expect(again.id).toBe(`${first.id}-1`);
     expect(again.target).toBeGreaterThan(first.target);
     expect(missionAt(500).text).not.toContain('{n}');
@@ -64,9 +64,22 @@ describe('missions', () => {
     expect(m.stats.noHit).toBe(100); // les 100 premiers mètres restent le record
   });
 
-  it('nouvelle mission : se faire siffler par les agents (remplace « boire du vin »)', () => {
-    const ids = Array.from({ length: 26 }, (_, i) => missionAt(i).id);
+  it('nouvelle mission : éviter les verres de rouge (remplace « boire du vin »)', () => {
+    const ids = Array.from({ length: 27 }, (_, i) => missionAt(i).id);
     expect(ids).not.toContain('vin1');
+    expect(ids).toContain('dodgevin1');
+    const before = ids.slice(0, ids.indexOf('dodgevin1'));
+    const m = new Missions(before);
+    m.startRun();
+    expect(m.active[0].id).toBe('dodgevin1');
+    const dodgeVin = { type: 'dodge', kind: 'vin' };
+    const dodgeCoin = { type: 'dodge', kind: 'coin' };
+    expect(m.update(fakeGame(0), [dodgeVin, dodgeVin, dodgeVin, dodgeVin, dodgeCoin]).done).toHaveLength(0);
+    expect(m.update(fakeGame(0), [dodgeVin]).done.map((d) => d.id)).toEqual(['dodgevin1']);
+  });
+
+  it('mission : se faire siffler par les agents', () => {
+    const ids = Array.from({ length: 27 }, (_, i) => missionAt(i).id);
     expect(ids).toContain('whistle1');
     const before = ids.slice(0, ids.indexOf('whistle1'));
     const m = new Missions(before); // whistle1 est la prochaine mission

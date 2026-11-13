@@ -26,8 +26,8 @@ const BASE_MISSIONS = [
   { id: 'dist2', stat: 'distance', target: 450 },
   { id: 'croissant1', stat: 'croissant', target: 1 },
   { id: 'nowine1', stat: 'noWine', target: 300 },
-  // (remplace l'ancienne mission « Bois 2 verres de rouge »)
-  { id: 'whistle1', stat: 'whistle', target: 3 },
+  // (remplace l'ancienne mission « Bois 2 verres de rouge » : le vin est un piège)
+  { id: 'dodgevin1', stat: 'dodgeVin', target: 5 },
   { id: 'barrique1', stat: 'passBarrique', target: 6 },
   { id: 'coin2', stat: 'coin', target: 40 },
   { id: 'kepi1', stat: 'kepi', target: 1 },
@@ -38,6 +38,7 @@ const BASE_MISSIONS = [
   { id: 'smash1', stat: 'smash', target: 2 },
   { id: 'cafe2', stat: 'cafe', target: 3 },
   { id: 'agent1', stat: 'passAgent', target: 3 },
+  { id: 'whistle1', stat: 'whistle', target: 3 },
   { id: 'nowine2', stat: 'noWine', target: 600 },
   { id: 'jump2', stat: 'jump', target: 25 },
   { id: 'nohit2', stat: 'noHit', target: 500 },
@@ -92,7 +93,7 @@ export function gradeFor(count) {
 function newRunStats() {
   return {
     distance: 0, coin: 0, cafe: 0, vin: 0, croissant: 0, kepi: 0, jump: 0, slide: 0, smash: 0,
-    flash: 0, slip: 0, whistle: 0, passManif: 0, passBarrique: 0, passVache: 0, passAgent: 0,
+    flash: 0, slip: 0, whistle: 0, dodgeVin: 0, passManif: 0, passBarrique: 0, passVache: 0, passAgent: 0,
     noWine: 0, noHit: 0,
     lastHitAt: 0, wineDrunk: false,
   };
@@ -161,6 +162,7 @@ export class Missions {
         st.noHit = Math.max(st.noHit, game.distance - st.lastHitAt);
         st.lastHitAt = game.distance;
       }
+      if (ev.type === 'dodge' && ev.kind === 'vin') st.dodgeVin++;
       if (ev.type === 'pass' && PASS_STATS[ev.obstacle.type]) st[PASS_STATS[ev.obstacle.type]]++;
     }
     st.distance = game.distance;
