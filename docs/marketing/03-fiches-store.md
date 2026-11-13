@@ -48,7 +48,7 @@ Commandes : glisse à gauche / à droite / en haut / en bas (téléphone) ou les
 ```
 Welcome to the most French village in the world. Cows on the road, tractors at walking pace, baguettes everywhere, a roundabout every 50 metres and, of course, a strike blocking the street.
 
-In the middle of it all: Gérard, a gendarme in his kepi, running for his life. After the brigade party, his colleagues want him to take a breath test… and Gérard has decided he'd rather run.
+In the middle of it all: Gérard, a gendarme in his kepi, running for his life. After the brigade party, his colleagues want him to blow into the breathalyser… and Gérard has decided he'd rather run.
 
 🥖 DODGE THE FRENCH CLICHÉS
 Jump over barrels, slide under a giant baguette, swerve around the cow, the tractor, the roundabout and the protesters holding signs that say "FREE GÉRARD!" and "LESS FINES, MORE PÉTANQUE!".

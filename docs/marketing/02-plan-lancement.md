@@ -189,7 +189,7 @@ Variante facile de EN-1 à recycler : « Things that happen in every French vill
 par obstacle, même montage.
 
 **Après la traduction anglaise** : republier les meilleures vidéos avec les textes en anglais
-(« The only cop running from a breathalyzer test »), pour toucher un public plus large — utile
+(« The only cop running from the breathalyser »), pour toucher un public plus large — utile
 pour les chiffres que regarde Poki.
 
 **Publier** entre 12 h-13 h ou 18 h-21 h. **Répondre aux commentaires** le jour même

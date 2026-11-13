@@ -173,7 +173,7 @@ et manifs, croissants, pétanque, ronds-points. Le public anglophone adore ce fo
 | --- | --- | --- |
 | **Sainte-Geneviève** (fête des gendarmes) | Inconnue hors de France | « the brigade party » |
 | **Pastis** | Peu connu, et c'est de l'alcool | « slippery puddle » (garder « pastis » dans le jeu si la session CODE le souhaite, mais pas dans la com) |
-| **« Souffler dans le ballon »** | Expression intraduisible | « take a breath test » |
+| **« Souffler dans le ballon »** | Expression intraduisible | « breathalyser » (terme utilisé dans le jeu en anglais, `src/i18n/en.js`) |
 | **Grades** (maréchal des logis, adjudant, brigadier…) | Ne veulent rien dire en anglais | Trainee → Sergeant → Captain → General (au choix de la session CODE) |
 | **Cédez le passage**, PV, procès-verbal | Termes administratifs | « Give way » sign, « fine », « police report » |
 | **Louis de Funès / Gendarme de Saint-Tropez** | Référence culte en France, inconnue ailleurs (sauf en Allemagne / Europe de l'Est) | Ne pas citer en anglais |
