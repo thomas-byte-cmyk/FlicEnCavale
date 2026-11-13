@@ -12,6 +12,10 @@
    Les mêmes couleurs sont utilisées en 3D : src/render/palette.js
    ========================================================= */
 
+/* Police des titres : Lilita One (licence libre OFL), fournie par le paquet npm
+   @fontsource/lilita-one et intégrée au jeu (aucun chargement depuis Internet). */
+@import '@fontsource/lilita-one/400.css';
+
 :root {
   --bleu: #1f3a93;
   --bleu-vif: #2b59c3;
@@ -30,8 +34,8 @@
   --trait: 3px solid var(--encre);
   --ombre-nette: 0 4px 0 var(--encre);
   --ombre-douce: 0 10px 30px rgba(27, 27, 47, 0.28);
-  /* Polices déjà présentes sur les appareils (aucun fichier à télécharger) */
-  --police-titre: 'Arial Rounded MT Bold', 'Nunito', 'Trebuchet MS', 'Segoe UI', system-ui, sans-serif;
+  /* Titres : Lilita One ; textes : polices déjà présentes sur l'appareil */
+  --police-titre: 'Lilita One', 'Arial Rounded MT Bold', 'Trebuchet MS', system-ui, sans-serif;
   --police: system-ui, -apple-system, 'Segoe UI', Roboto, 'Trebuchet MS', sans-serif;
   --police-pv: 'Courier New', ui-monospace, monospace;
 }
@@ -43,6 +47,7 @@
 
 html,
 body {
+  font-synthesis: none;
   margin: 0;
   height: 100%;
   overflow: hidden;
@@ -1132,4 +1137,12 @@ summary:focus-visible {
   .bubble::after {
     left: 70%;
   }
+}
+
+/* Bouton pause du HUD (session CODE) : record sur une ligne, pause + son en dessous,
+   pour ne pas déborder sur les téléphones étroits. DESIGN peut affiner. */
+.hud-right {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  max-width: 100px;
 }

@@ -85,6 +85,11 @@ ui.showTitle(best, missions);
 // Bouton « Défier un ami » : c'est un partage vers l'extérieur, interdit sur certains portails
 if (!ALLOW_EXTERNAL_LINKS) document.getElementById('btn-challenge')?.classList.add('hidden');
 
+// Bouton pause du HUD
+const pauseButton = document.getElementById('btn-pause');
+pauseButton?.addEventListener('pointerdown', (e) => e.stopPropagation()); // pas de swipe
+pauseButton?.addEventListener('click', () => pauseGame('user'));
+
 // Bouton de langue FR ⇄ EN (écran titre)
 const langButton = document.getElementById('btn-lang');
 langButton?.classList.remove('hidden');
