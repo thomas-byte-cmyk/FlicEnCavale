@@ -43,7 +43,11 @@ si vous passez en usage commercial.
 
 ---
 
-## Guide C — Publier sur CrazyGames · repli si Poki refuse
+## Guide C — Publier sur CrazyGames · facultatif, **seulement après accord du support**
+
+> ⚠️ Avec le thème alcool conservé, commencer par écrire au support développeur (adresse de
+> contact sur leur page FAQ développeurs) et décrire le jeu honnêtement. Attendre une réponse
+> écrite favorable avant les étapes ci-dessous.
 
 **Avant de commencer** : les demandes **C1-1 à C1-5** et **D1-1 à D1-3** doivent être faites
 (couche publicité, version portail sans lien externe, thème alcool désamorcé, visuels).
@@ -73,7 +77,9 @@ si vous passez en usage commercial.
 
 ---
 
-## Guide D — Proposer le jeu à Poki · ⭐ priorité
+## Guide D — Proposer le jeu à Poki · 🗄️ ARCHIVÉ
+
+> 🗄️ **Archivé le 13/11/2026** : Poki interdit l'alcool dans ses règles de contenu. Ce guide est conservé pour mémoire.
 
 **Avant de commencer** : la session CODE doit avoir terminé la checklist
 [`05-poki-prerequis-techniques.md`](05-poki-prerequis-techniques.md), ou au minimum avoir une
@@ -195,3 +201,46 @@ Une fois par an, au printemps, pour les sommes reçues l'année précédente.
    l'avis d'imposition de l'été.
 7. En cas de doute, poser la question par écrit via la **messagerie sécurisée** de votre espace
    impots.gouv.fr. La réponse écrite vous protège.
+
+---
+
+## Guide H — Publier sur itch.io en « payez ce que vous voulez »
+
+1. **Créer un compte** sur **itch.io** → « Register ». Cocher **« I'm interested in distributing
+   content on itch.io »** (je veux publier).
+2. Menu en haut à droite → **« Upload new project »**.
+3. Remplir :
+   - **Title** : FlicEnCavale ; **Short description** : une phrase en anglais (session MARKETING) ;
+   - **Kind of project** : **HTML** (le jeu se joue dans le navigateur) ;
+   - **Pricing** : **« No payment »** si vous ne voulez rien demander, ou **« Donate »** /
+     **« Paid »** avec un minimum à 0 €. Le plus courant pour un jeu gratuit : **« No payment »**
+     avec les dons activés, ou un prix minimum de 0 € et un prix suggéré de 2 € ;
+   - **Uploads** : envoyer `FlicEnCavale-web.zip` (demande **C0-3**) et cocher **« This file
+     will be played in the browser »** ;
+   - **Embed options** : taille de la fenêtre (par exemple 960×600), cocher **« Mobile friendly »**
+     et **« Fullscreen button »** ;
+   - **Genre** : Action ; **Tags** : `runner`, `endless-runner`, `funny`, `3d`, `french`, et un tag
+     qui signale l'alcool (par exemple `alcohol`, ou ce que propose le menu de classification) ;
+   - **Cover image** (630×500) et **screenshots** (session DESIGN).
+4. Section **« Community »** : activer les commentaires.
+5. **Enregistrer en « Draft »**, tester la page, puis passer en **« Public »**.
+6. **Paiements** : menu → *Settings* → **Payment / Payouts** :
+   - **« Direct to you »** (le plus simple) : renseigner votre adresse PayPal. L'argent arrive
+     directement, sans questionnaire fiscal américain ;
+   - ou **« Collected by itch.io »** : il faudra remplir le questionnaire fiscal (W-8BEN,
+     personne physique résidente en France) ;
+   - **Revenue sharing** : laisser 10 % (cela soutient itch.io) ou baisser à 0 %, au choix.
+7. Noter chaque somme reçue dans votre tableur pour la déclaration de revenus (Guide G).
+
+## Guide I — Publier sur Newgrounds
+
+1. Créer un compte sur **newgrounds.com** (« Sign up »).
+2. Menu **« Submit »** → **« Game »** (le portail des jeux).
+3. Envoyer le même `FlicEnCavale-web.zip` (le fichier `index.html` doit être à la racine du zip).
+   Indiquer la taille d'affichage (par exemple 960×600) et activer le plein écran si l'option existe.
+4. **Classification** : répondre au questionnaire de contenu. Avec l'ivresse humoristique, choisir
+   **T (Teen)**. Ne pas sous-classer, car la communauté peut signaler un jeu mal classé.
+5. Titre, description en anglais, icône (session DESIGN), tags (`runner`, `comedy`, `3d`).
+6. Après publication, le jeu passe par le **« jugement »** des membres pendant quelques heures.
+   S'il est bien noté, il est conservé et peut concourir aux **prix du jour, de la semaine et du mois**.
+7. Répondre aux commentaires : c'est là que se construit la visibilité.

@@ -15,6 +15,21 @@ Retour au [sommaire](README.md).
 
 ## 1. « Tout public » + thème alcool
 
+> **Mise à jour du 13/11/2026** : l'utilisateur **garde l'alcool humoristique** (le vin rapporte
+> de nouveau des points). Conséquences :
+> - **Poki** : exclu, car ses règles interdisent explicitement l'alcool.
+> - **CrazyGames** : incertain (PEGI 12 exigé), à demander au support avant d'essayer.
+> - **itch.io, Newgrounds, GitHub Pages** : aucun problème, en signalant le contenu
+>   (tags sur itch.io, classification **T** sur Newgrounds).
+> - Le jeu n'est plus à présenter comme « pour les enfants » : parler plutôt d'un jeu
+>   **« burlesque, pour ados et adultes »** (à transmettre à la session MARKETING).
+> - Les règles de bon sens restent valables : **aucune marque réelle** d'alcool (loi Évin),
+>   et le jeu continue de montrer l'ivresse comme un **handicap** (titubage, commandes imprécises),
+>   ce qui le protège de toute accusation d'incitation.
+>
+> L'analyse ci-dessous (écrite quand l'adoucissement était envisagé) reste valable pour comprendre
+> les règles.
+
 ### 1.1 Ce que contient le jeu aujourd'hui (d'après le code)
 
 | Élément | Où | Risque |
@@ -162,7 +177,7 @@ Sources :
 
 ## 3. Statut fiscal et social en France
 
-### 3.0 ⭐ Cas retenu : salarié·e avec de petits revenus (Poki, dons)
+### 3.0 ⭐ Cas retenu : salarié·e avec de petits revenus (dons Ko-fi, itch.io, éventuels prix)
 
 **Réponse courte** : **pas besoin de micro-entreprise** pour commencer. On déclare le total
 de l'année sur la déclaration de revenus, comme **revenus non commerciaux non professionnels**.
@@ -171,13 +186,14 @@ de l'année sur la déclaration de revenus, comme **revenus non commerciaux non 
 | --- | --- |
 | Faut-il s'immatriculer ? | Non, tant que l'activité reste **accessoire et modeste** (un projet perso qui rapporte un peu). Si elle devient régulière et significative, l'administration peut la considérer comme professionnelle : il faudra alors créer une micro-entreprise (Guide E). |
 | Où déclarer ? | Déclaration de revenus en ligne (au printemps, sur impots.gouv.fr) → cocher la rubrique « Revenus des professions non salariées » → **formulaire 2042-C-PRO** → cadre **« Revenus non commerciaux non professionnels »**, régime **micro-BNC** → case **5KU** (déclarant 1 ; **5LU** pour le déclarant 2). **Vérifier le numéro de case sur la notice de l'année** (les cases changent parfois). |
-| Quel montant ? | Le **total encaissé** dans l'année civile (du 1er janvier au 31 décembre), **avant** l'abattement. Revenus Poki (montants versés), plus les dons Ko-fi s'il y en a. Les impôts appliquent eux-mêmes un **abattement de 34 %**. |
+| Quel montant ? | Le **total encaissé** dans l'année civile (du 1er janvier au 31 décembre), **avant** l'abattement : dons Ko-fi, paiements itch.io, éventuels prix Newgrounds ou revenus CrazyGames. Les impôts appliquent eux-mêmes un **abattement de 34 %**. |
 | Seuil ? | Le régime micro-BNC s'applique jusqu'à **77 700 €** de recettes annuelles (montant de référence 2023-2025 ; certaines sources citent **83 600 €** pour 2026). Il n'y a **pas de seuil minimal** : même 30 € se déclarent. |
 | Combien ça coûte ? | Sur 66 % du montant (après l'abattement) : **l'impôt sur le revenu** au taux du foyer, plus des **prélèvements sociaux** (17,2 % historiquement ; un guide indique **18,6 %** pour les revenus 2025, à vérifier). **Pas de cotisations Urssaf.** Exemple : 300 € reçus → 198 € imposables → environ 35 € de prélèvements sociaux, plus l'impôt selon votre tranche. |
-| Et la TVA ? | Pas de démarche pour de petits montants. Si Poki demande un **numéro de TVA**, c'est le signe qu'il faut passer en micro-entreprise : me reposer la question. |
+| Et la TVA ? | Pas de démarche pour de petits montants entre particuliers et plateformes. Si une plateforme exige un **numéro de TVA**, c'est le signe qu'il faut passer en micro-entreprise : me reposer la question. |
 | Les dons sont-ils imposables ? | Les sources divergent. Un don reçu **en lien avec une activité** (un créateur soutenu par son public) est en général considéré comme une recette. **Par prudence, les ajouter au total déclaré en 5KU.** |
 | Contrat de travail ? | Relire la clause d'**exclusivité** éventuelle. En général, un projet personnel hors temps de travail et sans lien avec l'employeur ne pose pas de problème, mais le contrat fait foi. |
-| Formulaires étrangers ? | Poki (Pays-Bas) ou son prestataire de paiement peut demander une **pièce d'identité**, un **IBAN** et un justificatif de résidence fiscale. C'est normal. |
+| Formulaires étrangers ? | **itch.io** (société américaine), en mode « Collected by itch.io », demande un questionnaire fiscal **W-8BEN** (personne physique, résidente fiscale en France). Il évite une retenue américaine par défaut de 30 % : la convention fiscale franco-américaine la réduit, **à vérifier** dans le questionnaire. Plus simple : choisir le mode **« Direct to you »** (paiements directs sur votre PayPal), sans questionnaire. Les montants reçus restent à déclarer en France (case 5KU). |
+| Ko-fi ? | Ko-fi ne prélève rien sur les dons. Les frais PayPal/Stripe sont déduits. On déclare ce qui arrive réellement sur le compte. |
 
 👉 Tenez un **petit tableur** (date, source, montant reçu sur le compte en euros) : au printemps,
 vous n'aurez qu'à faire la somme.

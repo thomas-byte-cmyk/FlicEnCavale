@@ -235,3 +235,78 @@ Hypothèses : 3 parties par joueur sur le web, mélange de pubs et de dons.
 
 À retenir : **l'audience compte plus que la méthode**. C'est pourquoi le plan commence par la mesure
 (étape 0) et par les portails, qui **apportent** des joueurs.
+
+---
+
+## 9. Mise à jour du 13/11/2026 : compatibilité avec un thème alcool humoristique conservé
+
+Contexte : Poki interdit l'alcool. L'utilisateur garde le verre de rouge qui rapporte des points.
+
+### itch.io : ✅ compatible
+- itch.io accepte tous les contenus légaux, à condition de les **signaler** (tags, classification
+  de la page). Un humour autour de l'ivresse ne pose aucun problème.
+- **Prix libre** : on fixe un minimum de 0 € et un prix suggéré. **Partage des revenus réglable de
+  0 à 100 %** (10 % par défaut), plus les frais de paiement (Stripe ≈ 2,9 % + 0,30 $).
+- Deux modes de paiement : **« Collected by itch.io »** (itch.io encaisse, puis vous paie, avec un
+  questionnaire fiscal américain W-8BEN à remplir ; virement PayPal à partir de 5 $ environ, après
+  un délai de 7 jours ou plus) ou **« Direct to you »** (les paiements arrivent directement sur
+  votre compte PayPal/Stripe).
+- Revenu réaliste : **0 à quelques euros par mois** sans promotion. La plupart des visiteurs jouent gratuitement.
+
+Sources : [itch.io – paiements (officiel)](https://itch.io/docs/creators/payments) ·
+[itch.io – annonce du partage de revenus ouvert](https://itch.io/blog/2/running-an-indie-game-store-2015) ·
+[itch.io – forum : exemples de frais de bout en bout](https://itch.io/t/2604718/any-worked-examples-of-end-to-end-payout-fees) ·
+[itch.io – forum : 30 % au lieu de 10 %](https://itch.io/t/511896/30-instead-of-10-itchio-cut)
+
+### Newgrounds : ✅ compatible (pour la visibilité)
+- Site historique de jeux web, avec une classification propre (E, T, M, A) qui permet un humour
+  plus adulte. Un gendarme pompette burlesque relève typiquement de **T**.
+- **Argent** : le partage des revenus publicitaires d'autrefois (époque Flash) n'est **pas
+  confirmé** aujourd'hui. Il existe des **prix quotidiens, hebdomadaires et mensuels** (*Portal
+  Awards*), dont certains en argent selon les périodes. **Il ne faut pas compter dessus.**
+- Atout : un public qui commente, vote, et peut faire connaître le jeu.
+
+Sources : [Newgrounds – histoire du site](https://www.newgrounds.com/wiki/about-newgrounds/history) ·
+[Wikigrounds – Portal Awards](https://newgrounds.fandom.com/wiki/Flash_Portal_Awards) ·
+[Newgrounds – forum sur les prix et le partage de revenus](https://www.newgrounds.com/bbs/topic/1430059/1)
+
+### CrazyGames : ⚠️ incertain
+- La FAQ officielle indique que le contrôle qualité peut refuser un jeu pour **« thèmes ou contenus
+  inappropriés »**, pour **non-respect des critères PEGI 12**, ou parce qu'il **cible les enfants**.
+  Le public visé est de 13 ans et plus.
+- Aucune règle publique trouvée qui parle spécifiquement de l'alcool. Mais un mécanisme où **boire
+  donne un avantage** correspond aux critères rapportés d'« encouragement » de PEGI, qui pourraient
+  placer le jeu au-dessus de 12.
+- Conclusion honnête : **ce n'est pas exclu, mais ce n'est pas probable sans en parler avant**.
+  Demander l'avis du support avant d'investir du temps (README, étape 4).
+
+Sources : [CrazyGames – FAQ (contrôle qualité)](https://docs.crazygames.com/faq/) ·
+[CrazyGames – conditions développeurs (août 2025)](https://files.crazygames.com/documents/developer_terms_20250818.pdf) ·
+[Cinevva – guide CrazyGames (public 13+)](https://app.cinevva.com/guides/publish-game-crazygames) ·
+[Portalready – CrazyGames pour les développeurs](https://portalready.world/portals/crazygames/)
+
+### GameDistribution : ❌ déconseillé
+- Le jeu serait diffusé sur un réseau de centaines de sites tiers, dont beaucoup visent les enfants.
+  Aucune règle de contenu publique n'a été trouvée.
+- Revenus les plus faibles du marché (33 % des revenus nets rapportés) et des retards de paiement
+  signalés par le passé. Avec un thème alcool, le risque de refus ou de retrait s'ajoute à un gain
+  quasi nul.
+- Pour comparaison, d'autres portails comparables sont explicites : GX.games interdit de montrer la
+  consommation d'alcool ; Yandex Games ne l'autorise en 12+ que s'il n'y a ni promotion ni image positive.
+
+Sources : [GX.games – règles de la communauté](https://gx.games/legal/community-standards/) ·
+[Yandex Games – classification par âge](https://yandex.com/dev/games/doc/en/requirements/2/7) ·
+[Playgama – comparatif des portails](https://playgama.com/blog/business-faqs/poki-vs-crazygames-vs-gamedistribution-revenue-share/)
+
+### AdSense sur son propre site : ❌ déconseillé (pour d'autres raisons que l'alcool)
+- L'alcool n'est interdit qu'en tant que **produit vendu ou promu**. Une blague sur un gendarme
+  pompette n'est pas une publicité pour l'alcool. Mais Google classe l'alcool comme **catégorie
+  sensible**, applique des **protections renforcées pour les mineurs**, et un jeu tout public est
+  le profil où les annonceurs sont les plus prudents.
+- Surtout : il faudrait un **nom de domaine payant** (budget 0 €), une **CMP certifiée** (bandeau
+  cookies), et GitHub Pages n'est pas fait pour un site commercial. Pour quelques centimes par mois.
+
+Sources : [AdSense – catégories sensibles et restreintes](https://support.google.com/adsense/answer/164131?hl=en) ·
+[AdSense – statut de diffusion des annonces](https://support.google.com/adsense/answer/15689616?hl=en) ·
+[Google Ads – protections pour les enfants](https://support.google.com/adspolicy/answer/14170968) ·
+[AdMob – catégories sensibles](https://support.google.com/admob/answer/3150953?hl=en)
