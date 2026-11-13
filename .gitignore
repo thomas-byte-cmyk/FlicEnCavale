@@ -1,0 +1,12 @@
+# Bibliothèques téléchargées par npm (se réinstallent avec "npm install")
+node_modules/
+
+# Version compilée du jeu (se régénère avec "npm run build")
+dist/
+
+# Fichiers parasites des systèmes et éditeurs
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/

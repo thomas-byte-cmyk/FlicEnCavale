@@ -1,0 +1,410 @@
+/* =========================================================
+   Styles de l'interface (écrans, HUD, bulles).
+   Pensé d'abord pour un téléphone en mode portrait.
+   ========================================================= */
+
+:root {
+  --bleu: #1d4ed8;
+  --bleu-fonce: #1e3a8a;
+  --rouge: #ef4444;
+  --jaune: #facc15;
+  --vert: #22c55e;
+  --blanc: #ffffff;
+  --encre: #111827;
+  --carte: rgba(255, 255, 255, 0.94);
+  --ombre: 0 8px 30px rgba(0, 0, 0, 0.25);
+  --police: 'Trebuchet MS', 'Segoe UI', system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #7dd3fc;
+  color: var(--encre);
+  font-family: var(--police);
+  /* Empêche le zoom / défilement du navigateur pendant les swipes */
+  touch-action: none;
+  overscroll-behavior: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#app {
+  position: fixed;
+  inset: 0;
+}
+
+#scene {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ---------- Écrans (titre, game over) ---------- */
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  padding-top: max(16px, env(safe-area-inset-top));
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, rgba(29, 78, 216, 0.55), rgba(239, 68, 68, 0.35));
+  overflow-y: auto;
+  touch-action: pan-y;
+}
+
+.card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--carte);
+  border-radius: 24px;
+  padding: 22px 20px;
+  box-shadow: var(--ombre);
+  text-align: center;
+  border: 4px solid var(--bleu);
+}
+
+.logo {
+  font-size: clamp(36px, 11vw, 52px);
+  font-weight: 900;
+  letter-spacing: -1px;
+  line-height: 1;
+  margin-bottom: 12px;
+  text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.12);
+  transform: rotate(-3deg);
+}
+.logo-flic { color: var(--bleu); }
+.logo-en { color: #9ca3af; font-size: 0.7em; }
+.logo-cavale { color: var(--rouge); }
+
+.pitch {
+  font-size: 15px;
+  line-height: 1.4;
+  margin: 8px 0 14px;
+}
+
+.controls,
+.bonus-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px;
+  text-align: left;
+  font-size: 14px;
+}
+.controls li,
+.bonus-list li {
+  padding: 4px 0;
+}
+.controls span {
+  display: inline-block;
+  width: 52px;
+  text-align: center;
+}
+.bonus-list {
+  background: #fef9c3;
+  border-radius: 12px;
+  padding: 8px 12px;
+}
+/* Sur téléphone, on cache l'aide clavier */
+@media (pointer: coarse) {
+  .kbd-hint { display: none; }
+}
+
+.btn-primary,
+.btn-secondary {
+  display: block;
+  width: 100%;
+  border: none;
+  border-radius: 16px;
+  font-family: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.btn-primary {
+  margin-top: 8px;
+  padding: 16px;
+  font-size: 22px;
+  color: var(--blanc);
+  background: var(--rouge);
+  box-shadow: 0 6px 0 #b91c1c;
+}
+.btn-primary:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 #b91c1c;
+}
+.btn-secondary {
+  margin-top: 12px;
+  padding: 12px;
+  font-size: 16px;
+  color: var(--bleu-fonce);
+  background: #dbeafe;
+}
+
+.best-line {
+  margin-top: 12px;
+  font-size: 14px;
+  color: #4b5563;
+}
+
+/* ---------- Game over ---------- */
+.go-title {
+  font-size: 40px;
+  font-weight: 900;
+  color: var(--rouge);
+  transform: rotate(-2deg);
+}
+.go-phrase {
+  font-size: 17px;
+  line-height: 1.4;
+  margin: 10px 0 16px;
+  font-style: italic;
+}
+.go-stats {
+  display: flex;
+  justify-content: space-around;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.go-stats > div {
+  display: flex;
+  flex-direction: column;
+}
+.go-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #6b7280;
+}
+.go-value {
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--bleu);
+}
+.go-newbest {
+  font-weight: 900;
+  color: #b45309;
+  margin-bottom: 6px;
+  animation: pulse 0.8s ease-in-out infinite alternate;
+}
+
+/* ---------- HUD ---------- */
+.hud {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  padding: 10px 12px;
+  padding-top: max(10px, env(safe-area-inset-top));
+  pointer-events: none;
+}
+.hud-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.hud-score {
+  position: relative;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 14px;
+  padding: 4px 12px;
+  min-width: 110px;
+}
+.hud-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #6b7280;
+}
+.hud-value {
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--bleu-fonce);
+  font-variant-numeric: tabular-nums;
+}
+.hud-mult {
+  position: absolute;
+  right: -14px;
+  top: -6px;
+  background: var(--jaune);
+  border-radius: 10px;
+  padding: 2px 6px;
+  font-weight: 900;
+  font-size: 14px;
+  transform: rotate(10deg);
+}
+.hud-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.hud-best {
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 12px;
+  padding: 6px 10px;
+  font-size: 13px;
+  font-weight: 700;
+}
+.icon-btn {
+  pointer-events: auto;
+  border: none;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 12px;
+  font-size: 20px;
+  width: 40px;
+  height: 36px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.gauges {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 260px;
+}
+.gauge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.gauge-icon {
+  font-size: 18px;
+  width: 24px;
+  text-align: center;
+}
+.gauge-bar {
+  flex: 1;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 6px;
+  overflow: hidden;
+  border: 2px solid rgba(0, 0, 0, 0.15);
+}
+.gauge-fill {
+  height: 100%;
+  width: 0%;
+  transition: width 0.2s;
+}
+.gauge-fill.drunk {
+  background: linear-gradient(90deg, #f472b6, #9f1239);
+}
+.gauge-fill.chase {
+  background: linear-gradient(90deg, var(--vert), var(--jaune), var(--rouge));
+}
+.hud-effects {
+  margin-top: 6px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.effect-chip {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 10px;
+  padding: 3px 8px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+/* ---------- Popups et bulles ---------- */
+.popups {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 32%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+  padding: 0 16px;
+}
+.popup {
+  max-width: 90%;
+  background: var(--jaune);
+  color: var(--encre);
+  font-weight: 900;
+  font-size: clamp(16px, 4.6vw, 22px);
+  padding: 8px 14px;
+  border-radius: 14px;
+  box-shadow: var(--ombre);
+  text-align: center;
+  animation: popin 2.4s ease-out forwards;
+}
+.popup.bad { background: #fecaca; }
+.popup.good { background: #bbf7d0; }
+
+.bubble {
+  position: absolute;
+  left: 50%;
+  bottom: max(22px, env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  max-width: 88%;
+  background: var(--blanc);
+  border: 3px solid var(--bleu);
+  border-radius: 18px;
+  padding: 8px 14px;
+  font-weight: 800;
+  font-size: clamp(14px, 4vw, 18px);
+  text-align: center;
+  box-shadow: var(--ombre);
+  pointer-events: none;
+  animation: bubblein 0.25s ease-out;
+}
+.bubble::before {
+  content: '🚓 ';
+}
+.bubble::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -12px;
+  border: 10px solid transparent;
+  border-top-color: var(--bleu);
+  border-bottom: 0;
+  transform: translateX(-50%);
+}
+
+.flash {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+}
+.flash.on {
+  animation: flash 0.5s ease-out;
+}
+
+@keyframes popin {
+  0% { transform: scale(0.4) rotate(-6deg); opacity: 0; }
+  12% { transform: scale(1.1) rotate(2deg); opacity: 1; }
+  20% { transform: scale(1) rotate(0); }
+  80% { opacity: 1; }
+  100% { transform: translateY(-30px); opacity: 0; }
+}
+@keyframes bubblein {
+  from { transform: translateX(-50%) scale(0.5); opacity: 0; }
+  to { transform: translateX(-50%) scale(1); opacity: 1; }
+}
+@keyframes flash {
+  from { opacity: 0.9; }
+  to { opacity: 0; }
+}
+@keyframes pulse {
+  from { transform: scale(1); }
+  to { transform: scale(1.08); }
+}

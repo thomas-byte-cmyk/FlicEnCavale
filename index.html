@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#1d4ed8" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <title>FlicEnCavale</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚔</text></svg>" />
+  </head>
+  <body>
+    <div id="app">
+      <!-- La scène 3D est dessinée dans ce canvas -->
+      <canvas id="scene"></canvas>
+
+      <!-- HUD : informations affichées pendant la course -->
+      <div id="hud" class="hud hidden">
+        <div class="hud-top">
+          <div class="hud-score">
+            <div class="hud-label">Score</div>
+            <div id="hud-score" class="hud-value">0</div>
+            <div id="hud-mult" class="hud-mult hidden">×2</div>
+          </div>
+          <div class="hud-right">
+            <div class="hud-best">Record <span id="hud-best">0</span></div>
+            <button id="btn-mute" class="icon-btn" aria-label="Couper le son">🔊</button>
+          </div>
+        </div>
+        <div class="gauges">
+          <div class="gauge">
+            <span class="gauge-icon">🍷</span>
+            <div class="gauge-bar"><div id="gauge-drunk" class="gauge-fill drunk"></div></div>
+          </div>
+          <div class="gauge">
+            <span class="gauge-icon">🚓</span>
+            <div class="gauge-bar"><div id="gauge-chase" class="gauge-fill chase"></div></div>
+          </div>
+        </div>
+        <div id="hud-effects" class="hud-effects"></div>
+      </div>
+
+      <!-- Phrases drôles qui s'affichent pendant la course -->
+      <div id="popups" class="popups"></div>
+      <!-- Bulle des collègues poursuivants -->
+      <div id="bubble" class="bubble hidden"></div>
+      <!-- Flash blanc (radar) -->
+      <div id="flash" class="flash"></div>
+
+      <!-- Écran titre -->
+      <section id="title-screen" class="screen">
+        <div class="card">
+          <div class="logo">
+            <span class="logo-flic">Flic</span><span class="logo-en">En</span><span class="logo-cavale">Cavale</span>
+          </div>
+          <p class="pitch">
+            Gérard a un peu trop fêté la Sainte-Geneviève, patronne des gendarmes.
+            Ses collègues veulent lui faire souffler dans le ballon.
+            <strong>Cours, Gérard, cours&nbsp;!</strong>
+          </p>
+          <ul class="controls">
+            <li><span>👈 👉</span> Glisse pour changer de voie</li>
+            <li><span>👆</span> Glisse vers le haut pour sauter</li>
+            <li><span>👇</span> Glisse vers le bas pour te baisser</li>
+            <li class="kbd-hint"><span>⌨️</span> Sur ordi : les flèches</li>
+          </ul>
+          <ul class="bonus-list">
+            <li>☕ Café : dessoûle et sème les collègues</li>
+            <li>🍷 Verre de rouge : des points… mais ça tourne</li>
+            <li>🥐 Croissant : invincible un moment</li>
+            <li>🎖️ Képi doré : score multiplié</li>
+          </ul>
+          <button id="btn-play" class="btn-primary">C'est parti&nbsp;!</button>
+          <div class="best-line">Meilleur score : <span id="title-best">0</span></div>
+        </div>
+      </section>
+
+      <!-- Écran de fin de partie -->
+      <section id="gameover-screen" class="screen hidden">
+        <div class="card">
+          <div class="go-title">Rattrapé&nbsp;!</div>
+          <p id="go-phrase" class="go-phrase"></p>
+          <div class="go-stats">
+            <div><span class="go-label">Score</span><span id="go-score" class="go-value">0</span></div>
+            <div><span class="go-label">Distance</span><span id="go-distance" class="go-value">0 m</span></div>
+            <div><span class="go-label">Record</span><span id="go-best" class="go-value">0</span></div>
+          </div>
+          <div id="go-newbest" class="go-newbest hidden">🏆 Nouveau record&nbsp;!</div>
+          <button id="btn-replay" class="btn-primary">Rejouer</button>
+          <button id="btn-home" class="btn-secondary">Écran titre</button>
+        </div>
+      </section>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
