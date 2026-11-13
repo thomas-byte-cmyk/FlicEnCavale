@@ -14,6 +14,7 @@ import {
   PICKUP_LINES,
   MISC_LINES,
   MILESTONE_LINES,
+  PROTEST_SLOGANS,
 } from './texts.js';
 
 const MILESTONE_EVERY = 500; // un message tous les 500 m
@@ -89,6 +90,10 @@ export class Narrator {
           break;
         case 'whistle':
           popup(`🚦 « ${this.pick(MISC_LINES.whistle)} »`);
+          break;
+        case 'chant':
+          popup(`🪧 « ${this.pick(PROTEST_SLOGANS)} »`, '', true);
+          if (this.random() < 0.5) out.push({ channel: 'popup', text: this.pick(MISC_LINES.chant), kind: '' });
           break;
         case 'moo':
           popup(this.pick(MISC_LINES.cow));

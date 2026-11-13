@@ -200,9 +200,10 @@ export class Game {
       const row = buildRow(this.random, this.nextRowAt);
       this.obstacles.push(...row);
       // Plus on va vite, plus on espace les rangées (pour avoir le temps de réagir)
-      const gap = SPAWN.minGap + this.random() * (SPAWN.maxGap - SPAWN.minGap);
+      const tighten = Math.min(SPAWN.tightenMax, this.distance / SPAWN.tightenEvery);
+      const gap = SPAWN.minGap + this.random() * (SPAWN.maxGap - SPAWN.minGap) - tighten;
       const rowEnd = this.nextRowAt + rowLength(row) / 2;
-      this.nextRowAt += rowLength(row) + gap + this.speed * 0.35;
+      this.nextRowAt += rowLength(row) + gap + this.speed * 0.3;
       // Médailles et bonus dans l'espace libre avant la rangée suivante
       this.items.push(...fillGap(this.random, rowEnd + 3, this.nextRowAt - 4, SPAWN.bonusChance));
     }
@@ -230,6 +231,15 @@ export class Game {
       if (o.type === 'agent' && !o.done && ahead < 24) {
         o.done = true;
         this.emit('whistle', { obstacle: o });
+      }
+
+      // Les manifestants scandent leurs slogans quand on approche (une fois par cortège)
+      if (o.type === 'manif' && !o.done && ahead < 30) {
+        o.done = true;
+        if (this.lastChantAt !== o.at) {
+          this.lastChantAt = o.at;
+          this.emit('chant', { obstacle: o });
+        }
       }
 
       if (o.hit) continue;

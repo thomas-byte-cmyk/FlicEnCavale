@@ -26,14 +26,42 @@ function cafe() {
   return b.build();
 }
 
-/** Verre de vin rouge à pied. */
+/** Verre de vin rouge à pied : verre transparent en forme de tulipe, à moitié rempli. */
+const glassMaterial = new THREE.MeshLambertMaterial({
+  color: '#eaf6ff',
+  transparent: true,
+  opacity: 0.35,
+  side: THREE.DoubleSide,
+  depthWrite: false,
+});
 function vin() {
-  const b = new ShapeBuilder();
-  b.cyl(0.18, 0.18, 0.03, '#e0f2fe', 0, -0.35, 0, 12); // pied
-  b.cyl(0.03, 0.03, 0.3, '#e0f2fe', 0, -0.2, 0, 6); // tige
-  b.cyl(0.22, 0.1, 0.25, '#e0f2fe', 0, 0.12, 0, 12); // verre
-  b.cyl(0.19, 0.1, 0.18, '#8b1028', 0, 0.06, 0, 12); // le vin
-  return b.build();
+  const g = new THREE.Group();
+  // Profil du verre (rayon, hauteur), qu'on fait tourner pour obtenir la forme
+  const P = (pts) => pts.map(([x, y]) => new THREE.Vector2(x, y));
+  const bowl = new THREE.Mesh(
+    new THREE.LatheGeometry(P([[0.0, 0], [0.1, 0.01], [0.19, 0.08], [0.23, 0.2], [0.22, 0.32], [0.18, 0.44]]), 20),
+    glassMaterial,
+  );
+  bowl.position.y = -0.05;
+  // Le vin rouge, qui remplit le bas du verre (avec une surface plate)
+  const wine = new THREE.Mesh(
+    new THREE.LatheGeometry(P([[0.0, 0.012], [0.095, 0.022], [0.18, 0.09], [0.212, 0.19], [0.0, 0.19]]), 20),
+    new THREE.MeshLambertMaterial({ color: '#7a0b26' }),
+  );
+  wine.position.y = -0.05;
+  // Le bord du verre qui brille
+  const rim = new THREE.Mesh(new THREE.TorusGeometry(0.18, 0.012, 6, 24), new THREE.MeshBasicMaterial({ color: '#ffffff' }));
+  rim.rotation.x = Math.PI / 2;
+  rim.position.y = 0.39;
+  // Pied et tige (bien visibles)
+  const stemMat = new THREE.MeshLambertMaterial({ color: '#cfe6f5' });
+  const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.03, 0.34, 8), stemMat);
+  stem.position.y = -0.22;
+  const foot = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.17, 0.025, 20), stemMat);
+  foot.position.y = -0.39;
+  g.add(wine, bowl, rim, stem, foot);
+  g.scale.setScalar(1.25); // un peu plus grand que les autres bonus
+  return g;
 }
 
 /** Croissant doré (un morceau d'anneau). */

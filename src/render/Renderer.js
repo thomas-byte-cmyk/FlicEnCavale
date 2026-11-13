@@ -118,6 +118,13 @@ export class Renderer {
         const { armR } = mesh.children[1].userData;
         armR.rotation.x = -2.8 + Math.sin(this.time * 9) * 0.35;
       }
+      // Les manifestants sautillent et agitent leurs pancartes
+      if (o.type === 'manif') {
+        mesh.userData.people.forEach((person, i) => {
+          person.position.y = Math.abs(Math.sin(this.time * 7 + i * 1.3 + o.id)) * 0.18;
+          if (person.userData.placard) person.userData.placard.rotation.z = Math.sin(this.time * 5 + i) * 0.15;
+        });
+      }
       // Obstacle percuté : il s'envole de façon comique
       if (o.hit) {
         const t = game.time - o.hitTime;
@@ -132,7 +139,12 @@ export class Renderer {
       if (!alive.has(id)) {
         this.scene.remove(mesh);
         // L'agent est fabriqué à neuf à chaque fois : on libère sa mémoire
-        if (mesh.userData.agent) mesh.traverse((n) => n.geometry && n.geometry.dispose());
+        if (mesh.userData.agent || mesh.userData.disposable) {
+          mesh.traverse((n) => {
+            if (n.geometry) n.geometry.dispose();
+            if (n.material && n.material.map) n.material.dispose(); // pancartes (la texture du slogan est gardée)
+          });
+        }
         this.obstacleMeshes.delete(id);
       }
     }

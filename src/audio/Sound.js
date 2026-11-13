@@ -175,6 +175,18 @@ export class Sound {
           this.tone({ type: 'square', from: i % 2 ? 580 : 435, start: i * 0.38, dur: 0.36, vol: 0.06, attack: 0.02 });
         }
         break;
+      case 'chant':
+        // Foule qui scande "Hou ! Hou ! Hou !" : plusieurs voix graves + brouhaha
+        for (let i = 0; i < 3; i++) {
+          const st = i * 0.32;
+          [110, 131, 147, 165].forEach((f) =>
+            this.tone({ type: 'sawtooth', from: f * (0.98 + Math.random() * 0.04), to: f * 0.85, start: st, dur: 0.24, vol: 0.05, attack: 0.03 }),
+          );
+          this.noise({ start: st, dur: 0.24, vol: 0.12, filter: 'bandpass', freq: 500, q: 1.5 });
+        }
+        // Coup de mégaphone
+        this.tone({ type: 'square', from: 880, start: 1.0, dur: 0.12, vol: 0.06 });
+        break;
       case 'oops':
         this.tone({ type: 'triangle', from: 500, to: 250, dur: 0.25, vol: 0.25 });
         break;

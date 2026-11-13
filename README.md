@@ -26,7 +26,8 @@ Le jeu est publié automatiquement sur GitHub Pages à chaque mise à jour de la
 - Chaque obstacle percuté rapproche les collègues (jauge 🚓). S'ils le rattrapent : fin de partie.
 - **Obstacles** : barriques (sauter), radar (sauter), panneau « Cédez le passage » et baguette
   géante (glisser dessous), vache, tracteur, rond-point et gendarme qui siffle (changer de voie),
-  flaque de pastis (ça fait glisser sur la voie d'à côté).
+  flaque de pastis (ça fait glisser sur la voie d'à côté), cortège de manifestants avec
+  pancartes (contourner : on ne peut ni sauter ni glisser).
 - **Bonus** : 🍫 médailles en chocolat (points), ☕ café (dessoûle + éloigne les collègues),
   🍷 verre de rouge (beaucoup de points mais l'ivresse monte), 🥐 croissant (invincible),
   🎖️ képi doré (score ×2).

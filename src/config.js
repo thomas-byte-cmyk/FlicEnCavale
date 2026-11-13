@@ -22,37 +22,37 @@ export const PLAYER = {
 
 /** Vitesse de course. */
 export const SPEED = {
-  start: 9, // vitesse au départ
-  max: 24, // vitesse maximale
-  accel: 0.12, // gain de vitesse par seconde
-  hitSlowdown: 0.75, // la vitesse est multipliée par ce chiffre quand on percute un obstacle
+  start: 11, // vitesse au départ
+  max: 30, // vitesse maximale
+  accel: 0.25, // gain de vitesse par seconde
+  hitSlowdown: 0.85, // la vitesse est multipliée par ce chiffre quand on percute un obstacle
 };
 
 /** Les collègues poursuivants. "gap" = avance de Gérard sur eux. */
 export const CHASE = {
-  start: 6, // avance au départ
-  max: 10, // avance maximale
-  hitPenalty: 3.4, // avance perdue à chaque obstacle percuté
-  recovery: 0.22, // avance regagnée par seconde quand tout va bien
-  coffeeBonus: 4, // avance gagnée avec un café
+  start: 5, // avance au départ
+  max: 9, // avance maximale
+  hitPenalty: 3.2, // avance perdue à chaque obstacle percuté
+  recovery: 0.13, // avance regagnée par seconde quand tout va bien
+  coffeeBonus: 3, // avance gagnée avec un café
 };
 
 /** Ivresse de 0 (sobre) à 100 (complètement rond). */
 export const DRUNK = {
-  start: 25,
+  start: 30,
   max: 100,
-  decay: 0.35, // baisse naturelle par seconde
-  wine: 18, // hausse avec un verre de rouge
-  coffee: -30, // baisse avec un café
+  decay: 0.25, // baisse naturelle par seconde
+  wine: 22, // hausse avec un verre de rouge
+  coffee: -25, // baisse avec un café
   pastis: 12, // hausse en marchant dans une flaque de pastis
   // Au-delà de ce seuil, les commandes deviennent imprécises
-  sloppyThreshold: 35,
+  sloppyThreshold: 30,
 };
 
 /** Bonus. */
 export const BONUS = {
-  invincibleDuration: 5, // croissant
-  multiplierDuration: 10, // képi doré
+  invincibleDuration: 4, // croissant
+  multiplierDuration: 8, // képi doré
   multiplier: 2,
 };
 
@@ -68,10 +68,14 @@ export const SCORE = {
 
 /** Apparition des obstacles et objets. */
 export const SPAWN = {
-  firstObstacleAt: 45, // premier obstacle (mètres après le départ)
+  firstObstacleAt: 30, // premier obstacle (mètres après le départ)
   lookAhead: 130, // on prépare la rue jusqu'à cette distance devant
-  minGap: 15, // écart minimum entre deux rangées d'obstacles
-  maxGap: 24, // écart maximum
+  minGap: 11, // écart minimum entre deux rangées d'obstacles (au départ)
+  maxGap: 18, // écart maximum (au départ)
   despawnBehind: 12, // on supprime ce qui est à plus de 12 m derrière
-  bonusChance: 0.22, // chance qu'une rangée contienne un bonus
+  bonusChance: 0.18, // chance qu'une rangée contienne un bonus
+  // Les rangées se resserrent avec la distance : -1 m d'écart tous les 250 m,
+  // jusqu'à 5 m de moins au maximum
+  tightenEvery: 250,
+  tightenMax: 5,
 };

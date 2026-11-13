@@ -7,6 +7,7 @@
 import * as THREE from 'three';
 import { ShapeBuilder, at, box } from './shapes.js';
 import { makeGendarme } from './characters.js';
+import { PROTEST_SLOGANS } from '../game/texts.js';
 
 /** Barrique de vin, debout. */
 function barrique() {
@@ -179,7 +180,111 @@ function agent() {
   return wrapper;
 }
 
-const FACTORIES = { barrique, radar, vache, tracteur, cedez, baguette, rondpoint, pastis, agent };
+// --- Manifestants ---
+
+// Une texture par slogan (dessinée une seule fois sur un petit canvas)
+const sloganTextures = new Map();
+function sloganTexture(text) {
+  if (!sloganTextures.has(text)) {
+    const c = document.createElement('canvas');
+    c.width = 256;
+    c.height = 160;
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = '#fffdf5';
+    ctx.fillRect(0, 0, 256, 160);
+    ctx.strokeStyle = '#111827';
+    ctx.lineWidth = 8;
+    ctx.strokeRect(4, 4, 248, 152);
+    ctx.fillStyle = ['#dc2626', '#1d4ed8', '#111827', '#15803d'][text.length % 4];
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    // Découpe le slogan en lignes qui tiennent sur la pancarte
+    const words = text.split(' ');
+    const lines = [];
+    let line = '';
+    ctx.font = 'bold 34px "Trebuchet MS", sans-serif';
+    for (const w of words) {
+      const test = line ? `${line} ${w}` : w;
+      if (ctx.measureText(test).width > 225 && line) {
+        lines.push(line);
+        line = w;
+      } else line = test;
+    }
+    lines.push(line);
+    const size = lines.length > 3 ? 28 : 34;
+    ctx.font = `bold ${size}px "Trebuchet MS", sans-serif`;
+    lines.forEach((l, i) => ctx.fillText(l, 128, 80 + (i - (lines.length - 1) / 2) * (size + 4)));
+    const tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    sloganTextures.set(text, tex);
+  }
+  return sloganTextures.get(text);
+}
+
+const SHIRTS = ['#f97316', '#a855f7', '#22c55e', '#ec4899', '#eab308', '#06b6d4', '#ef4444'];
+const SKINS = ['#f2c29b', '#d9a066', '#8d5524', '#f5d0b0', '#c68642'];
+const HATS = ['#dc2626', '#1f2937', '#2563eb', '#16a34a'];
+const pickRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+/** Un manifestant (formes fusionnées) qui lève les bras. */
+function protester(holdsSign) {
+  const b = new ShapeBuilder();
+  const shirt = pickRandom(SHIRTS);
+  const skin = pickRandom(SKINS);
+  b.box(0.2, 0.8, 0.22, '#3b5b92', -0.13, 0.4, 0); // jean
+  b.box(0.2, 0.8, 0.22, '#3b5b92', 0.13, 0.4, 0);
+  b.box(0.55, 0.7, 0.32, shirt, 0, 1.15, 0); // t-shirt
+  b.sphere(0.22, skin, 0, 1.72, 0, 10); // tête
+  // Bonnet ou béret
+  if (Math.random() < 0.5) b.cyl(0.2, 0.23, 0.18, pickRandom(HATS), 0, 1.9, 0, 10);
+  else b.cyl(0.26, 0.26, 0.07, '#111827', 0, 1.9, 0, 12);
+  // Bras levés (vers la pancarte ou le poing en l'air)
+  b.box(0.13, 0.6, 0.14, shirt, -0.33, 1.65, 0, 0, 0, holdsSign ? 0.15 : 0.5);
+  b.box(0.13, 0.6, 0.14, shirt, 0.33, 1.65, 0, 0, 0, holdsSign ? -0.15 : -0.3);
+  b.sphere(0.08, skin, -0.37, 1.98, 0, 6);
+  b.sphere(0.08, skin, 0.36, 1.98, 0, 6);
+  // Bouche ouverte qui crie (face au joueur, vers +z)
+  b.box(0.1, 0.08, 0.02, '#7f1d1d', 0, 1.64, 0.21);
+  return b.build();
+}
+
+/** Pancarte avec un slogan, sur un manche. */
+function placard() {
+  const g = new THREE.Group();
+  g.add(at(box(0.05, 0.9, 0.05, '#92400e'), 0, -0.45, 0));
+  const board = new THREE.Mesh(
+    new THREE.PlaneGeometry(1.05, 0.66),
+    new THREE.MeshBasicMaterial({ map: sloganTexture(pickRandom(PROTEST_SLOGANS)), side: THREE.DoubleSide }),
+  );
+  board.position.set(0, 0.3, 0.03);
+  g.add(board);
+  return g;
+}
+
+/** Petit groupe de manifestants (occupe une voie). Chaque apparition est différente. */
+function manif() {
+  const g = new THREE.Group();
+  const people = [];
+  const spots = [[-0.55, 0.15], [0.05, -0.25], [0.6, 0.2]];
+  spots.forEach(([x, z], i) => {
+    const person = new THREE.Group();
+    person.position.set(x, 0, z);
+    const holds = i !== 1 || Math.random() < 0.5;
+    person.add(protester(holds));
+    if (holds) {
+      const p = placard();
+      p.position.set(0, 2.45, 0.05);
+      person.add(p);
+      person.userData.placard = p;
+    }
+    g.add(person);
+    people.push(person);
+  });
+  g.userData = { people, disposable: true };
+  return g;
+}
+
+const FACTORIES = { barrique, radar, vache, tracteur, cedez, baguette, rondpoint, pastis, agent, manif };
 
 // Les modèles fabriqués une seule fois (gabarits)
 const templates = new Map();
@@ -188,6 +293,8 @@ const templates = new Map();
 export function createObstacleModel(type) {
   // L'agent a des bras animés : on le fabrique à chaque fois (il est petit)
   if (type === 'agent') return agent();
+  // Les manifestants sont tous différents (couleurs, slogans) : fabriqués à chaque fois
+  if (type === 'manif') return manif();
   if (!templates.has(type)) templates.set(type, FACTORIES[type]());
   return templates.get(type).clone(true);
 }

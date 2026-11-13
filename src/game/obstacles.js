@@ -24,6 +24,8 @@ export const OBSTACLE_TYPES = {
   baguette: { width: 7.4, depth: 0.4, yMin: 1.0, yMax: 1.45, effect: 'hit', avoid: 'slide' },
   rondpoint: { width: 2.6, depth: 3.0, yMin: 0, yMax: 2.6, effect: 'hit', avoid: 'dodge' },
   pastis: { width: 1.6, depth: 2.2, yMin: 0, yMax: 0.05, effect: 'slip', avoid: 'jump' },
+  // Groupe de manifestants avec pancartes (une voie) : trop haut pour sauter, il faut contourner
+  manif: { width: 1.9, depth: 1.0, yMin: 0, yMax: 2.8, effect: 'hit', avoid: 'dodge' },
 };
 
 // Petits outils pour tirer au sort
@@ -64,13 +66,13 @@ const ROW_PATTERNS = [
     // Un seul obstacle dans une voie
     name: 'seul',
     minDistance: 0,
-    weight: 3,
+    weight: 2,
     build: (rand, at) => [makeObstacle(pick(rand, ['barrique', 'radar', 'agent', 'pastis', 'barrique']), pick(rand, [0, 1, 2]), at)],
   },
   {
     // Deux voies bouchées, une seule libre
     name: 'double',
-    minDistance: 150,
+    minDistance: 50,
     weight: 3,
     build: (rand, at) => {
       const lanes = shuffle(rand, [0, 1, 2]).slice(0, 2);
@@ -80,36 +82,36 @@ const ROW_PATTERNS = [
   {
     // Tracteur dans une voie, autre chose à côté
     name: 'tracteur',
-    minDistance: 100,
+    minDistance: 60,
     weight: 2,
     build: (rand, at) => {
       const [a, b] = shuffle(rand, [0, 1, 2]);
       const row = [makeObstacle('tracteur', a, at)];
-      if (rand() < 0.6) row.push(makeObstacle(pick(rand, ['barrique', 'pastis']), b, at + 1));
+      if (rand() < 0.8) row.push(makeObstacle(pick(rand, ['barrique', 'pastis', 'cedez']), b, at + 1));
       return row;
     },
   },
   {
     // Barriques sur les 3 voies : il faut sauter !
     name: 'mur-de-barriques',
-    minDistance: 250,
+    minDistance: 120,
     weight: 1.5,
     build: (_rand, at) => [0, 1, 2].map((l) => makeObstacle('barrique', l, at)),
   },
   {
     // Baguette géante en travers de la rue : il faut glisser !
     name: 'baguette',
-    minDistance: 200,
+    minDistance: 90,
     weight: 1.5,
     build: (_rand, at) => [makeObstacle('baguette', null, at)],
   },
   {
     // Panneaux "Cédez le passage" à hauteur de tête
     name: 'cedez',
-    minDistance: 80,
+    minDistance: 40,
     weight: 2,
     build: (rand, at) => {
-      const count = rand() < 0.5 ? 1 : 2;
+      const count = rand() < 0.3 ? 1 : 2;
       return shuffle(rand, [0, 1, 2])
         .slice(0, count)
         .map((l) => makeObstacle('cedez', l, at));
@@ -118,18 +120,18 @@ const ROW_PATTERNS = [
   {
     // Rond-point au milieu : on le contourne par la gauche ou la droite
     name: 'rond-point',
-    minDistance: 120,
+    minDistance: 70,
     weight: 1.5,
     build: (rand, at) => {
       const row = [makeObstacle('rondpoint', 1, at)];
-      if (rand() < 0.5) row.push(makeObstacle(pick(rand, ['barrique', 'cedez']), pick(rand, [0, 2]), at));
+      if (rand() < 0.75) row.push(makeObstacle(pick(rand, ['barrique', 'cedez', 'manif']), pick(rand, [0, 2]), at));
       return row;
     },
   },
   {
     // Une vache traverse la route tranquillement
     name: 'vache',
-    minDistance: 60,
+    minDistance: 40,
     weight: 2,
     build: (rand, at) => {
       const fromLeft = rand() < 0.5;
@@ -144,11 +146,38 @@ const ROW_PATTERNS = [
   {
     // Mélange : un saut, une glissade, une voie libre
     name: 'mix',
-    minDistance: 350,
-    weight: 2,
+    minDistance: 150,
+    weight: 2.5,
     build: (rand, at) => {
       const [a, b] = shuffle(rand, [0, 1, 2]);
       return [makeObstacle('barrique', a, at), makeObstacle('cedez', b, at)];
+    },
+  },
+  {
+    // Manifestation : un cortège bloque deux voies voisines, parfois avec une surprise dans la troisième
+    name: 'manif',
+    minDistance: 60,
+    weight: 2.5,
+    build: (rand, at) => {
+      const lanes = rand() < 0.5 ? [0, 1] : [1, 2];
+      const free = lanes[0] === 0 ? 2 : 0;
+      const row = lanes.map((l) => makeObstacle('manif', l, at));
+      if (rand() < 0.5) row.push(makeObstacle(pick(rand, ['barrique', 'cedez', 'pastis']), free, at));
+      return row;
+    },
+  },
+  {
+    // Aucune voie libre : un saut, une glissade… et un agent. À toi de choisir !
+    name: 'triple',
+    minDistance: 400,
+    weight: 2,
+    build: (rand, at) => {
+      const [a, b, c] = shuffle(rand, [0, 1, 2]);
+      return [
+        makeObstacle('barrique', a, at),
+        makeObstacle('cedez', b, at),
+        makeObstacle(pick(rand, ['agent', 'manif', 'radar']), c, at),
+      ];
     },
   },
 ];

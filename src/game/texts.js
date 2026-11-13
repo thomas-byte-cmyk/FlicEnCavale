@@ -72,7 +72,25 @@ export const HIT_LINES = {
   cedez: ['J’ai cédé… à la gravité.', 'Il fallait se baisser, Gérard !'],
   baguette: ['Pris en flagrant délit de baguette !', 'Bien cuite, la baguette !'],
   rondpoint: ['On contourne les ronds-points, Gérard !', 'J’ai pris la première sortie… dans le décor.'],
+  manif: [
+    'Je suis de votre côté, je vous jure !',
+    'Pardon, je ne fais que passer… en courant.',
+    'Non, je ne viens pas disperser la manif !',
+    'Il est où, le parcours déclaré ?',
+  ],
 };
+
+/** Slogans des manifestants (sur les pancartes et scandés). Gentils et absurdes. */
+export const PROTEST_SLOGANS = [
+  'NON AU BALLON !',
+  'LIBÉREZ GÉRARD !',
+  'MOINS DE PV, PLUS DE PÉTANQUE !',
+  'RADARS = TIRELIRES',
+  'TOUCHE PAS À MON APÉRO',
+  'SIFFLETS INTERDITS LE DIMANCHE',
+  "LE KÉPI, C'EST RINGARD",
+  'PRIORITÉ AUX PIÉTONS (ET AUX VACHES)',
+];
 
 /** Réaction quand Gérard ramasse un bonus. */
 export const PICKUP_LINES = {
@@ -89,6 +107,11 @@ export const MISC_LINES = {
   smash: ['Rien ne résiste au croissant !', 'Pardon, pardon, pardon !'],
   whistle: ['Priorité à droite !', 'Circulez !', 'Stop ! Euh… non, rien.'],
   cow: ['Une vache traverse ! Ralentir… ou pas.', 'Meuuuh !'],
+  chant: [
+    'Une manif ! Gérard, fais-toi discret…',
+    'Ils ne m’aiment pas, mais ils aiment encore moins mes collègues !',
+    'Manif en vue : on contourne !',
+  ],
 };
 
 /** Messages à certaines distances. {d} est remplacé par la distance. */

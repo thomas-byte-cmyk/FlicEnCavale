@@ -73,6 +73,7 @@ const EVENT_SOUNDS = {
   whistle: 'whistle',
   slip: 'slip',
   moo: 'moo',
+  chant: 'chant',
   oops: 'oops',
 };
 
