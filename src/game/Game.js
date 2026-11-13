@@ -5,8 +5,9 @@
 // que le rendu, l'interface et le son écoutent.
 // =========================================================
 
-import { LANES, PLAYER, SPEED, SCORE, SPAWN } from '../config.js';
+import { LANES, PLAYER, SPEED, SCORE, SPAWN, CHASE } from '../config.js';
 import { buildRow, rowLength } from './obstacles.js';
+import { GAME_OVER_PHRASES } from './texts.js';
 
 export class Game {
   /** @param {{ random?: () => number }} options */
@@ -36,6 +37,13 @@ export class Game {
     this.obstacles = []; // obstacles présents dans la rue
     this.nextRowAt = SPAWN.firstObstacleAt; // où placer la prochaine rangée
     this.hurtTime = 0; // temps de clignotement après un choc (pas de nouveau choc)
+
+    this.gap = CHASE.start; // avance de Gérard sur ses collègues (0 = attrapé !)
+  }
+
+  /** Avance sur les poursuivants, entre 0 (attrapé) et 1 (loin devant). */
+  get chaseRatio() {
+    return this.gap / CHASE.max;
   }
 
   start() {
@@ -115,6 +123,7 @@ export class Game {
     this.updatePlayer(dt);
     this.spawnAhead();
     this.updateObstacles(dt);
+    this.updateChase(dt);
     return this.events;
   }
 
@@ -211,7 +220,28 @@ export class Game {
     o.hitTime = this.time;
     this.hurtTime = 1.0;
     this.speed = Math.max(SPEED.start, this.speed * SPEED.hitSlowdown);
+    this.gap -= CHASE.hitPenalty; // les collègues se rapprochent !
     this.emit('hit', { obstacle: o });
+  }
+
+  // ---------------------------------------------------------
+  // POURSUIVANTS
+  // ---------------------------------------------------------
+
+  updateChase(dt) {
+    if (this.gap <= 0) {
+      this.gameOver();
+      return;
+    }
+    // Quand tout va bien, Gérard reprend de l'avance petit à petit
+    this.gap = Math.min(CHASE.max, this.gap + CHASE.recovery * dt);
+  }
+
+  gameOver() {
+    this.gap = 0;
+    this.status = 'over';
+    const phrase = GAME_OVER_PHRASES[Math.floor(this.random() * GAME_OVER_PHRASES.length)];
+    this.emit('gameover', { phrase });
   }
 
   /** Flaque de pastis : ça glisse, Gérard part sur le côté. */

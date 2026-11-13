@@ -7,6 +7,7 @@ import * as THREE from 'three';
 import { World } from './World.js';
 import { makeGendarme, animateRunner, makeBlobShadow } from './characters.js';
 import { createObstacleModel } from './obstacleModels.js';
+import { Chasers } from './Chasers.js';
 
 const SKY = '#8fd3ff';
 
@@ -37,6 +38,8 @@ export class Renderer {
     this.playerShadow = makeBlobShadow(0.5);
     this.scene.add(this.player, this.playerShadow);
 
+    this.chasers = new Chasers(this.scene);
+
     this.obstacleMeshes = new Map(); // numéro d'obstacle → objet 3D
     this.runPhase = 0;
     this.camX = 0;
@@ -64,6 +67,7 @@ export class Renderer {
   /** Remet le décor à zéro pour une nouvelle partie. */
   reset() {
     this.world.reset();
+    this.chasers.reset();
     this.runPhase = 0;
     this.camX = 0;
     this.shake = 0;
@@ -141,6 +145,12 @@ export class Renderer {
       jumping: !p.grounded,
       wobble: 0,
     });
+    // Attrapé : Gérard s'étale par terre
+    if (game.status === 'over') {
+      this.player.userData.body.rotation.x = -1.45;
+      this.player.userData.body.position.y = 0.25;
+    }
+    this.chasers.update(game, this.time, dt);
     // Clignote après un choc
     this.player.visible = !(game.hurtTime > 0 && Math.floor(this.time * 14) % 2 === 0);
     this.playerShadow.position.x = p.x;

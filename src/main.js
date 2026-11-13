@@ -62,7 +62,9 @@ function endGame(ev) {
     best = score;
     saveBestScore(best);
   }
-  ui.showGameOver({ score, distance: game.distance, best, newBest, phrase: ev.phrase ?? '' });
+  // On laisse 1,3 seconde pour admirer le plaquage avant d'afficher l'écran de fin
+  const distance = game.distance;
+  setTimeout(() => ui.showGameOver({ score, distance, best, newBest, phrase: ev.phrase ?? '' }), 1300);
 }
 
 // --- Boucle principale ---
