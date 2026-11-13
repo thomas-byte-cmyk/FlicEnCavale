@@ -4,30 +4,29 @@ Dossier de la session MARKETING : comment faire connaître le jeu.
 **Rien ici ne modifie le jeu** ; les idées qui demandent du code sont dans le fichier 04, à
 transmettre aux sessions CODE et DESIGN.
 
+**Cadre (réponses de l'utilisateur, 13/11/2026)** : projet plaisir · **0 €** · **1 à 3 h par
+semaine** · vidéos « mains seulement » · pas de presse locale · jeu **FR + EN** · thème alcool
+**adouci** (le verre de rouge est un piège, sans points) · **Poki en priorité** (exclusivité web
+acceptée), CrazyGames et itch.io seulement si Poki refuse.
+
 | Fichier | Contenu |
 | --- | --- |
-| [01-positionnement.md](01-positionnement.md) | Cible, **risques alcool / gendarmerie / politique et comment les gérer**, nom, slogans, pitchs court et long |
-| [02-plan-lancement.md](02-plan-lancement.md) | Plan sur 4 semaines (jour J = **Sainte-Geneviève, jeudi 26 novembre 2026**), création des comptes pas à pas, 8 scripts de vidéos, Reddit/forums, itch.io, CrazyGames/Poki, presse, mesure |
-| [03-fiches-store.md](03-fiches-store.md) | Textes prêts à copier pour itch.io, Google Play et App Store (titre, sous-titre, description, mots-clés) |
-| [04-viralite-suggestions.md](04-viralite-suggestions.md) | Idées classées par priorité pour CODE/DESIGN : aperçu de lien, mesure d'audience, bouton « Défier un ami », lien de défi, image « procès-verbal »… |
-| [captures/](captures/) | Captures d'écran du jeu (téléphone, 390×844) utilisables pour itch.io et la presse |
+| [01-positionnement.md](01-positionnement.md) | Cible, **risques alcool / gendarmerie / politique et comment les gérer**, nom, slogans, pitchs |
+| [02-plan-lancement.md](02-plan-lancement.md) | **Poki et l'exclusivité** (que faire de GitHub Pages et itch.io), soumission Poki pas à pas, comptes, **vidéos « mains seulement »** (tournage + 6 scripts), calendrier 4 semaines à 1-3 h/semaine, plan B, mesure |
+| [03-fiches-store.md](03-fiches-store.md) | Textes prêts à copier : **Poki (FR + EN)**, itch.io (plan B), stores mobiles (pour plus tard) |
+| [04-viralite-suggestions.md](04-viralite-suggestions.md) | Pour CODE/DESIGN : prérequis Poki, aperçu de lien, mesure d'audience, bouton « Défier un ami »… |
+| [captures/](captures/) | Captures d'écran du jeu (téléphone, 390×844) |
 
-## ⏱️ Si tu n'as que 30 minutes cette semaine
+## ⏱️ Cette semaine (≈ 2 h 30)
 
-1. Lire le tableau « On fait / On ne fait pas » à la fin du § 1.4 de [01-positionnement.md](01-positionnement.md).
-2. Transmettre les **priorités 1** de [04-viralite-suggestions.md](04-viralite-suggestions.md) à la session CODE
-   (aperçu de lien, mesure d'audience, bouton « Défier un ami »).
-3. Réserver le pseudo `flicencavale` sur TikTok et Instagram ([02 § 2.2](02-plan-lancement.md#22-créer-les-comptes-pas-à-pas)).
+1. Créer une adresse e-mail dédiée au jeu, puis les comptes TikTok, Instagram et YouTube `flicencavale` ([02 § 2.2](02-plan-lancement.md#22-comptes-à-créer-1-h-une-seule-fois)).
+2. Créer le compte développeur sur **developers.poki.com** ([02 § 2.1](02-plan-lancement.md#21-️-poki-lexclusivité-web-itchio-et-github-pages)).
+3. **Ne pas publier le jeu sur itch.io ni sur un autre site de jeux** en attendant Poki.
+4. Filmer de quoi faire 4 vidéos ([02 § 2.3](02-plan-lancement.md#23-les-vidéos-mains-seulement)).
 
-## ❓ Questions pour toi (elles changent le plan)
+## ⚠️ À vérifier soi-même
 
-1. **Budget** : 0 €, ~ 50 €, ou plus ? (Le plan suppose 0 à 50 €.)
-2. **Temps disponible** par semaine pour la com ? (Le plan suppose 3 à 5 h.)
-3. **Objectif** principal : t'amuser et faire jouer tes proches, toucher le plus de monde
-   possible, gagner un peu d'argent, ou enrichir un portfolio ?
-4. **Visage** : es-tu d'accord pour apparaître (visage, voix ou mains) dans des vidéos
-   « je suis le créateur du jeu » ? Ce sont souvent celles qui marchent le mieux.
-5. **Ville / région** : pour cibler la presse locale (sujet très accessible pour eux).
-6. **Appli mobile** : est-elle prévue ? Si oui, quand ? (Ça décide si on prépare les fiches
-   Google Play / App Store maintenant ou plus tard.)
-7. **Version anglaise** : intéressé ? (Nécessaire pour les grands portails comme CrazyGames.)
+Je n'ai pas pu ouvrir les pages officielles de Poki depuis mon environnement. Les conditions
+d'exclusivité (durée de 5 ou 7 ans selon les sources, partage des revenus, ce qui est autorisé
+sur GitHub Pages) viennent de résumés de recherche et de guides tiers : **les relire sur le
+site de Poki et poser la question par écrit avant de signer.**

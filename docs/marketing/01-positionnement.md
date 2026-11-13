@@ -1,7 +1,12 @@
 # 1. Positionnement, cible, risques et messages
 
 > Document de la session MARKETING. Il sert de référence pour tout ce qu'on publie
-> sur FlicEnCavale (vidéos, posts, fiches de store, mails à la presse).
+> sur FlicEnCavale (vidéos, posts, fiche Poki, fiches de store).
+>
+> **Mise à jour du 13/11/2026** (réponses de l'utilisateur) : projet plaisir à 0 €, 1-3 h/semaine,
+> vidéos « mains seulement », pas de presse locale, jeu **FR + EN**, **Poki en priorité**, et
+> **thème alcool adouci** : le verre de rouge **ne rapporte plus de points**, c'est un **piège
+> comique**, et la mission « Bois 2 verres » est remplacée (travail de la session CODE).
 
 ## 1.1 Ce qu'est le jeu (vu en y jouant)
 
@@ -44,13 +49,14 @@ Ce qui le différencie des milliers d'autres « runners » (Subway Surfers, Temp
 | Cible | Pourquoi | Où la toucher |
 | --- | --- | --- |
 | **Cœur : 18-35 ans français**, joueurs occasionnels sur téléphone | Ils comprennent toutes les références, partagent des mèmes, jouent dans les transports | TikTok, Instagram Reels, Reddit FR, Discord, groupes WhatsApp |
-| **Secondaire : 35-60 ans** « culture Gendarme de Saint-Tropez / Louis de Funès » | Nostalgie du comique troupier, partagent sur Facebook | Facebook, YouTube Shorts, presse régionale |
+| **Secondaire : 35-60 ans** « culture Gendarme de Saint-Tropez / Louis de Funès » | Nostalgie du comique troupier, partagent sur Facebook | Facebook, YouTube Shorts |
 | **Bonus : familles** (parents + ados 12-17 ans) | Le jeu est gentil, sans violence | Bouche-à-oreille ; **on ne cible pas activement les enfants** (voir risques) |
 | **Niche : gendarmes, policiers, pompiers, militaires** (et leurs proches) | Ils adorent l'autodérision sur leur métier… à condition que ce soit bienveillant | Bouche-à-oreille uniquement, jamais de démarchage « officiel » |
 
-**Langue** : le jeu est en français, donc on vise la **France, la Belgique, la Suisse romande
-et le Québec**. Pour l'international (portails CrazyGames/Poki), il faudra une traduction
-(voir [04-viralite-suggestions.md](04-viralite-suggestions.md)).
+**Langue** : le jeu sera en **français et en anglais** (traduction par la session CODE).
+Les vidéos visent d'abord la **France, la Belgique, la Suisse romande et le Québec** ; la
+version anglaise sert surtout pour **Poki**, dont le public est international… et **jeune**
+(beaucoup d'ados) : raison de plus pour garder l'alcool au rang de simple allusion.
 
 ## 1.4 ⚠️ Risques d'image et de modération (à lire absolument)
 
@@ -72,12 +78,12 @@ Le sujet « alcool + gendarmerie » est le **principal atout comique** du jeu…
   le radar** — pas le verre de vin. Le verre de rouge n'apparaît jamais en gros plan ni en vignette.
 - On **parle de l'alcool par allusion** (« pompette », « souffler dans le ballon »,
   « après la fête de la brigade ») plutôt que de le montrer.
-- On met en avant que **l'alcool est un handicap dans le jeu** : plus Gérard a bu, plus il
-  titube et plus il se fait rattraper ; le **café** le sauve. C'est vrai mécaniquement et c'est
-  le bon message.
+- On met en avant que **l'alcool est un piège dans le jeu** : le verre de rouge ne rapporte
+  rien, Gérard titube et se fait rattraper ; le **café** le sauve. Depuis l'adoucissement du
+  thème, c'est vrai à 100 % mécaniquement, et c'est le bon message (la vidéo n° 4 « Le piège
+  du verre de rouge » en fait même un gag).
 - On **n'utilise pas les hashtags** liés à l'alcool (#apéro, #vin, #beaujolais, #pastis, #ivre).
-- Pas de publicité payante tant qu'on n'a pas vérifié qu'une pub *sans aucun visuel d'alcool*
-  passe la modération (test à 5-10 €).
+- Pas de publicité payante (budget 0 €, et la modération des pubs est très stricte sur l'alcool).
 
 ### Risque 2 — Loi Évin (France)
 
@@ -89,19 +95,18 @@ donc **faible**, mais :
 - **Ne jamais associer la boisson à la réussite** dans la com (« bois du rouge pour faire
   plus de points ! » → interdit chez nous ; préférer « le café, c'est la vie »).
 - Un clin d'œil du type **« À consommer avec modération… le jeu aussi »** dans la description
-  est bienvenu (le jeu le fait déjà dans une mission : « Bois 2 verres de rouge (avec modération) »).
+  peut rester un clin d'œil dans la description (pas dans la fiche Poki, au public plus jeune).
 
-### Risque 3 — Classification d'âge sur les stores (pour plus tard)
+### Risque 3 — Portails et stores : public jeune et classification d'âge
 
-Sur Google Play et l'App Store, on remplit un questionnaire de classification (IARC/PEGI pour
-Google, questionnaire Apple pour l'App Store). **Un personnage jouable qui boit de l'alcool
-et en tire un bénéfice (des points) fait généralement monter la classification** — souvent
-**12+**, parfois **16+ (PEGI)** selon les réponses. Ça ne bloque pas la publication, mais :
-- Le jeu **ne pourra probablement pas être présenté comme « pour enfants »** (catégorie
-  « Famille » de Google Play = règles beaucoup plus strictes, à éviter).
-- **Option à discuter avec les sessions CODE/DESIGN** pour la version store : faire du verre de
-  rouge un objet *purement négatif* (ivresse, aucun point) ou le remplacer par un objet neutre.
-  À décider le moment venu ; pas urgent pour la version web.
+- **Poki** (notre priorité) a un public **jeune et familial** et une équipe qui relit chaque
+  jeu. Avec le thème adouci (vin = piège, aucune récompense), le risque de refus pour ce motif
+  **baisse nettement**. Dans la fiche Poki, on ne parle ni d'« alcool » ni de « pompette » :
+  « ses collègues veulent lui faire souffler dans le ballon » suffit
+  (voir [03-fiches-store.md § 3.2](03-fiches-store.md#32-poki-priorité)).
+- **Stores mobiles** (plus tard, si une appli existe) : le questionnaire de classification
+  demande si le jeu fait référence à l'alcool. Un personnage qui boit **sans en tirer de
+  bénéfice** donne en général une classification plus basse qu'avant ; répondre honnêtement.
 - Formulation dans la com : **« tout public, humour bon enfant »** plutôt que « pour enfants ».
 
 ### Risque 4 — Image de la Gendarmerie nationale
@@ -146,7 +151,7 @@ disperser la manif ! » : c'est **apolitique et ça doit le rester**.
 | --- | --- |
 | Montrer la poursuite, les vaches, les manifs, le radar, la baguette | Montrer le verre de vin en gros plan / en vignette |
 | Allusions : « pompette », « souffler dans le ballon » | Hashtags alcool, noms de marques |
-| « Le café sauve Gérard » | « Bois du rouge pour faire plus de points » |
+| « Le café sauve Gérard », « le verre de rouge est un piège » | Présenter l'alcool comme un bonus |
 | Humour bienveillant sur le métier | Logo/nom officiels de la Gendarmerie, faux partenariat |
 | Rester apolitique | Rebondir sur une actu police/manif |
 | Gérard est à pied | Toute allusion à la conduite |
@@ -156,7 +161,7 @@ disperser la manif ! » : c'est **apolitique et ça doit le rester**.
 ### Le nom
 
 **FlicEnCavale** est bon : court, compréhensible, il raconte l'histoire. Deux ajustements :
-- **Pour l'écrit « grand public » (stores, vidéos, presse)**, écrire **« Flic en Cavale »**
+- **Pour l'écrit « grand public » (Poki, vidéos, stores)**, écrire **« Flic en Cavale »**
   (avec espaces) : plus lisible, mieux trouvé par les moteurs de recherche des stores.
   Garder « FlicEnCavale » comme identifiant (pseudo des comptes, adresse web, hashtag `#FlicEnCavale`).
 - Petit détail : Gérard est **gendarme**, pas policier. « Flic » est accepté pour les deux dans
@@ -186,7 +191,7 @@ sur TikTok, Instagram, YouTube, itch.io, X/Bluesky. Si pris : `flicencavale_jeu`
 > lui faire souffler dans le ballon ! Esquive vaches, tracteurs, ronds-points et manifs dans ce
 > jeu de course gratuit, 100 % franchouillard. Cours, Gérard, cours !
 
-### Pitch long (fiche de jeu, mail à la presse, ~ 1 000 caractères)
+### Pitch long (fiche de jeu, mail à un site spécialisé, ~ 1 000 caractères)
 
 > **Flic en Cavale** est un jeu de course infinie en 3D, gratuit et jouable directement dans le
 > navigateur, sur téléphone comme sur ordinateur.
@@ -198,10 +203,11 @@ sur TikTok, Instagram, YouTube, itch.io, X/Bluesky. Si pris : `flicencavale_jeu`
 > contourne la vache, le tracteur, le rond-point et le cortège de manifestants qui scande
 > « LIBÉREZ GÉRARD ! ». Attention à la flaque de pastis : ça glisse. Un café pour te remettre les
 > idées en place, un croissant pour devenir invincible, un képi doré pour doubler ton score.
+> Et méfie-toi du verre de rouge : c'est un piège, Gérard se met à tituber.
 >
 > Réussis des missions pour faire grimper Gérard de Gendarme stagiaire à Général, et découvre
-> des dizaines de répliques absurdes. Un jeu bon enfant, conçu en France, sans publicité, sans
-> inscription : un lien, un doigt, et c'est parti.
+> des dizaines de répliques absurdes. Un jeu bon enfant, conçu en France, en français et en
+> anglais, sans inscription : un lien, un doigt, et c'est parti.
 >
 > 👉 Jouer : https://thomas-byte-cmyk.github.io/FlicEnCavale/
 >

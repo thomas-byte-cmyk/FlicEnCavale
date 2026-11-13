@@ -3,8 +3,32 @@
 > La session MARKETING ne modifie pas le code. Voici, **par ordre de priorité**, ce qui aiderait
 > le plus le jeu à se diffuser. Chaque idée indique pour qui elle est (CODE / DESIGN) et pourquoi.
 >
+> **Mise à jour 13/11/2026** : le plan vise **Poki en priorité** (exclusivité web), à 0 € et
+> 1-3 h/semaine. Les idées spécifiques à Poki sont regroupées dans la section « 🟣 Poki » juste
+> en dessous ; elles passent **avant** le reste.
+>
 > Constat de départ (en jouant) : le jeu est très drôle, mais **rien ne pousse un joueur à
 > en parler à quelqu'un**, et **on ne sait pas combien de gens y jouent**.
+
+## 🟣 Poki — indispensable pour la soumission (CODE)
+
+Les détails sont à vérifier dans la documentation officielle de Poki (`sdk.poki.com`), que je
+n'ai pas pu ouvrir depuis mon environnement.
+- **Version anglaise** (déjà prévue) + **choix de la langue** automatique selon le navigateur.
+- **Kit Poki (SDK)** : signaler le début/la fin de chargement, le début et la fin de partie,
+  et les moments où une pub peut s'afficher (par ex. entre deux parties, **jamais** en pleine
+  course). À coordonner avec la session MONÉTISATION.
+- **Poids du jeu** : viser un premier chargement **le plus léger possible** (un guide parle de
+  moins de 8 Mo). Three.js est le plus gros morceau : vérifier la taille du `dist/`.
+- **Un zip prêt à envoyer** (`index.html` à la racine), fabriqué automatiquement si possible,
+  pour que l'utilisateur n'ait qu'à le télécharger et le déposer sur le portail Poki.
+- **Si Poki accepte** : remplacer la version GitHub Pages par une **simple redirection vers la
+  page Poki** (pour respecter l'exclusivité web sans casser les liens déjà publiés dans les
+  vidéos), **après accord écrit de Poki**. Voir [02-plan-lancement.md § 2.1](02-plan-lancement.md#21-️-poki-lexclusivité-web-itchio-et-github-pages).
+- **Compatibilité avec la viralité** : Poki gère lui-même le partage sur sa plateforme. Les idées
+  ci-dessous (bouton « Défier un ami », lien `?defi=`) devront **pointer vers la page Poki**
+  quand le jeu y sera, et respecter leurs règles (pas de lien sortant vers d'autres sites).
+  À vérifier avec Poki avant de les développer.
 
 ## 🔴 Priorité 1 — avant le lancement (semaine 1-2)
 
@@ -89,6 +113,9 @@ Pour les vidéos TikTok/Reels :
 
 ### 8. « Ajouter à l'écran d'accueil » (PWA) — CODE + DESIGN · ~ 1-2 h
 
+> ⚠️ **En attente de la réponse de Poki** : une version installable hébergée sur GitHub Pages
+> serait une distribution web hors Poki. À ne faire que si Poki refuse (ou avec son accord).
+
 Un fichier `manifest.webmanifest` + une vraie icône : le jeu s'installe comme une appli
 (icône sur le téléphone, plein écran). Ça augmente fortement le nombre de joueurs qui
 **reviennent**. Possibilité d'ajouter un petit message « 📲 Garde Gérard sur ton écran
@@ -98,7 +125,7 @@ d'accueil » après la 3ᵉ partie.
 
 ### 9. Version anglaise — CODE · ~ 3-5 h (textes à adapter, pas juste traduire)
 
-Indispensable pour CrazyGames et les communautés anglophones. Tous les textes sont déjà dans
+Déjà décidée (session CODE) : indispensable pour Poki. Tous les textes sont déjà dans
 `src/game/texts.js` et `index.html` : bonne base. Il faut **adapter l'humour** (la pétanque
 et le pastis restent, c'est le charme « so French »). Titre possible : *« Cop on the Run »*
 ou garder *« Flic en Cavale »* (exotique et mémorable).
@@ -132,16 +159,15 @@ saviez que… ? » et des commentaires.
 
 ## ⚖️ Point d'attention pour CODE/DESIGN (lié aux risques d'image)
 
-- Le **verre de rouge rapporte beaucoup de points** (75, contre 25 pour le café). C'est une bonne
-  mécanique risque/récompense, mais pour les **stores (classification d'âge)** et les
-  **portails grand public**, il serait utile de prévoir une option où le vin **ne rapporte pas
-  de points** (seulement de l'ivresse) ou est remplacé par un objet neutre. Voir le risque n°3
-  de [01-positionnement.md](01-positionnement.md). Pas urgent pour la version web.
+- ✅ **Décidé par l'utilisateur** : le **verre de rouge ne rapporte plus de points** et devient
+  un **piège comique** (Gérard titube, les collègues se rapprochent) ; la mission « Bois 2 verres
+  de rouge » est remplacée. Idée de remplacement : « Évite 5 verres de rouge » ou « Cours 300 m
+  sans tituber ». Garder des répliques drôles au ramassage (« Oups… c'était pas du jus de raisin ! »).
 - Ne jamais ajouter le **logo officiel** de la Gendarmerie, ni de **marque d'alcool**.
 - **Gérard reste à pied** : pas de voiture conduite par Gérard (lien alcool + conduite à proscrire).
 
 ## 🛠️ Petit outil pratique pour la publication (CODE)
 
-- Ajouter au déploiement GitHub Actions une étape qui produit un **`flicencavale-itch.zip`**
-  téléchargeable (contenu de `dist/` avec `index.html` à la racine), pour que la mise à jour
-  de la page itch.io se fasse en 2 clics sans installer quoi que ce soit.
+- Ajouter au déploiement GitHub Actions une étape qui produit un **zip téléchargeable** du jeu
+  (contenu de `dist/` avec `index.html` à la racine) : utile pour Poki, et pour itch.io /
+  CrazyGames si Poki refuse.

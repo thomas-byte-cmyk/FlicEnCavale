@@ -1,361 +1,305 @@
-# 2. Plan de lancement à petit budget (4 semaines)
+# 2. Plan de lancement — 0 €, 1 à 3 h par semaine, Poki en priorité
 
-> Hypothèses (à confirmer, voir les questions dans le [README](README.md)) :
-> **budget 0 à 50 €**, **3 à 5 heures par semaine**, objectif = **faire jouer un maximum de
-> Français et apprendre ce qui marche**, pas encore gagner de l'argent.
+> **Cadre validé par l'utilisateur (13/11/2026)** :
+> - **Projet plaisir** : s'amuser, et si possible couvrir les petits frais.
+> - **Budget : 0 €.** Pas d'appli mobile pour l'instant.
+> - **Temps : 1 à 3 h par semaine.**
+> - **Vidéos : mains seulement** (ni visage ni voix).
+> - **Pas de presse locale.**
+> - **Jeu en français + anglais** (traduction faite par la session CODE).
+> - **Thème alcool adouci** : le verre de vin ne rapporte plus de points, c'est un piège comique.
+> - **Portail visé en priorité : Poki** (exclusivité web acceptée). **CrazyGames en repli** si Poki refuse.
 >
-> Pour toutes les règles « ce qu'on montre / ce qu'on évite » (alcool, gendarmerie, politique),
-> voir [01-positionnement.md § 1.4](01-positionnement.md#14-️-risques-dimage-et-de-modération-à-lire-absolument).
+> Pour les règles « ce qu'on montre / ce qu'on évite », voir
+> [01-positionnement.md § 1.4](01-positionnement.md#14-️-risques-dimage-et-de-modération-à-lire-absolument).
 
 ## 2.0 L'idée générale
 
-1. **Le lien du jeu est la seule chose qui compte.** Chaque vidéo, chaque post doit donner envie
-   de cliquer dessus et le rendre facile à trouver (bio, commentaire épinglé, description).
-2. **Les vidéos courtes (TikTok/Reels/Shorts) sont le moteur principal** : gratuites, et un
-   seul succès peut amener des dizaines de milliers de joueurs.
-3. **On s'accroche à une date** : **la Sainte-Geneviève, patronne des gendarmes, fêtée autour du
-   26 novembre** (jeudi 26 novembre 2026). C'est exactement l'histoire du jeu : « Gérard a trop
-   fêté la Sainte-Geneviève ». C'est notre « jour J ».
-4. **On mesure** (tu es à l'aise avec la data : c'est un vrai avantage). Voir § 2.8.
+1. **Poki d'abord.** Poki est un site de jeux gratuits très visité. S'il accepte le jeu, il
+   apporte des joueurs sans aucun effort marketing, et il **reverse une part des revenus
+   publicitaires**. C'est la seule piste réaliste pour « couvrir les petits frais » à 0 €.
+2. **Pendant que Poki étudie le jeu, une vidéo courte par semaine** (TikTok, Reels, Shorts) :
+   on tourne une fois et on publie sur les 3 plateformes. On fait connaître le jeu et on
+   apprend quelles blagues font réagir.
+3. **On ne publie pas le jeu sur d'autres sites de jeux** (itch.io, CrazyGames…) tant que Poki
+   n'a pas répondu : ça pourrait gâcher l'exclusivité (voir § 2.1).
+4. **La Sainte-Geneviève (jeudi 26 novembre 2026)**, fête des gendarmes, reste notre petite
+   date « événement » pour une vidéo.
 
-## 2.1 Calendrier sur 4 semaines
+## 2.1 ⚠️ Poki, l'exclusivité web, itch.io et GitHub Pages
 
-Aujourd'hui : vendredi 13 novembre 2026.
+### Ce que demande Poki (d'après ce que j'ai pu vérifier)
 
-### Semaine 1 — du 16 au 22 novembre : « Préparer le terrain »
+Je n'ai pas pu ouvrir directement les pages de Poki depuis mon environnement : ce qui suit
+vient de leur site pour développeurs **tel que résumé par des moteurs de recherche** et de
+guides tiers. **À relire sur `developers.poki.com` / `sdk.poki.com` avant de signer quoi que ce soit.**
 
-| Jour | Tâche | Temps |
-| --- | --- | --- |
-| Lun 16 | Créer les comptes TikTok, Instagram, YouTube (§ 2.2) avec le pseudo `flicencavale`. Mettre la bio + le lien. | 1 h |
-| Mar 17 | Enregistrer 6 à 10 minutes de parties sur téléphone (§ 2.3). Garder les meilleurs moments (manif, vache, radar, « Rattrapé ! »). | 45 min |
-| Mer 18 | Monter les vidéos n°1, n°2 et n°3 dans CapCut (§ 2.4), **sans les publier** (brouillons). | 1 h 30 |
-| Jeu 19 | ⚠️ Beaujolais nouveau : **on ne publie rien ce jour-là** sur le thème du vin. Créer le compte itch.io et préparer la page (§ 2.6), sans la publier. | 1 h |
-| Ven 20 | **Test « famille et amis »** : envoyer le lien à 10-15 proches sur WhatsApp, leur demander leur score et ce qui les a fait rire. Noter les retours (et transmettre les bugs à la session CODE). | 30 min |
-| Week-end | Publier la vidéo n°1 (« Le seul gendarme qui fuit un contrôle ») pour tester l'algorithme. Regarder les stats 48 h après. | 15 min |
+- **Exclusivité web** : avec un accord exclusif, le jeu n'est publié **que sur Poki pour tout
+  le « web ouvert »**. Ça inclut les autres sites de jeux, mais aussi les plateformes comme
+  Discord ou YouTube Playables.
+- **Ce qui reste autorisé** : **Steam, les stores mobiles (App Store, Google Play) et les
+  consoles** ne sont pas concernés. Une future appli mobile reste donc possible.
+- **Durée** : plusieurs années (les sources parlent de **5 ou 7 ans par défaut**) → lire le
+  contrat proposé.
+- **Revenus** : sur un accord exclusif, le développeur touche une part des revenus
+  publicitaires (les sources parlent de **50 % sur les joueurs amenés par Poki**, et davantage
+  sur les joueurs que tu amènes toi-même grâce à ton lien). Une **licence non exclusive** (paiement
+  forfaitaire unique) existerait aussi.
+- **Accès** : la plateforme « Poki for Developers » a été annoncée **en accès limité (bêta
+  fermée)** à certaines périodes : il faut parfois s'inscrire et attendre une invitation.
+- **Sélection** : une équipe regarde chaque jeu, puis le jeu passe des **tests avec de vrais
+  joueurs** (« Player Fit Test », puis « Web Fit Test »). Poki garde le jeu seulement si les
+  joueurs jouent longtemps et reviennent.
+- **Technique (travail de la session CODE)** : intégrer le **kit Poki (SDK)** (pubs, début et
+  fin de partie), avoir un jeu **léger** (un guide parle d'un premier chargement sous **8 Mo**),
+  et l'anglais aide beaucoup.
 
-### Semaine 2 — du 23 au 29 novembre : « Jour J : la Sainte-Geneviève »
+### Conséquences pour nos autres liens
 
-| Jour | Tâche | Temps |
-| --- | --- | --- |
-| Lun 23 | Publier la vidéo n°2 sur les 3 plateformes. Répondre à **tous** les commentaires dans l'heure qui suit (l'algorithme adore ça). | 30 min |
-| Mar 24 | Publier la page itch.io (§ 2.6). | 15 min |
-| Mer 25 | Préparer le post Reddit et le mail presse (§ 2.5 et § 2.7). | 1 h |
-| **Jeu 26** | **🎉 Jour J — Sainte-Geneviève.** Vidéo n°3 « Bonne Sainte-Geneviève aux gendarmes ! ». Post Reddit. Message dans tes groupes WhatsApp/Discord. Story Instagram avec le lien. | 1 h 30 |
-| Ven 27 | Envoyer le mail presse (presse jeu vidéo + presse régionale). | 45 min |
-| Week-end | Vidéo n°4 (défi : « Bats mon score »). | 20 min |
+| Où | Avant la réponse de Poki | Si Poki accepte (exclusivité) | Si Poki refuse |
+| --- | --- | --- | --- |
+| **GitHub Pages** (`thomas-byte-cmyk.github.io/FlicEnCavale`) | ✅ On garde : c'est notre lien de test pour les amis et les vidéos. | ⚠️ Le jeu **ne doit probablement plus être jouable ici**. Solution : remplacer la page par une **redirection automatique vers la page Poki** (rien n'est hébergé, c'est juste un panneau « par ici »). Ainsi, **tous les liens déjà publiés dans les vidéos continuent de marcher**. → à demander à la session CODE le moment venu, et à faire valider par Poki. | ✅ On garde. |
+| **itch.io** | ⏸️ **On attend.** Ne pas mettre de version jouable. | ❌ Pas de version jouable. Au mieux une page de présentation avec un lien vers Poki, **seulement si Poki l'accepte par écrit**. | ✅ On publie (fiche prête dans [03-fiches-store.md](03-fiches-store.md)). |
+| **CrazyGames** | ⏸️ On attend. | ❌ Non (autre site de jeux web). | ✅ Plan B : on soumet (§ 2.6). |
+| **Vidéos TikTok/Reels/Shorts** | ✅ Avec le lien GitHub Pages. | ✅ Le lien redirige vers Poki : rien à changer. | ✅ Rien à changer. |
 
-### Semaine 3 — du 30 novembre au 6 décembre : « Relancer et élargir »
+👉 **Règle simple : tant que Poki n'a pas répondu, le jeu n'est jouable qu'à un seul endroit,
+GitHub Pages.** Et on demande clairement à Poki, dans l'échange, si la redirection GitHub
+Pages → Poki leur convient.
 
-| Tâche | Temps |
-| --- | --- |
-| 2 à 3 vidéos (n°5, n°6, n°7), en recyclant ce qui a le mieux marché en semaine 2 (même accroche, nouvelle séquence). | 2 h |
-| Posts sur les autres communautés (§ 2.5) : r/IndieDev, r/WebGames (en anglais), forums, Discord. | 45 min |
-| Relancer (une seule fois, poliment) la presse qui n'a pas répondu. | 15 min |
-| Faire un premier bilan chiffré (§ 2.8) : quelle plateforme, quelle vidéo, quel message ? | 30 min |
+### Soumettre le jeu à Poki — pas à pas
 
-### Semaine 4 — du 7 au 13 décembre : « Portails et bilan »
+> À faire **après** que la session CODE a terminé : version anglaise, kit Poki (SDK), jeu léger.
+> Ce n'est pas à toi de coder ça ; ton rôle est de créer le compte et de remplir la fiche.
 
-| Tâche | Temps |
-| --- | --- |
-| Soumettre le jeu à CrazyGames (§ 2.6), **si** la session MONÉTISATION est d'accord (ça implique leur kit publicitaire) et si une version anglaise existe ou est prévue. | 1 h |
-| Vidéo n°8 « Gérard au pot de Noël de la brigade » (thème fêtes, message « le café sauve Gérard »). | 45 min |
-| Bilan complet : chiffres, enseignements, plan pour janvier (traduction anglaise ? appli mobile ? nouveau contenu ?). | 1 h |
+1. Aller sur **developers.poki.com** (le portail des développeurs de Poki).
+2. **Sign up / Créer un compte** avec l'e-mail dédié au jeu (voir § 2.2). Si le portail indique
+   une **liste d'attente** (« waitlist », « closed beta »), s'y inscrire et noter la date : c'est normal.
+3. Une fois connecté : **Add a game / Submit a game**.
+4. Remplir :
+   - **Nom** : `Flic en Cavale` (et le nom anglais choisi avec la session CODE, ex. *Cop on the Run*).
+   - **Description** : textes prêts dans [03-fiches-store.md § 3.2](03-fiches-store.md#32-poki-priorité).
+   - **Fichiers du jeu** : un `.zip` du jeu compilé avec le kit Poki. **Demande à la session CODE
+     de te le fournir** (« donne-moi le zip Poki de FlicEnCavale »).
+   - **Captures / vidéo** : celles de `docs/marketing/captures/` (en refaire en anglais une fois traduit).
+5. Envoyer, puis **répondre vite** aux messages de l'équipe Poki (ils peuvent demander des
+   modifications). Les tests avec joueurs prennent **quelques semaines** en général.
+6. **Avant d'accepter un contrat** : lire la durée de l'exclusivité, la part des revenus et
+   poser la question de la redirection GitHub Pages (§ ci-dessus). Si un point n'est pas clair,
+   demande-le à Poki **par écrit**.
 
-## 2.2 Créer les comptes (pas à pas)
+## 2.2 Comptes à créer (1 h, une seule fois)
 
-> Conseil : crée une **adresse e-mail dédiée** au jeu (par exemple une adresse Gmail
-> `flicencavale.jeu@…`). Ça sépare ta vie perso du jeu et ça permettra plus tard de donner
-> l'accès à quelqu'un d'autre sans partager ton e-mail personnel.
+> Crée d'abord une **adresse e-mail dédiée** au jeu (par exemple une adresse Gmail gratuite
+> `flicencavale.jeu@…`). Elle servira pour Poki, TikTok, Instagram, YouTube, et plus tard
+> pour recevoir les paiements de Poki. Ça sépare ta vie perso du jeu.
 
 ### TikTok
 
-1. Installer l'appli **TikTok** sur ton téléphone.
-2. Ouvrir l'appli → **Profil** (en bas à droite) → **S'inscrire** → **Utiliser le téléphone ou l'e-mail** → choisir l'e-mail dédié.
-3. Choisir le nom d'utilisateur **`flicencavale`**.
-4. **Profil → Modifier le profil** :
-   - **Nom** : `Flic en Cavale 🚔`
-   - **Bio** : `Gérard, gendarme pompette, fuit ses collègues. Jeu gratuit 👇`
-   - **Photo** : une capture de Gérard en gros plan (ou le logo du jeu).
-5. **Le lien dans la bio** : TikTok ne l'autorise qu'aux comptes avec au moins **1 000 abonnés**
-   (règle qui peut changer) **ou** aux comptes **Entreprise** (**Profil → ☰ → Paramètres et
-   confidentialité → Compte → Passer à un compte Entreprise**, catégorie « Jeux »).
-   - ⚠️ Un compte Entreprise n'a accès qu'aux musiques **libres de droits commerciaux**
-     (« Bibliothèque de musiques commerciales »). Pas grave : nos vidéos utilisent surtout
-     **les sons du jeu** et ta voix.
-   - **Recommandation : passer en compte Entreprise** pour avoir le lien cliquable tout de suite.
-6. En attendant, on met aussi le lien **dans un commentaire épinglé** sous chaque vidéo
-   (appui long sur ton commentaire → **Épingler**).
+1. Installer l'appli **TikTok** → **Profil** (en bas à droite) → **S'inscrire** → **Utiliser le
+   téléphone ou l'e-mail** → l'e-mail dédié.
+2. Nom d'utilisateur : **`flicencavale`**.
+3. **Profil → Modifier le profil** : nom `Flic en Cavale 🚔`, bio `Gérard, gendarme en cavale. Jeu gratuit 👇`.
+4. **Lien cliquable dans la bio** : réservé aux comptes avec beaucoup d'abonnés **ou** aux
+   comptes **Entreprise** (gratuit) : **Profil → ☰ → Paramètres et confidentialité → Compte →
+   Passer à un compte Entreprise** → catégorie « Jeux ». Puis **Modifier le profil → Site web**
+   → coller le lien du jeu.
+   - Un compte Entreprise n'a accès qu'à la « bibliothèque de musiques commerciales » : pas
+     gênant, nos vidéos utilisent **les sons du jeu**.
+5. Sous chaque vidéo, mettre aussi le lien dans un **commentaire épinglé** (appui long → **Épingler**).
 
 ### Instagram
 
-1. Installer **Instagram** → **Créer un compte** avec l'e-mail dédié, pseudo `flicencavale`.
-2. **Profil → Modifier le profil** → même bio que TikTok, et **Ajouter un lien** → coller l'adresse du jeu.
+1. **Créer un compte** avec l'e-mail dédié, pseudo `flicencavale`.
+2. **Modifier le profil** → même bio → **Ajouter un lien** → lien du jeu.
 3. **Paramètres → Type de compte et outils → Passer à un compte professionnel → Créateur**
-   (catégorie « Jeu vidéo »). Ça donne accès aux statistiques. C'est gratuit.
-4. Les **Reels** se publient avec le bouton **+** → **Reel**.
+   (gratuit, donne les statistiques).
 
 ### YouTube (Shorts)
 
-1. Se connecter à YouTube avec le compte Google de l'e-mail dédié.
-2. Cliquer sur la photo de profil → **Créer une chaîne** → nom `Flic en Cavale`.
-3. Dans **YouTube Studio → Personnalisation → Informations générales**, ajouter le lien du jeu.
-4. Les **Shorts** se publient depuis l'appli YouTube : bouton **+** → **Importer une vidéo**
-   (vidéo verticale de moins de 60 secondes pour être sûr qu'elle soit classée en Short).
+1. Se connecter à YouTube avec le compte Google de l'e-mail dédié → photo de profil →
+   **Créer une chaîne** → `Flic en Cavale`.
+2. Les Shorts se publient depuis l'appli : **+** → **Importer une vidéo** (verticale, moins de 60 s).
 
-### Bonus : un lien court
+## 2.3 Les vidéos « mains seulement »
 
-L'adresse `https://thomas-byte-cmyk.github.io/FlicEnCavale/` est longue à recopier et contient
-ton pseudo GitHub. Deux options :
-- **Gratuit** : la page itch.io (§ 2.6) donnera une adresse plus propre, du type
-  `flicencavale.itch.io/flic-en-cavale`.
-- **~ 10 €/an** : acheter un nom de domaine (`flicencavale.fr`) et le relier à GitHub Pages.
-  C'est une opération « infra » : si tu veux le faire, demande-le à une session CODE, qui
-  t'expliquera chaque clic.
+### Comment filmer (deux options, 0 €)
 
-## 2.3 Enregistrer des parties (la matière première)
+**Option A — la plus simple : l'enregistrement d'écran** (on ne voit pas les mains, mais
+c'est net et rapide)
+- **iPhone** : Réglages → Centre de contrôle → ajouter **Enregistrement de l'écran**. Glisser
+  depuis le coin en haut à droite → ⏺ → jouer → re-toucher pour arrêter. La vidéo est dans Photos.
+- **Android** : glisser deux fois depuis le haut → **Enregistreur d'écran** → choisir « Sons de l'appareil ».
 
-- **iPhone** : Réglages → Centre de contrôle → ajouter **Enregistrement de l'écran**. Puis
-  glisser depuis le coin en haut à droite → bouton ⏺ → jouer → re-toucher pour arrêter.
-  La vidéo arrive dans Photos.
-- **Android** : glisser deux fois depuis le haut → **Enregistreur d'écran** (ou « Screen
-  recorder »). Choisir « Sons de l'appareil » pour garder les sons du jeu.
-- **Avant d'enregistrer** : activer **Ne pas déranger** (pas de notification au milieu),
-  luminosité au maximum, batterie > 50 %.
-- **Jouer 10 minutes**, faire exprès de se prendre une vache, une manif, un radar, et de se
-  faire rattraper : les ratés sont souvent plus drôles que les réussites.
-- Ouvrir le jeu en plein écran : dans Safari/Chrome, **Partager → Sur l'écran d'accueil**,
-  puis lancer le jeu depuis l'icône : la barre d'adresse disparaît, c'est plus propre à filmer.
+**Option B — recommandée : « les mains qui jouent »** (format très populaire sur TikTok)
+- Il faut **deux téléphones** (le tien + un vieux téléphone ou celui d'un proche).
+- Le téléphone qui **filme** est posé **au-dessus**, objectif vers le bas, en équilibre sur
+  deux piles de livres (ou un verre retourné de chaque côté). Le téléphone qui **joue** est
+  posé à plat sur une table, sous l'objectif.
+- Bonne lumière (près d'une fenêtre, de jour), table propre et neutre, **pas de bague
+  ou de montre reconnaissable si tu veux rester anonyme**.
+- Le son : filmer dans une pièce calme, le son du jeu sera capté par le micro. Ou mieux :
+  faire **en même temps** un enregistrement d'écran sur le téléphone qui joue, et utiliser
+  son son dans le montage.
+- Avantage : on voit les **réactions des mains** (sursaut sur la vache, pouce qui glisse
+  trop tard) → c'est ça qui rend la vidéo vivante sans visage ni voix.
 
-## 2.4 Les vidéos : 8 scripts de 15 à 30 secondes
+**Avant de filmer** : mode **Ne pas déranger**, luminosité au maximum, jeu lancé depuis
+l'icône sur l'écran d'accueil (Safari/Chrome → **Partager → Sur l'écran d'accueil**) pour
+cacher la barre d'adresse.
 
-**Règles qui marchent sur les vidéos courtes :**
-- **Les 2 premières secondes décident de tout** : un texte d'accroche gros et lisible dès la
-  première image, de l'action immédiatement.
-- **Texte à l'écran** en permanence (beaucoup regardent sans le son).
-- **Format vertical 9:16**, 1080×1920. Laisser libre le **bas de l'écran (≈ 20 %) et le côté
-  droit** : c'est là que TikTok affiche la description et les boutons.
-- **Terminer sur le lien** : « Lien en bio, bats mon score 👇 ».
-- **Même vidéo sur les 3 plateformes**, mais **sans le filigrane TikTok** (Instagram et YouTube
-  diffusent moins les vidéos avec filigrane) : exporter depuis CapCut, pas depuis TikTok.
+### Montage express dans CapCut (gratuit) — 20 min par vidéo
 
-**Montage avec CapCut (gratuit) :**
-1. Installer **CapCut** → **Nouveau projet** → choisir l'enregistrement d'écran.
-2. **Diviser** (icône ciseaux) pour couper le début et la fin ; garder la meilleure séquence.
-3. **Texte → Ajouter du texte** pour l'accroche (police épaisse, contour noir).
-4. **Audio → Effets sonores** ou **Voix off** (bouton micro) si tu veux commenter.
-5. **Exporter** en 1080p, 30 images/seconde.
+1. **CapCut** → **Nouveau projet** → choisir la vidéo.
+2. Couper (icône **ciseaux**, « Diviser ») pour ne garder que **15 à 25 secondes**.
+3. **Texte → Ajouter du texte** : l'accroche en gros dès la première seconde, police épaisse,
+   contour noir. **Pas de voix → le texte fait tout le travail.**
+4. **Exporter** en 1080p. Publier **ce fichier** sur TikTok, Instagram (Reel) et YouTube (Short).
+   (Ne pas re-télécharger depuis TikTok : le filigrane TikTok fait baisser la diffusion ailleurs.)
 
-| # | Titre / accroche (texte à l'écran à 0 s) | Script (≈ 15-30 s) | Légende + hashtags |
+**Astuce gain de temps** : filmer **4 vidéos en une seule session de 30 min** (une fois par
+mois), puis monter et publier une vidéo par semaine.
+
+### Les 6 scripts (sans voix, texte à l'écran)
+
+Règles : accroche lisible dès la 1re seconde ; laisser libres le **bas (≈ 20 %) et le bord
+droit** de l'écran (masqués par les boutons de TikTok) ; finir par « Lien en bio 👇 ».
+
+| # | Accroche (texte à 0 s) | Ce qu'on voit (15-25 s) | Texte de fin + légende |
 | --- | --- | --- | --- |
-| 1 | **« Le seul gendarme qui fuit un contrôle »** | 0-2 s : Gérard qui court, collègues derrière. 2-12 s : 2-3 esquives (vache, tracteur). 12-15 s : bulle « Gérard, souffle dans le ballon, ça ne fait pas mal ! ». 15-18 s : texte final « Jeu gratuit, lien en bio ». | « Cours, Gérard, cours ! 🚔 #FlicEnCavale #jeumobile #humour #france #gendarme » |
-| 2 | **« POV : tu cours dans ton village un dimanche matin »** | Séquence montrant **uniquement** les obstacles français : vache → tracteur → rond-point → baguette géante → manif. Un texte par obstacle (« la vache de M. Durand », « le tracteur à 15 km/h », « le rond-point »…). Fin : « C'est quoi le pire obstacle de ton village ? 👇 » (appel aux commentaires). | « Il manque plus que le marché 😂 #FlicEnCavale #village #francais #pov » |
-| 3 | **« Bonne Sainte-Geneviève aux gendarmes 🫡 »** (à publier le 26/11) | 0-3 s : texte « Le 26 novembre, les gendarmes fêtent la Sainte-Geneviève ». 3-6 s : « Gérard, lui, a un peu trop fêté ». 6-20 s : poursuite, bulles des collègues. Fin : « Respect aux vrais gendarmes. Gérard, lui, est en cavale. » | « Bonne fête à tous les gendarmes (même Gérard) 🫡 #SainteGeneviève #gendarmerie #FlicEnCavale » |
-| 4 | **« Bats mon score si t'es pas un képi »** | Écran de fin avec ton score en gros (« 1 234 »). Puis accéléré de ta meilleure partie. Fin : « Mets ton score en commentaire, je réponds à tous ». | « Défi lancé 🏆 #FlicEnCavale #defi #jeu » |
-| 5 | **« Flashé à 42 km/h… à pied »** | Gros plan sur le flash blanc du radar + la réplique. Montage rapide de 3 flashs d'affilée. Fin : « Gérard collectionne les PV ». | « Même à pied il se fait flasher 📸 #radar #FlicEnCavale #humour » |
-| 6 | **« Les manifestants sont de son côté »** | La manif avec les pancartes lisibles (« LIBÉREZ GÉRARD ! », « MOINS DE PV, PLUS DE PÉTANQUE ! »), pause sur image pour qu'on puisse lire. Fin : « Quelle pancarte vous ajouteriez ? 👇 ». ⚠️ Rester absurde, zéro actualité. | « La manif la plus gentille de France ✊ #FlicEnCavale #pancarte #humour » |
-| 7 | **« Le café, c'est la vie »** | Montrer la jauge d'ivresse qui monte et Gérard qui titube, puis il attrape un café ☕ : la jauge baisse, les collègues s'éloignent. Texte : « Morale : le café sauve des vies ». (Bon message de prévention, très « safe » pour les algorithmes.) | « Toujours avoir un café sur soi ☕ #FlicEnCavale #cafe #jeumobile » |
-| 8 | **« Gérard au pot de Noël de la brigade »** (mi-décembre) | Texte : « Pot de Noël de la brigade, 23 h ». Poursuite. Fin : « Cette année, Gérard rentre à pied. Et vous ? » (clin d'œil sécurité routière positif). | « Rentrez à pied ou avec Sam 😉 #FlicEnCavale #noel #brigade » |
+| 1 | **« Le seul gendarme qui fuit un contrôle »** | Les mains jouent ; Gérard esquive une vache puis un tracteur ; bulle des collègues « Gérard, souffle dans le ballon, ça ne fait pas mal ! ». | « Jeu gratuit, lien en bio » · *Cours, Gérard, cours ! 🚔 #FlicEnCavale #jeumobile #humour #france* |
+| 2 | **« POV : tu cours dans ton village un dimanche matin »** | Uniquement les obstacles français, un petit texte sur chacun : « la vache de M. Durand », « le tracteur à 15 km/h », « le rond-point », « la baguette géante », « la manif ». | « C'est quoi le pire obstacle de ton village ? 👇 » · *#FlicEnCavale #village #pov* |
+| 3 | **« Bonne Sainte-Geneviève aux gendarmes 🫡 »** (publier le **jeudi 26/11**) | « Le 26 novembre, les gendarmes fêtent la Sainte-Geneviève »… « Gérard, lui, a un peu trop fêté » → poursuite. | « Respect aux vrais gendarmes. Gérard, lui, est en cavale. » · *#SainteGeneviève #FlicEnCavale* |
+| 4 | **« Le piège du verre de rouge 🍷😵 »** | Les mains hésitent… attrapent le verre de rouge → Gérard titube, la caméra tangue, les collègues se rapprochent, **zéro point gagné**. Puis un café ☕ : il se redresse. | « Morale : prends le café. » · *Le café, c'est la vie ☕ #FlicEnCavale* (Bon message : l'alcool = piège. Très « safe » pour les algorithmes.) |
+| 5 | **« Flashé à 42 km/h… à pied »** | Gros plan sur le flash du radar + la réplique, 2-3 flashs d'affilée. | « Gérard collectionne les PV » · *#radar #FlicEnCavale #humour* |
+| 6 | **« Bats mon score si t'es pas un képi »** | Écran de fin avec le score en gros, puis accéléré de la partie. | « Mets ton score en commentaire 👇 » · *#FlicEnCavale #defi* |
 
-**Variante à fort potentiel** (si tu acceptes de te montrer, même juste tes mains ou ta voix) :
-**« J'ai fait un jeu sur un gendarme bourré, voilà ce que ça donne »** — les vidéos « je suis
-le créateur » marchent très bien, les gens aiment soutenir un développeur solo.
+**Après la traduction anglaise** : republier les meilleures vidéos avec les textes en anglais
+(« The only cop running from a breathalyzer test »), pour toucher un public plus large — utile
+pour les chiffres que regarde Poki.
 
-**Rythme conseillé** : 3 vidéos par semaine. Publier entre **12 h-13 h** ou **18 h-21 h**.
-Répondre à tous les commentaires dans la première heure.
+**Publier** entre 12 h-13 h ou 18 h-21 h. **Répondre aux commentaires** le jour même
+(5 minutes suffisent). Réponse toute prête aux commentaires politiques : *« Gérard ne fait
+pas de politique, il fait son footing réglementaire 🏃‍♂️ »*.
 
-## 2.5 Reddit, forums et communautés
+## 2.4 Calendrier — 4 semaines à 1-3 h par semaine
 
-> Reddit déteste la publicité. **Lire les règles de chaque communauté** (colonne de droite ou
-> onglet « À propos ») avant de poster : certaines interdisent l'autopromotion, d'autres
-> l'autorisent seulement certains jours. **Toujours dire que tu es le créateur.**
+Aujourd'hui : vendredi 13 novembre 2026.
 
-**Créer un compte Reddit** : reddit.com → **S'inscrire** → e-mail dédié → choisir un pseudo.
-⚠️ Un compte tout neuf est souvent bloqué par les filtres anti-spam : **commente normalement
-pendant quelques jours avant de poster** ton jeu (quelques commentaires utiles sur des sujets
-qui t'intéressent).
+### Semaine 1 — du 16 au 22 novembre (≈ 2 h 30)
 
-| Communauté | Langue | Comment poster |
+| Tâche | Temps |
+| --- | --- |
+| Créer l'e-mail dédié + les comptes TikTok, Instagram, YouTube (§ 2.2). | 1 h |
+| Créer le compte sur **developers.poki.com** (s'inscrire à la liste d'attente si besoin). | 15 min |
+| Envoyer le lien à 10 proches sur WhatsApp : « Dis-moi ton score et ce qui t'a fait rire ». Transmettre les bugs à la session CODE. | 15 min |
+| Session de tournage : filmer de quoi faire **4 vidéos** (§ 2.3). | 45 min |
+| ⚠️ Jeudi 19 = Beaujolais nouveau : ne rien publier sur le thème du vin. | — |
+
+### Semaine 2 — du 23 au 29 novembre (≈ 1 h 30)
+
+| Tâche | Temps |
+| --- | --- |
+| Lundi : monter et publier la **vidéo 1** sur les 3 plateformes. | 30 min |
+| **Jeudi 26 (Sainte-Geneviève)** : monter et publier la **vidéo 3**. | 30 min |
+| Répondre aux commentaires, noter les chiffres dans le tableau (§ 2.7). | 30 min |
+
+### Semaine 3 — du 30 novembre au 6 décembre (≈ 1 h 30 à 2 h)
+
+| Tâche | Temps |
+| --- | --- |
+| Publier la **vidéo 4** (« Le piège du verre de rouge »). | 30 min |
+| **Soumettre le jeu à Poki** si la session CODE a livré la version anglaise + le kit Poki (§ 2.1). Sinon, faire le point avec elle. | 45 min |
+| Un post sur **une** communauté (§ 2.5), en demandant des retours. | 20 min |
+
+### Semaine 4 — du 7 au 13 décembre (≈ 1 h 30)
+
+| Tâche | Temps |
+| --- | --- |
+| Publier la **vidéo 2** ou **5** (celle dont l'accroche ressemble le plus à la meilleure vidéo jusqu'ici). | 30 min |
+| Suivre les échanges avec Poki (répondre vite). | 15 min |
+| **Bilan** (§ 2.7) : quelle vidéo a marché, d'où viennent les joueurs, que dit Poki ? Décider de la suite. | 30 min |
+
+### Ensuite (rythme de croisière, ≈ 1 h/semaine)
+
+- 1 vidéo par semaine (tournage groupé une fois par mois).
+- **Si Poki accepte** : faire mettre en place la redirection GitHub Pages → Poki (session CODE),
+  partager le lien Poki, continuer les vidéos. Plus rien d'autre à gérer.
+- **Si Poki refuse** : publier sur **itch.io** (§ 2.6) et soumettre à **CrazyGames** (§ 2.6).
+- Mi-décembre : vidéo « Gérard rentre à pied du pot de Noël de la brigade » (thème fêtes, Gérard à pied, jamais en voiture).
+
+## 2.5 Communautés en ligne (optionnel, 20 min de temps en temps)
+
+> Règles d'or : **lire les règles de la communauté** avant de poster, **dire que tu es le
+> créateur**, et **demander des retours** plutôt que « venez jouer ». Un compte Reddit tout neuf
+> est souvent bloqué par les filtres anti-spam : commenter normalement quelques jours avant.
+
+| Communauté | Langue | Remarque |
 | --- | --- | --- |
-| r/jeuxvideo | FR | Post « J'ai créé un petit jeu gratuit sur navigateur : un gendarme pompette fuit ses collègues » + capture/GIF + lien. Vérifier les règles d'autopromo. |
-| r/france | FR | ⚠️ Très strict sur la pub. Seulement dans le **Forum Libre** (fil quotidien), ton léger, sans insister. |
-| r/IndieDev, r/indiegames | EN | Bienvenus pour les jeux indés. Titre en anglais : « I made a browser runner about a tipsy French gendarme escaping his colleagues ». Mentionner que le jeu est en français. |
-| r/WebGames, r/playmygame | EN | Faits pour ça. Utile pour avoir des retours, même si le public n'est pas francophone. |
-| Discord | FR | Serveurs de développeurs indés francophones, serveurs de communautés de jeux mobiles : canal « #vos-créations » / « #autopromo ». |
-| Forums jeuxvideo.com | FR | Forum « Jeux indépendants » ou forum de développement amateur, plutôt que le « Blabla », trop imprévisible. |
-| Facebook | FR | Ton cercle perso + groupes « humour français », « Louis de Funès / Gendarme de Saint-Tropez » (nostalgie). Toujours demander à l'admin avant de poster. |
-| LinkedIn | FR | Si tu y as un réseau : « Projet perso : j'ai fait un jeu vidéo avec de l'IA… » (angle « data + IA + jeu ») marche bien. |
+| r/jeuxvideo | FR | Vérifier les règles d'autopromotion. |
+| r/IndieDev, r/indiegames, r/WebGames, r/playmygame | EN | **Après la version anglaise.** Bienvenus pour les jeux indés gratuits. |
+| Serveurs Discord de développeurs indés francophones | FR | Canal « #vos-créations » ou « #autopromo ». |
 
-**Modèle de post (FR)** :
+**Modèle de post** :
 
-> **J'ai créé un petit jeu gratuit : un gendarme pompette fuit ses collègues 🚔**
->
-> Salut ! Je bricole un petit jeu de course dans le navigateur (téléphone ou PC, sans pub ni
-> inscription). Gérard a trop fêté la Sainte-Geneviève et ses collègues veulent lui faire
-> souffler dans le ballon. Il faut esquiver vaches, tracteurs, ronds-points et manifs.
->
-> [capture ou GIF]
->
-> C'est encore en développement, donc **tous vos retours m'intéressent** (bugs, difficulté,
-> blagues à ajouter…). Mon record : 1 234. Qui fait mieux ?
->
-> 👉 [lien]
+> **J'ai fait un petit jeu gratuit : un gendarme en cavale fuit ses collègues 🚔**
+> Un petit jeu de course dans le navigateur (téléphone ou PC, sans inscription). Gérard a trop
+> fêté la Sainte-Geneviève et ses collègues veulent lui faire souffler dans le ballon : il faut
+> esquiver vaches, tracteurs, ronds-points et manifs. **Vos retours m'intéressent** (bugs,
+> difficulté, blagues à ajouter…). Mon record : 1 234. Qui fait mieux ? 👉 [lien]
 
-(Demander des retours plutôt que « venez jouer » : c'est mieux accepté et ça génère des commentaires.)
+## 2.6 Plan B : itch.io et CrazyGames (seulement si Poki refuse)
 
-## 2.6 Plateformes de jeux : itch.io, CrazyGames, Poki
+### itch.io (30 min)
 
-### itch.io (semaine 1-2, gratuit, recommandé ✅)
+1. Demander à la session CODE le **zip du jeu** (le fichier `index.html` doit être à la racine du zip).
+2. **itch.io** → **Register** (pseudo `flicencavale`, e-mail dédié).
+3. Flèche à côté du pseudo → **Upload new project**.
+4. **Title** `Flic en Cavale` · **Kind of project** : **HTML** · **Pricing** : *No payments*
+   (ou *Donate*, voir avec la session MONÉTISATION) · **Uploads** : le zip, cocher
+   **This file will be played in the browser**.
+5. **Embed options** : taille `405 × 720`, cocher **Mobile friendly** (orientation *Portrait*)
+   et **Fullscreen button**. Laisser décoché *Automatically start on page load*.
+6. Description, tags, captures : copier [03-fiches-store.md § 3.3](03-fiches-store.md#33-itchio-plan-b-si-poki-refuse).
+7. **Visibility** : d'abord *Draft* → **View page** pour tester → puis *Public*.
 
-itch.io est **la** vitrine des jeux indépendants. Gratuit, aucune validation, une page propre
-en 30 minutes. Fiche prête à copier : [03-fiches-store.md](03-fiches-store.md).
+### CrazyGames
 
-1. **Préparer le fichier du jeu** (un `.zip`) :
-   - Le jeu doit être « compilé » (commande `npm run build`), ce qui produit un dossier `dist/`.
-     On zippe **le contenu** de ce dossier (le fichier `index.html` doit être à la racine du zip,
-     pas dans un sous-dossier).
-   - **Le plus simple pour toi** : demande à une session Claude « Fabrique-moi le zip itch.io
-     de FlicEnCavale à partir de la branche main », elle te l'enverra.
-   - (Si tu as installé le projet sur ton ordinateur, voir le README : `npm run build`, puis
-     ouvrir le dossier `dist`, tout sélectionner → clic droit → **Compresser**.)
-   - J'ai suggéré à la session CODE d'automatiser ce zip (voir [04-viralite-suggestions.md](04-viralite-suggestions.md)).
-2. Aller sur **itch.io** → **Register** → pseudo `flicencavale` (il apparaîtra dans l'adresse) + e-mail dédié.
-3. En haut à droite : flèche à côté du pseudo → **Upload new project**.
-4. Remplir (textes dans [03-fiches-store.md](03-fiches-store.md)) :
-   - **Title** : `Flic en Cavale`
-   - **Project URL** : `flic-en-cavale`
-   - **Short description or tagline** : le sous-titre.
-   - **Classification** : *Games*. **Kind of project** : **HTML**.
-   - **Release status** : *In development*.
-   - **Pricing** : *No payments* (ou *Donate* si tu veux accepter des dons — à voir avec la session MONÉTISATION).
-   - **Uploads** : **Upload files** → choisir le zip → cocher **This file will be played in the browser**.
-5. **Embed options** (juste en dessous) :
-   - **Viewport dimensions** : `405 × 720` (format téléphone, vertical).
-   - Cocher **Mobile friendly** → orientation **Portrait**.
-   - Cocher **Fullscreen button**.
-   - Laisser **décoché** *Automatically start on page load* : le joueur clique sur « Run game »,
-     ce qui évite que le son démarre tout seul.
-6. **Details** : description, genre **Action** / **Endless Runner**, tags (voir fiche), langue **French**.
-7. **Screenshots** : ajouter les captures de `docs/marketing/captures/` (3 à 5).
-   **Cover image** : 630×500 px (demander à la session DESIGN, ou faire un montage dans Canva).
-8. **Visibility** : d'abord **Draft** (brouillon) → **Save** → **View page** pour vérifier que
-   le jeu se lance → puis repasser en **Public** le jour voulu.
-9. Facultatif : **Community** → activer les commentaires (bonne source de retours).
+1. **developer.crazygames.com** → créer un compte → **Submit a game**.
+2. Ils demandent d'intégrer **leur kit (SDK)** à la place de celui de Poki : travail de la session CODE.
+3. Les jeux sont souvent d'abord testés auprès d'un petit public, puis diffusés plus largement
+   si les chiffres sont bons. Le partage des revenus publicitaires est à voir avec la session MONÉTISATION.
 
-### CrazyGames (semaine 4, à coordonner avec la session MONÉTISATION)
+## 2.7 Presse et sites spécialisés
 
-- Portail web gratuit à très grosse audience mondiale, qui **partage les revenus publicitaires**
-  avec les développeurs. Inscription : **developer.crazygames.com** → créer un compte → **Submit a game**.
-- Ce qu'il faut savoir :
-  - Ils demandent d'**intégrer leur kit (SDK)** pour les pubs et les fonctionnalités : c'est un
-    travail de la session CODE, et un sujet de la session MONÉTISATION.
-  - Leur public est **international** : un jeu uniquement en français sera peu mis en avant.
-    **Une version anglaise est presque indispensable** (« Cop on the Run » ?).
-  - Leur équipe relit les jeux : le thème « alcool » **peut** poser problème ; bien insister
-    sur le côté burlesque et vérifier leurs règles de contenu avant de soumettre.
-  - Ils lancent souvent les jeux d'abord en **test limité**, puis plus largement si les
-    chiffres (temps de jeu, retour des joueurs) sont bons.
+Pas de presse locale (choix de l'utilisateur). Les gros sites de jeu vidéo parlent rarement
+d'un petit jeu web gratuit : **on ne démarche pas activement**. Une seule exception utile :
+**si une vidéo dépasse ~ 50 000 vues ou si Poki publie le jeu**, envoyer un mail court à
+2-3 sites « jeux indés » (par ex. IndieMag) et à des créateurs YouTube/Twitch qui testent des
+petits jeux gratuits (1 000 à 50 000 abonnés : ils répondent). Le pitch long est dans
+[01-positionnement.md § 1.6](01-positionnement.md#16-pitchs).
 
-### Poki (plus tard, probablement pas adapté) ⚠️
+## 2.8 Mesurer (ton point fort, 15 min par semaine)
 
-- Poki est très sélectif, son public est **jeune (beaucoup d'enfants et d'ados)** et le
-  catalogue très « familial » : **le thème alcool risque fort d'être refusé**.
-- Poki demande en général une **exclusivité sur le web** (ne pas être sur d'autres portails),
-  ce qui entrerait en conflit avec CrazyGames et itch.io.
-- **Recommandation** : ne pas viser Poki maintenant. À reconsidérer seulement avec une version
-  traduite et un objet « verre de rouge » remplacé.
+- **Demander à la session CODE** un outil de mesure d'audience **gratuit et sans cookie**
+  (par ex. **GoatCounter**), pour savoir combien de personnes jouent et d'où elles viennent.
+  (Si Poki accepte le jeu, Poki fournit ses propres statistiques.)
+- **Liens « tracés »** : ajouter un marqueur selon l'endroit où le lien est publié :
+  `…/FlicEnCavale/?utm_source=tiktok`, `?utm_source=instagram`, `?utm_source=youtube`, `?utm_source=reddit`.
+- **Tableau de suivi** (Google Sheets, une ligne par vidéo) :
 
-## 2.7 Presse jeu vidéo et presse locale
-
-**Soyons réalistes** : les gros sites (Jeuxvideo.com, Gamekult, Gameblog) parlent rarement
-d'un petit jeu web gratuit. **La presse régionale et les sites « insolite / tech » sont bien
-plus accessibles** : « Un habitant de [ta ville] crée un jeu vidéo sur un gendarme en cavale »,
-c'est un sujet parfait pour eux, surtout autour de la Sainte-Geneviève.
-
-**Liste à cibler (par ordre de chances de succès) :**
-1. **Presse quotidienne régionale de ta ville/région** (Ouest-France, La Voix du Nord,
-   Le Progrès, Sud Ouest, La Dépêche, Le Parisien édition locale…) : rubrique « Initiatives »,
-   « Insolite » ou contact de la rédaction locale. Souvent un simple formulaire ou e-mail sur leur site.
-2. **Radios locales** (France Bleu / ICI de ta région, radios associatives).
-3. **Sites tech / insolite** : Journal du Geek, Presse-citron, Numerama (rubrique jeux),
-   Konbini (si une vidéo commence à tourner).
-4. **Sites et créateurs de contenu « jeux indés »** francophones : IndieMag, chaînes YouTube et
-   streamers Twitch qui testent des petits jeux (chercher « jeux indés » / « petits jeux
-   gratuits » sur YouTube et contacter ceux qui ont 1 000 à 50 000 abonnés : ils répondent).
-5. **Gros sites jeu vidéo** : un mail court, sans trop d'espoir, à leur adresse « news » ou « contact ».
-
-**Kit presse** (à préparer une fois, semaine 2) — un dossier partagé (Google Drive) contenant :
-- le pitch long (01-positionnement.md § 1.6),
-- 5 captures + 1 GIF ou vidéo de 20 s,
-- le logo / l'icône,
-- 3 lignes sur toi (« développeur amateur, passionné de data… » : à toi de voir ce que tu veux dire),
-- l'adresse du jeu et un e-mail de contact (l'e-mail dédié).
-
-**Modèle de mail :**
-
-> **Objet : Un gendarme pompette fuit ses collègues : un jeu gratuit pour la Sainte-Geneviève 🚔**
->
-> Bonjour,
->
-> Je m'appelle [prénom], j'habite à [ville] et j'ai créé **Flic en Cavale**, un petit jeu
-> vidéo gratuit jouable sur téléphone, sans inscription ni publicité.
->
-> Le pitch : le soir de la Sainte-Geneviève (le 26 novembre, la fête des gendarmes), Gérard a
-> un peu trop fêté. Ses collègues veulent lui faire souffler dans le ballon : il s'enfuit à
-> travers un village plein de vaches, de tracteurs, de ronds-points et de manifestants qui
-> réclament sa libération. C'est burlesque, bon enfant, et très français.
->
-> Le jeu : [lien]
-> Images et vidéo : [lien du kit presse]
->
-> Je suis disponible pour en parler par téléphone ou par mail.
-> Bonne journée,
-> [prénom] — [e-mail dédié]
-
-**Astuces** : un mail **par personne** (pas de copie à 30 destinataires), objet accrocheur,
-lien en clair, **pas de pièce jointe lourde** (lien vers le kit à la place). Une seule relance
-une semaine plus tard.
-
-## 2.8 Mesurer (ton point fort)
-
-Aujourd'hui **le jeu ne mesure rien** : on ne sait pas combien de personnes y jouent. C'est le
-premier manque à combler, avant même la semaine 2.
-
-- **Proposition pour la session CODE** : ajouter un outil de mesure d'audience **sans cookie**,
-  comme **GoatCounter** (gratuit pour les petits projets) ou **Plausible** (payant, ~ 9 €/mois).
-  Sans cookie = pas besoin de bannière de consentement (la CNIL l'admet pour la mesure
-  d'audience si elle reste anonyme et limitée — à vérifier au moment de l'installation).
-- **Liens « tracés » par canal** : ajouter un petit marqueur à la fin du lien selon l'endroit
-  où il est publié, pour savoir d'où viennent les joueurs. Exemple :
-  - TikTok : `https://thomas-byte-cmyk.github.io/FlicEnCavale/?utm_source=tiktok`
-  - Reddit : `…/FlicEnCavale/?utm_source=reddit`
-  - Presse : `…/FlicEnCavale/?utm_source=presse`
-
-  (Ça ne change rien au jeu ; l'outil de mesure lit ce marqueur.)
-
-**Tableau de suivi** (une feuille Google Sheets, une ligne par publication) :
-
-| Date | Plateforme | Vidéo / post | Vues | Likes | Commentaires | Partages | Clics vers le jeu | Parties jouées |
+| Date | Vidéo | Plateforme | Vues | % vue en entier | Likes | Commentaires | Partages | Visiteurs du jeu (source) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
-**Indicateurs à suivre chaque semaine :**
-- **Visiteurs uniques** du jeu, par source.
-- **Taux de « rejouer »** : parties par visiteur (> 3 = le jeu accroche).
-- **Durée moyenne** d'une partie et score moyen (si la session CODE l'ajoute).
-- Pour les vidéos : **taux de visionnage complet** (dans les statistiques TikTok/Instagram) —
-  en dessous de 30 %, l'accroche n'est pas assez forte.
+- **À regarder** : le **% de vidéo vue en entier** (en dessous de 30 % → l'accroche est trop
+  faible), et le **nombre de parties par joueur** (au-dessus de 3 → le jeu accroche, et c'est
+  aussi ce que Poki regarde).
 
-**Objectifs indicatifs pour 4 semaines** (à ajuster selon tes ambitions) :
-- 🟢 Raisonnable : 1 000 joueurs, 1 vidéo à 10 000 vues, 1 article de presse locale.
-- 🚀 Ambitieux : 10 000 joueurs, 1 vidéo à 100 000 vues.
+**Objectifs réalistes à 4 semaines** (projet plaisir) : 300 à 1 000 joueurs, une vidéo à
+5 000 vues, et **le jeu soumis à Poki**.
 
-## 2.9 Budget (si tu veux dépenser un peu)
+## 2.9 Ce qui coûte 0 € (et ce qu'on évite)
 
-| Poste | Coût | Utilité |
-| --- | --- | --- |
-| Tout ce qui est ci-dessus | **0 €** | Suffisant pour démarrer |
-| Nom de domaine `flicencavale.fr` | ~ 10 €/an | Lien court et pro |
-| Test de pub TikTok « Promote » sur la meilleure vidéo | 10-20 € | Voir si une pub *sans visuel d'alcool* passe la modération et ce qu'elle rapporte |
-| Mesure d'audience Plausible | ~ 9 €/mois | Alternative payante à GoatCounter (gratuit) |
-
-**Ne pas payer** : les services qui promettent des « vues » ou des « abonnés » (faux comptes,
-risque de bannissement), ni les « press release » payants.
+Tout ce plan est gratuit : comptes, CapCut, Poki, itch.io, GoatCounter, GitHub Pages.
+**À éviter** : acheter des « vues » ou des « abonnés » (faux comptes, risque de bannissement),
+et payer une publicité (inutile à ce stade).
