@@ -41,3 +41,41 @@ export function saveMuted(muted) {
     /* rien */
   }
 }
+
+const MISSIONS_KEY = 'flicencavale.missions';
+const TUTORIAL_KEY = 'flicencavale.tutorialDone';
+
+/** Missions déjà réussies (liste d'identifiants). */
+export function loadMissions() {
+  try {
+    const list = JSON.parse(localStorage.getItem(MISSIONS_KEY) || '[]');
+    return Array.isArray(list) ? list : [];
+  } catch {
+    return [];
+  }
+}
+
+export function saveMissions(ids) {
+  try {
+    localStorage.setItem(MISSIONS_KEY, JSON.stringify(ids));
+  } catch {
+    /* rien */
+  }
+}
+
+/** Le tutoriel a-t-il déjà été fait ? */
+export function loadTutorialDone() {
+  try {
+    return localStorage.getItem(TUTORIAL_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+
+export function saveTutorialDone() {
+  try {
+    localStorage.setItem(TUTORIAL_KEY, '1');
+  } catch {
+    /* rien */
+  }
+}

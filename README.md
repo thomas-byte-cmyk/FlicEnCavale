@@ -34,6 +34,12 @@ Le jeu est publié automatiquement sur GitHub Pages à chaque mise à jour de la
 - **Ivresse** (jauge 🍷) : plus elle est haute, plus Gérard titube, plus la caméra tangue
   et plus ses réactions sont lentes et imprécises.
 
+- **Missions** : 3 défis à la fois (« Bois 2 cafés », « Contourne 3 manifs »…) à réussir en une partie.
+  Chaque mission réussie fait monter Gérard en grade, de Gendarme stagiaire jusqu'à Général.
+  La liste des missions est dans `src/game/missions.js`.
+- **Première partie** : un petit entraînement montre les gestes. On peut le refaire depuis
+  « Comment jouer ? » sur l'écran titre.
+
 Pour ajouter des blagues : tout est dans `src/game/texts.js`.
 Pour régler la difficulté : tout est dans `src/config.js`.
 

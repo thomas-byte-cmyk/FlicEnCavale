@@ -10,6 +10,7 @@ import { createObstacleModel } from './obstacleModels.js';
 import { Chasers } from './Chasers.js';
 import { createItemModel } from './itemModels.js';
 import { mat } from './shapes.js';
+import { Particles } from './Particles.js';
 
 const SKY = '#8fd3ff';
 
@@ -55,6 +56,7 @@ export class Renderer {
     this.kepiGold = mat('#f5c518');
 
     this.itemMeshes = new Map(); // numéro d'objet → objet 3D
+    this.particles = new Particles(this.scene);
 
     this.obstacleMeshes = new Map(); // numéro d'obstacle → objet 3D
     this.runPhase = 0;
@@ -84,13 +86,37 @@ export class Renderer {
   reset() {
     this.world.reset();
     this.chasers.reset();
+    this.particles.clear();
     this.runPhase = 0;
     this.camX = 0;
     this.shake = 0;
   }
 
   /** Réagit aux événements du jeu qui ont un effet visuel. */
-  onEvent(ev) {
+  onEvent(ev, game) {
+    const p = game.player;
+    const run = game.speed * 0.8; // les particules au sol "reculent" avec la course
+    switch (ev.type) {
+      case 'land': // petit nuage de poussière à l'atterrissage
+        this.particles.burst({ x: p.x, y: 0.1, count: 8, speed: 2, up: 0.8, drift: run });
+        break;
+      case 'slide':
+        this.particles.burst({ x: p.x, y: 0.1, count: 6, speed: 1.5, up: 0.6, drift: run });
+        break;
+      case 'hit': // éclats + étoiles
+        this.particles.burst({ x: p.x, y: 1.0, z: -0.6, count: 14, colors: ['#8b4a1f', '#ffffff', '#d6c3a0', '#6b7280'], speed: 4, up: 3, size: 0.2, drift: run * 0.5 });
+        this.particles.burst({ x: p.x, y: 2.0, count: 6, colors: ['#facc15'], speed: 1.5, up: 1.5, size: 0.14, life: 0.8 });
+        break;
+      case 'smash':
+        this.particles.burst({ x: p.x, y: 1.0, z: -0.8, count: 14, colors: ['#facc15', '#fde68a', '#ffffff'], speed: 5, up: 3.5, size: 0.18 });
+        break;
+      case 'pickup':
+        if (ev.kind !== 'coin') this.particles.burst({ x: p.x, y: 1.2, count: 12, colors: ['#fff59d', '#facc15', '#ffffff'], speed: 3, up: 2, size: 0.12 });
+        break;
+      case 'slip':
+        this.particles.burst({ x: p.x, y: 0.1, count: 10, colors: ['#f6dc6b', '#fff7cc'], speed: 2.5, up: 2, size: 0.12, drift: run });
+        break;
+    }
     if (ev.type === 'hit') this.shake = 0.35;
     if (ev.type === 'slip') this.shake = 0.15;
   }
@@ -214,6 +240,7 @@ export class Renderer {
       this.player.userData.body.position.y = 0.25;
     }
     this.chasers.update(game, this.time, dt);
+    this.particles.update(dt);
     // Clignote après un choc
     this.player.visible = !(game.hurtTime > 0 && Math.floor(this.time * 14) % 2 === 0);
     this.playerShadow.position.x = p.x;

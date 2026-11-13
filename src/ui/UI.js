@@ -6,7 +6,7 @@
 const $ = (id) => document.getElementById(id);
 
 export class UI {
-  constructor({ onPlay, onHome, onToggleMute }) {
+  constructor({ onPlay, onHome, onToggleMute, onTutorial }) {
     this.el = {
       hud: $('hud'),
       score: $('hud-score'),
@@ -27,6 +27,15 @@ export class UI {
       goBest: $('go-best'),
       goNewBest: $('go-newbest'),
       mute: $('btn-mute'),
+      hint: $('hint'),
+      hintIcon: $('hint-icon'),
+      hintText: $('hint-text'),
+      floaters: $('floaters'),
+      titleGrade: $('title-grade'),
+      titleGradeNext: $('title-grade-next'),
+      titleMissions: $('title-missions'),
+      goGrade: $('go-grade'),
+      goMissions: $('go-missions'),
     };
     this.bubbleTimer = null;
     this.lastEffects = '';
@@ -34,13 +43,22 @@ export class UI {
     $('btn-play').addEventListener('click', onPlay);
     $('btn-replay').addEventListener('click', onPlay);
     $('btn-home').addEventListener('click', onHome);
+    $('btn-tutorial').addEventListener('click', onTutorial);
     this.el.mute.addEventListener('click', onToggleMute);
     // Le bouton son ne doit pas déclencher de swipe
     this.el.mute.addEventListener('pointerdown', (e) => e.stopPropagation());
   }
 
-  showTitle(best) {
+  showTitle(best, missions) {
     this.el.titleBest.textContent = best;
+    if (missions) {
+      const g = missions.grade;
+      this.el.titleGrade.textContent = g.name;
+      this.el.titleGradeNext.textContent = g.next
+        ? `Prochain grade : ${g.next.name} (${missions.completedCount}/${g.next.missions} missions)`
+        : 'Grade maximum atteint. Respect, mon Général !';
+      this.renderMissions(this.el.titleMissions, missions, false);
+    }
     this.el.title.classList.remove('hidden');
     this.el.gameover.classList.add('hidden');
     this.el.hud.classList.add('hidden');
@@ -55,7 +73,11 @@ export class UI {
     this.clearMessages();
   }
 
-  showGameOver({ score, distance, best, newBest, phrase }) {
+  showGameOver({ score, distance, best, newBest, phrase, missions }) {
+    if (missions) {
+      this.el.goGrade.textContent = missions.grade.name;
+      this.renderMissions(this.el.goMissions, missions, true);
+    }
     this.el.goPhrase.textContent = phrase;
     this.el.goScore.textContent = score;
     this.el.goDistance.textContent = `${Math.floor(distance)} m`;
@@ -93,6 +115,60 @@ export class UI {
     }
   }
 
+  /**
+   * Liste des missions : réussies pendant la partie (✅), puis les 3 actives
+   * avec la progression de la partie si showProgress.
+   */
+  renderMissions(list, missions, showProgress) {
+    list.innerHTML = '';
+    const add = (icon, text, right, cls) => {
+      const li = document.createElement('li');
+      if (cls) li.className = cls;
+      const i = document.createElement('span');
+      i.textContent = icon;
+      const t = document.createElement('span');
+      t.className = 'mission-text';
+      t.textContent = text;
+      li.append(i, t);
+      if (right) {
+        const r = document.createElement('span');
+        r.className = 'mission-progress';
+        r.textContent = right;
+        li.append(r);
+      }
+      list.append(li);
+    };
+    if (showProgress) for (const m of missions.doneThisRun) add('✅', m.text, '', 'done');
+    for (const m of missions.active) {
+      // Mission arrivée pendant la partie : elle comptera à la prochaine (seulement utile en fin de partie)
+      if (m.fresh && showProgress) add('🆕', m.text, 'prochaine partie', 'fresh');
+      else add('⬜', m.text, showProgress ? `${missions.progress(m)}/${m.target}` : '');
+    }
+  }
+
+  /** Consigne du tutoriel avec une flèche animée. dir = 'up' | 'down' | 'left' | 'right' | '' */
+  showHint(icon, text, dir) {
+    this.el.hintIcon.textContent = icon;
+    this.el.hintText.textContent = text;
+    this.el.hint.dataset.dir = dir || '';
+    this.el.hint.classList.remove('hidden');
+  }
+
+  hideHint() {
+    this.el.hint.classList.add('hidden');
+  }
+
+  /** Petit texte qui s'envole ("+10"). x = position horizontale en % de l'écran. */
+  floatText(text, x = 50, color = '') {
+    const d = document.createElement('div');
+    d.className = 'floater';
+    d.textContent = text;
+    d.style.left = `${x}%`;
+    if (color) d.style.color = color;
+    this.el.floaters.appendChild(d);
+    setTimeout(() => d.remove(), 900);
+  }
+
   /** Affiche une phrase au milieu de l'écran. kind = '' | 'good' | 'bad' */
   popup(text, kind = '') {
     const div = document.createElement('div');
@@ -127,6 +203,8 @@ export class UI {
 
   clearMessages() {
     this.el.popups.innerHTML = '';
+    this.el.floaters.innerHTML = '';
+    this.hideHint();
     this.el.bubble.classList.add('hidden');
   }
 }

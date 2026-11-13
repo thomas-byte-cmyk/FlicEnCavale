@@ -47,6 +47,10 @@
       <div id="popups" class="popups"></div>
       <!-- Bulle des collègues poursuivants -->
       <div id="bubble" class="bubble hidden"></div>
+      <!-- Consigne du tutoriel (flèche animée) -->
+      <div id="hint" class="hint hidden"><div id="hint-icon" class="hint-icon">👆</div><div id="hint-text" class="hint-text"></div></div>
+      <!-- Points qui s'envolent ("+10") -->
+      <div id="floaters" class="floaters"></div>
       <!-- Flash blanc (radar) -->
       <div id="flash" class="flash"></div>
 
@@ -61,18 +65,31 @@
             Ses collègues veulent lui faire souffler dans le ballon.
             <strong>Cours, Gérard, cours&nbsp;!</strong>
           </p>
-          <ul class="controls">
-            <li><span>👈 👉</span> Glisse pour changer de voie</li>
-            <li><span>👆</span> Glisse vers le haut pour sauter</li>
-            <li><span>👇</span> Glisse vers le bas pour te baisser</li>
-            <li class="kbd-hint"><span>⌨️</span> Sur ordi : les flèches</li>
-          </ul>
-          <ul class="bonus-list">
-            <li>☕ Café : dessoûle et sème les collègues</li>
-            <li>🍷 Verre de rouge : des points… mais ça tourne</li>
-            <li>🥐 Croissant : invincible un moment</li>
-            <li>🎖️ Képi doré : score multiplié</li>
-          </ul>
+          <div class="grade-box">
+            <div class="grade-label">Grade de Gérard</div>
+            <div id="title-grade" class="grade-name">Gendarme stagiaire</div>
+            <div id="title-grade-next" class="grade-next"></div>
+          </div>
+          <div class="missions">
+            <div class="missions-title">🎯 Missions (en une seule partie)</div>
+            <ul id="title-missions" class="missions-list"></ul>
+          </div>
+          <details class="howto">
+            <summary>Comment jouer ?</summary>
+            <ul class="controls">
+              <li><span>👈 👉</span> Glisse pour changer de voie</li>
+              <li><span>👆</span> Glisse vers le haut pour sauter</li>
+              <li><span>👇</span> Glisse vers le bas pour te baisser</li>
+              <li class="kbd-hint"><span>⌨️</span> Sur ordi : les flèches</li>
+            </ul>
+            <ul class="bonus-list">
+              <li>☕ Café : dessoûle et sème les collègues</li>
+              <li>🍷 Verre de rouge : des points… mais ça tourne</li>
+              <li>🥐 Croissant : invincible un moment</li>
+              <li>🎖️ Képi doré : score multiplié</li>
+            </ul>
+            <button id="btn-tutorial" class="btn-secondary">Refaire l'entraînement</button>
+          </details>
           <button id="btn-play" class="btn-primary">C'est parti&nbsp;!</button>
           <div class="best-line">Meilleur score : <span id="title-best">0</span></div>
         </div>
@@ -89,6 +106,10 @@
             <div><span class="go-label">Record</span><span id="go-best" class="go-value">0</span></div>
           </div>
           <div id="go-newbest" class="go-newbest hidden">🏆 Nouveau record&nbsp;!</div>
+          <div class="missions">
+            <div class="missions-title">🎯 Missions — <span id="go-grade"></span></div>
+            <ul id="go-missions" class="missions-list"></ul>
+          </div>
           <button id="btn-replay" class="btn-primary">Rejouer</button>
           <button id="btn-home" class="btn-secondary">Écran titre</button>
         </div>

@@ -9,6 +9,7 @@ import { LANES, PLAYER, SPEED, SCORE, SPAWN, CHASE, DRUNK, BONUS } from '../conf
 import { fillGap } from './items.js';
 import { buildRow, rowLength } from './obstacles.js';
 import { GAME_OVER_PHRASES } from './texts.js';
+import { buildTutorial, TUTORIAL_END } from './tutorial.js';
 
 export class Game {
   /** @param {{ random?: () => number }} options */
@@ -48,6 +49,10 @@ export class Game {
     this.multiplierTime = 0; // temps restant du multiplicateur (képi doré)
     this.pendingActions = []; // actions retardées par l'ivresse
     this.swayX = 0; // décalage latéral dû au titubement
+
+    this.tutorial = null; // étapes du tutoriel (première partie seulement)
+    this.catchTimer = null; // compte à rebours du plaquage (ralenti)
+    this.timeScale = 1; // 1 = vitesse normale, moins = ralenti
   }
 
   /** Multiplicateur de score actuel. */
@@ -65,9 +70,23 @@ export class Game {
     return this.gap / CHASE.max;
   }
 
-  start() {
+  /** @param {{ tutorial?: boolean }} options tutorial = parcours d'entraînement au début */
+  start({ tutorial = false } = {}) {
     this.reset();
     this.status = 'running';
+    if (tutorial) {
+      this.tutorial = buildTutorial();
+      for (const step of this.tutorial) {
+        this.obstacles.push(...step.obstacles);
+        this.items.push(...step.items);
+      }
+      this.nextRowAt = TUTORIAL_END + 20; // les vrais obstacles arrivent après
+    }
+  }
+
+  /** Vrai pendant le parcours d'entraînement. */
+  get inTutorial() {
+    return this.tutorial !== null;
   }
 
   /** Score total = distance + objets ramassés. */
@@ -154,7 +173,8 @@ export class Game {
   step(dt) {
 
     this.time += dt;
-    this.speed = Math.min(SPEED.max, this.speed + SPEED.accel * dt);
+    // Pas d'accélération pendant le tutoriel
+    if (!this.inTutorial) this.speed = Math.min(SPEED.max, this.speed + SPEED.accel * dt);
     this.distance += this.speed * dt;
     this.distancePoints += this.speed * dt * SCORE.perMeter * this.multiplier;
 
@@ -165,6 +185,26 @@ export class Game {
     this.updateObstacles(dt);
     this.updateItems();
     this.updateChase(dt);
+    this.updateTutorial();
+  }
+
+  /** Affiche / efface les consignes du tutoriel au bon moment. */
+  updateTutorial() {
+    if (!this.tutorial) return;
+    for (const step of this.tutorial) {
+      if (!step.shown && step.at - this.distance < 32) {
+        step.shown = true;
+        this.emit('hint', { icon: step.icon, text: step.text, dir: step.dir });
+      }
+      if (step.shown && !step.cleared && this.distance > step.at + 1.5) {
+        step.cleared = true;
+        this.emit('hint-clear');
+      }
+    }
+    if (this.tutorial.every((s) => s.cleared)) {
+      this.tutorial = null;
+      this.emit('tutorial-done');
+    }
   }
 
   updatePlayer(dt) {
@@ -242,6 +282,12 @@ export class Game {
         }
       }
 
+      // Obstacle dépassé : on le signale s'il a été évité (utile pour les missions)
+      if (!o.passed && ahead < -(o.depth / 2 + 0.5)) {
+        o.passed = true;
+        if (!o.hit && o.effect === 'hit') this.emit('pass', { obstacle: o });
+      }
+
       if (o.hit) continue;
 
       // Le radar flashe quand on passe à côté
@@ -277,13 +323,18 @@ export class Game {
       o.hit = true;
       o.hitTime = this.time;
       this.bonusPoints += 20 * this.multiplier;
-      this.emit('smash', { obstacle: o });
+      this.emit('smash', { obstacle: o, points: 20 * this.multiplier });
       return;
     }
-    if (this.hurtTime > 0) return; // encore sonné par le choc précédent
+    if (this.hurtTime > 0 || this.catchTimer !== null) return; // encore sonné par le choc précédent
     o.hit = true;
     o.hitTime = this.time;
     this.hurtTime = 1.0;
+    // Pendant le tutoriel, un choc ne coûte rien
+    if (this.inTutorial) {
+      this.emit('hit', { obstacle: o, tutorial: true });
+      return;
+    }
     this.speed = Math.max(SPEED.start, this.speed * SPEED.hitSlowdown);
     this.gap -= CHASE.hitPenalty; // les collègues se rapprochent !
     this.emit('hit', { obstacle: o });
@@ -294,8 +345,16 @@ export class Game {
   // ---------------------------------------------------------
 
   updateChase(dt) {
+    // Attrapé ! On passe au ralenti un court instant avant la fin (effet dramatique)
+    if (this.catchTimer !== null) {
+      this.catchTimer -= dt;
+      if (this.catchTimer <= 0) this.gameOver();
+      return;
+    }
     if (this.gap <= 0) {
-      this.gameOver();
+      this.catchTimer = 0.4;
+      this.timeScale = 0.25;
+      this.emit('caught');
       return;
     }
     // Quand tout va bien, Gérard reprend de l'avance petit à petit
@@ -305,6 +364,8 @@ export class Game {
   gameOver() {
     this.gap = 0;
     this.status = 'over';
+    this.timeScale = 1;
+    this.catchTimer = null;
     const phrase = GAME_OVER_PHRASES[Math.floor(this.random() * GAME_OVER_PHRASES.length)];
     this.emit('gameover', { phrase });
   }
@@ -350,6 +411,7 @@ export class Game {
   collect(it) {
     it.taken = true;
     const m = this.multiplier;
+    const before = this.bonusPoints;
     switch (it.kind) {
       case 'coin':
         this.bonusPoints += SCORE.coin * m;
@@ -372,7 +434,7 @@ export class Game {
         this.multiplierTime = BONUS.multiplierDuration;
         break;
     }
-    this.emit('pickup', { kind: it.kind });
+    this.emit('pickup', { kind: it.kind, points: Math.round(this.bonusPoints - before) });
   }
 
   /** Flaque de pastis : ça glisse, Gérard part sur le côté. */

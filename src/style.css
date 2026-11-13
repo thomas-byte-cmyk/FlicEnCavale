@@ -408,3 +408,133 @@ body {
   from { transform: scale(1); }
   to { transform: scale(1.08); }
 }
+
+/* ---------- Grade et missions ---------- */
+.grade-box {
+  background: linear-gradient(135deg, #1e3a8a, #1d4ed8);
+  color: #fff;
+  border-radius: 14px;
+  padding: 8px 12px;
+  margin-bottom: 10px;
+}
+.grade-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+.grade-name {
+  font-size: 20px;
+  font-weight: 900;
+}
+.grade-next {
+  font-size: 12px;
+  opacity: 0.85;
+}
+.missions {
+  text-align: left;
+  margin-bottom: 10px;
+}
+.missions-title {
+  font-weight: 800;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+.missions-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+}
+.missions-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  margin-bottom: 4px;
+  background: #f1f5f9;
+  border-radius: 10px;
+}
+.missions-list li.done {
+  background: #bbf7d0;
+  font-weight: 700;
+}
+.missions-list li.fresh {
+  opacity: 0.7;
+}
+.mission-text {
+  flex: 1;
+}
+.mission-progress {
+  font-weight: 800;
+  font-size: 13px;
+  color: var(--bleu);
+  white-space: nowrap;
+}
+.howto {
+  text-align: left;
+  margin-bottom: 8px;
+}
+.howto summary {
+  cursor: pointer;
+  font-weight: 800;
+  color: var(--bleu);
+  padding: 6px 0;
+}
+.howto .btn-secondary {
+  margin-top: 4px;
+}
+
+/* ---------- Consigne du tutoriel ---------- */
+.hint {
+  position: absolute;
+  left: 50%;
+  top: 25%;
+  transform: translateX(-50%);
+  width: min(88%, 380px);
+  background: rgba(17, 24, 39, 0.82);
+  color: #fff;
+  border-radius: 18px;
+  padding: 10px 14px;
+  text-align: center;
+  pointer-events: none;
+  animation: bubblein 0.25s ease-out;
+}
+.hint-icon {
+  font-size: 46px;
+  line-height: 1.1;
+  animation: hintmove 0.7s ease-in-out infinite alternate;
+}
+.hint-text {
+  font-size: clamp(16px, 4.6vw, 21px);
+  font-weight: 900;
+}
+.hint[data-dir='up'] .hint-icon { --dx: 0px; --dy: -14px; }
+.hint[data-dir='down'] .hint-icon { --dx: 0px; --dy: 14px; }
+.hint[data-dir='left'] .hint-icon { --dx: -18px; --dy: 0px; }
+.hint[data-dir='right'] .hint-icon { --dx: 18px; --dy: 0px; }
+@keyframes hintmove {
+  from { transform: translate(0, 0); }
+  to { transform: translate(var(--dx, 0px), var(--dy, 0px)); }
+}
+
+/* ---------- Points qui s'envolent ---------- */
+.floaters {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.floater {
+  position: absolute;
+  top: 56%;
+  transform: translateX(-50%);
+  font-weight: 900;
+  font-size: 22px;
+  color: #facc15;
+  text-shadow: 0 2px 0 #92400e, 0 0 6px rgba(0, 0, 0, 0.4);
+  animation: floatup 0.9s ease-out forwards;
+}
+@keyframes floatup {
+  from { transform: translate(-50%, 0) scale(0.8); opacity: 1; }
+  to { transform: translate(-50%, -90px) scale(1.2); opacity: 0; }
+}
