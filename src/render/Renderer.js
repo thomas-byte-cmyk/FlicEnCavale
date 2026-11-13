@@ -8,7 +8,7 @@ import { World } from './World.js';
 import { makeGendarme, animateRunner, makeBlobShadow } from './characters.js';
 import { createObstacleModel } from './obstacleModels.js';
 import { Chasers } from './Chasers.js';
-import { createItemModel } from './itemModels.js';
+import { createItemModel, trapRingMaterial } from './itemModels.js';
 import { mat } from './shapes.js';
 import { Particles } from './Particles.js';
 import { Backdrop, makeSkyTexture } from './Backdrop.js';
@@ -67,6 +67,7 @@ export class Renderer {
     this.camX = 0;
     this.time = 0;
     this.shake = 0; // secousse de la caméra après un choc
+    this.dizzy = 0; // vertige bref après un verre de vin (1 → 0)
 
     this.resize();
   }
@@ -95,6 +96,7 @@ export class Renderer {
     this.runPhase = 0;
     this.camX = 0;
     this.shake = 0;
+    this.dizzy = 0;
   }
 
   /** Réagit aux événements du jeu qui ont un effet visuel. */
@@ -116,6 +118,12 @@ export class Renderer {
         this.particles.burst({ x: p.x, y: 1.0, z: -0.8, count: 14, colors: ['#facc15', '#fde68a', '#ffffff'], speed: 5, up: 3.5, size: 0.18 });
         break;
       case 'pickup':
+        if (ev.kind === 'vin') {
+          // Piège : pas d'étincelles dorées, mais des éclaboussures de vin et un vertige
+          this.particles.burst({ x: p.x, y: 1.3, count: 14, colors: ['#8e1b3a', '#7b2cbf', '#e63946'], speed: 3, up: 2.2, size: 0.13, drift: run * 0.3 });
+          this.dizzy = 1;
+          break;
+        }
         if (ev.kind !== 'coin') this.particles.burst({ x: p.x, y: 1.2, count: 12, colors: ['#fff59d', '#facc15', '#ffffff'], speed: 3, up: 2, size: 0.12 });
         break;
       case 'slip':
@@ -195,6 +203,18 @@ export class Renderer {
       // Les objets flottent et tournent sur eux-mêmes
       mesh.position.set(it.x, 0.95 + Math.sin(this.time * 3 + it.id) * 0.1, -(it.at - game.distance));
       mesh.userData.model.rotation.y = this.time * 2.5 + it.id;
+      const trap = mesh.userData.trap;
+      if (trap) {
+        // Le verre tangue comme un ivrogne…
+        mesh.userData.model.rotation.y = this.time * 1.2 + it.id;
+        mesh.userData.model.rotation.z = Math.sin(this.time * 4 + it.id) * 0.3;
+        // … et des spirales de vertige lui tournent autour de la tête
+        trap.swirls.forEach((sp, i) => {
+          const a = this.time * 2.6 + (i * Math.PI * 2) / 3;
+          sp.position.set(Math.cos(a) * 0.5, 1.0 + Math.sin(this.time * 5 + i) * 0.08, Math.sin(a) * 0.5);
+          sp.material.rotation = -this.time * 4;
+        });
+      }
     }
     for (const [id, mesh] of this.itemMeshes) {
       if (!alive.has(id)) {
@@ -214,6 +234,9 @@ export class Renderer {
     const p = game.player;
 
     this.world.update(game.distance);
+    // Anneau d'avertissement des verres de vin : pulse entre rouge et violet
+    const pulse = 0.5 + 0.5 * Math.sin(this.time * 6);
+    trapRingMaterial.color.setRGB(0.9 - pulse * 0.42, 0.22 - pulse * 0.05, 0.27 + pulse * 0.48);
     this.backdrop.update(dt || 0.016);
     this.syncObstacles(game);
     this.syncItems(game);
@@ -272,6 +295,11 @@ export class Renderer {
     this.camera.position.set(this.camX + shakeX + sway * 0.4, camY + shakeY + Math.sin(this.time * 1.7) * drunk * 0.25, camZ);
     this.camera.lookAt(this.camX * 0.6 + sway, this.portrait ? 0.2 : 1.0, -9);
     this.camera.rotation.z += Math.sin(this.time * 0.9) * (0.015 + drunk * 0.1);
+    // Verre de vin avalé : bref tourbillon de la caméra (la tête qui tourne)
+    if (this.dizzy > 0) {
+      this.dizzy = Math.max(0, this.dizzy - dt * 1.1);
+      this.camera.rotation.z += Math.sin(this.time * 9) * 0.12 * this.dizzy;
+    }
 
     this.renderer.render(this.scene, this.camera);
   }
