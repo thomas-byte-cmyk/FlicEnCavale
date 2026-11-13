@@ -60,7 +60,7 @@ export const BONUS = {
 export const SCORE = {
   perMeter: 1,
   coin: 10,
-  wine: 75,
+  wine: 0, // le verre de rouge ne rapporte rien : c'est un piège (il fait juste tourner la tête)
   coffee: 25,
   croissant: 25,
   kepi: 50,

@@ -16,6 +16,11 @@ import { Input } from './input/Input.js';
 import { UI } from './ui/UI.js';
 import { Sound } from './audio/Sound.js';
 import { vibrate } from './platform/haptics.js';
+import { QualityGovernor } from './platform/quality.js';
+import { gameplayStart, gameplayStop, commercialBreak, registerGame, ALLOW_EXTERNAL_LINKS } from './platform/portal.js';
+import { PauseController } from './game/pause.js';
+import { detectLang, setLang, getLang, t } from './i18n/index.js';
+import { translateDom } from './i18n/dom.js';
 import {
   loadBestScore,
   saveBestScore,
@@ -25,7 +30,14 @@ import {
   saveMissions,
   loadTutorialDone,
   saveTutorialDone,
+  loadLang,
+  saveLang,
 } from './platform/storage.js';
+
+// Langue : celle choisie auparavant, sinon celle du navigateur
+// (navigator.language d'abord : c'est aussi ce que demandent les portails comme Poki)
+setLang(detectLang(loadLang(), [navigator.language, ...(navigator.languages ?? [])].filter(Boolean)));
+translateDom(document);
 
 const game = new Game();
 const narrator = new Narrator();
@@ -35,36 +47,156 @@ const sound = new Sound();
 let best = loadBestScore();
 let muted = loadMuted();
 let sirenTimer = 0; // délai avant le prochain "pin-pon"
-let paused = false;
+let hidden = false; // page en arrière-plan (onglet caché, autre appli…)
+const pause = new PauseController(); // pause pendant la partie (avec 3-2-1 à la reprise)
+let gameOverTimer = null; // délai avant l'écran de fin (annulable)
+
+// Résolution adaptative : si le téléphone rame, on dessine moins de pixels
+const quality = new QualityGovernor(window.devicePixelRatio || 1);
+renderer.renderer.setPixelRatio(quality.ratio);
 
 sound.setMuted(muted);
 
 const ui = new UI({
-  onPlay: () => startGame(),
-  onTutorial: () => startGame({ tutorial: true }),
+  onPlay: () => playWithBreak(),
+  onTutorial: () => playWithBreak({ tutorial: true }),
   onHome: () => {
+    resetPause();
     game.reset();
     renderer.reset();
     ui.showTitle(best, missions);
   },
   onToggleMute: () => {
-    muted = !muted;
-    saveMuted(muted);
-    ui.setMuted(muted);
+    setMuted(!muted);
     sound.unlock();
-    sound.setMuted(muted);
   },
 });
+
+/** Coupe / remet le son (bouton du HUD, et plus tard le portail de jeux). */
+function setMuted(value) {
+  muted = value;
+  saveMuted(muted);
+  ui.setMuted(muted);
+  sound.setMuted(muted);
+}
 ui.setMuted(muted);
 ui.showTitle(best, missions);
+
+// Bouton « Défier un ami » : c'est un partage vers l'extérieur, interdit sur certains portails
+if (!ALLOW_EXTERNAL_LINKS) document.getElementById('btn-challenge')?.classList.add('hidden');
+
+// Bouton pause du HUD
+const pauseButton = document.getElementById('btn-pause');
+pauseButton?.addEventListener('pointerdown', (e) => e.stopPropagation()); // pas de swipe
+pauseButton?.addEventListener('click', () => pauseGame('user'));
+
+// Bouton de langue FR ⇄ EN (écran titre)
+const langButton = document.getElementById('btn-lang');
+langButton?.classList.remove('hidden');
+langButton?.addEventListener('pointerdown', (e) => e.stopPropagation()); // pas de swipe
+langButton?.addEventListener('click', () => {
+  setLang(getLang() === 'fr' ? 'en' : 'fr');
+  saveLang(getLang());
+  translateDom(document);
+  missions.relabel();
+  ui.showTitle(best, missions);
+});
 
 // En mode développement uniquement : accès au jeu depuis la console du navigateur (pour tester)
 if (import.meta.env.DEV) Object.assign(window, { __game: game, __missions: missions });
 
-const input = new Input(document.getElementById('app'), (action) => game.handleAction(action));
+const input = new Input(document.getElementById('app'), (action) => {
+  if (action === 'pause') {
+    // En pause : la touche lance le décompte 3-2-1 de l'écran de pause
+    if (pause.state === 'paused') ui.startCountdown();
+    else pauseGame('user');
+    return;
+  }
+  if (pause.running) game.handleAction(action); // pas de geste pris en compte pendant la pause
+});
+
+// --- Pause ---
+
+/**
+ * Met la partie en pause (onglet caché, touche Échap/P, et plus tard publicité).
+ * L'écran de pause (session DESIGN) gère le bouton « Reprendre » et le 3-2-1,
+ * puis appelle resumeGame(). Si on repasse en pause pendant le 3-2-1,
+ * l'écran de pause réapparaît (le décompte est annulé).
+ */
+function pauseGame(reason) {
+  if (game.status !== 'running') return false;
+  pause.pause(reason);
+  sound.suspend(true);
+  gameplayStop();
+  ui.showPause(() => resumeGame(), {
+    // Un « bip » à chaque chiffre du décompte (le son revient pour l'occasion)
+    onTick: () => {
+      if (!hidden) sound.suspend(false);
+      sound.play('lane');
+    },
+  });
+  return true;
+}
+
+/** Reprend la partie (le décompte 3-2-1 a déjà été affiché par l'écran de pause). */
+function resumeGame() {
+  if (hidden || !pause.resume({ countdown: 0 })) return false;
+  ui.hidePause();
+  sound.suspend(false);
+  return true;
+}
+
+/** Oublie toute pause en cours (nouvelle partie, retour au titre). */
+function resetPause() {
+  pause.reset();
+  ui.hidePause();
+}
+
+function handlePauseEvents(events) {
+  for (const ev of events) {
+    if (ev.type === 'resumed') {
+      ui.popup(t('countdownGo'), 'good');
+      sound.play('start');
+      gameplayStart();
+    }
+  }
+}
+
+/** Le joueur peut-il agir (gestes, clavier) ? Utilisé par le portail de jeux. */
+function setControlsEnabled(on) {
+  input.enabled = on && game.status === 'running';
+}
+
+// Commandes accessibles au futur SDK du portail (Poki…)
+registerGame({ pause: () => pauseGame('portal'), resume: resumeGame, setMuted, setControlsEnabled });
+
+/**
+ * Lance une partie, avec une pause publicitaire possible avant
+ * (sauf pour la toute première partie). Aujourd'hui, la pub ne fait rien.
+ */
+let gamesStarted = 0;
+let starting = false;
+async function playWithBreak(options) {
+  if (starting) return; // double-clic sur « Rejouer »
+  starting = true;
+  try {
+    if (gamesStarted > 0) {
+      input.enabled = false;
+      sound.suspend(true);
+      await commercialBreak();
+      sound.suspend(false);
+    }
+  } finally {
+    starting = false;
+  }
+  gamesStarted++;
+  startGame(options);
+}
 
 /** Lance une partie. Le tutoriel se joue automatiquement à la toute première partie. */
 function startGame({ tutorial = !loadTutorialDone() } = {}) {
+  clearTimeout(gameOverTimer); // au cas où un écran de fin était encore en attente
+  resetPause();
   sound.unlock(); // le son ne peut démarrer qu'après un clic de l'utilisateur
   renderer.reset();
   narrator.reset();
@@ -75,7 +207,8 @@ function startGame({ tutorial = !loadTutorialDone() } = {}) {
   sound.play('start');
   sound.startMusic();
   sirenTimer = 2;
-  if (!tutorial) ui.popup('Cours, Gérard, cours !', 'good');
+  gameplayStart();
+  if (!tutorial) ui.popup(t('goGerard'), 'good');
 }
 
 /** Sons associés aux événements du jeu. */
@@ -120,14 +253,14 @@ function handleEvents(events) {
       case 'hit':
         vibrate(ev.tutorial ? 60 : 140);
         sirenTimer = Math.min(sirenTimer, 0.3);
-        if (ev.tutorial) ui.popup("Pas grave, c'est l'entraînement !", 'bad');
+        if (ev.tutorial) ui.popup(t('tutorialHit'), 'bad');
         break;
       case 'slip':
         vibrate([40, 40, 40]);
         break;
       case 'caught':
         vibrate([60, 50, 250]);
-        ui.bubble('Au nom de la loi, on te tient !', 1600);
+        ui.bubble(t('caught'), 1600);
         break;
       case 'hint':
         ui.showHint(ev.icon, ev.text, ev.dir);
@@ -137,7 +270,7 @@ function handleEvents(events) {
         break;
       case 'tutorial-done':
         saveTutorialDone();
-        ui.popup("Bravo ! Maintenant, c'est pour de vrai !", 'good');
+        ui.popup(t('tutorialDone'), 'good');
         sound.play('kepi');
         break;
       case 'gameover':
@@ -152,17 +285,18 @@ function handleMissions(events) {
   const { done, promoted } = missions.update(game, events);
   if (!done.length) return;
   saveMissions(missions.toSave());
-  for (const m of done) ui.popup(`✅ Mission réussie : ${m.text}`, 'good');
+  for (const m of done) ui.popup(t('missionDone', { text: m.text }), 'good');
   sound.play('croissant');
   vibrate([30, 40, 30]);
   if (promoted) {
-    ui.popup(`⭐ Gérard est promu ${promoted.name} !`, 'good');
+    ui.popup(t('promoted', { name: promoted.name }), 'good');
     sound.play('kepi');
   }
 }
 
 function endGame(ev) {
   input.enabled = false;
+  gameplayStop();
   sound.stopMusic();
   sound.play('gameover');
   const score = game.score;
@@ -173,17 +307,34 @@ function endGame(ev) {
   }
   // On laisse un moment pour admirer le plaquage avant d'afficher l'écran de fin
   const distance = game.distance;
-  setTimeout(() => ui.showGameOver({ score, distance, best, newBest, phrase: ev.phrase ?? '', missions }), 1200);
+  gameOverTimer = setTimeout(() => ui.showGameOver({ score, distance, best, newBest, phrase: ev.phrase ?? '', missions }), 1200);
 }
 
 // --- Boucle principale ---
 let last = performance.now();
 function frame(now) {
-  // dt = temps écoulé (secondes), plafonné si l'image a pris du retard
-  const realDt = paused ? 0 : Math.min(0.05, (now - last) / 1000);
+  // On redemande l'image suivante tout de suite : même si une erreur survient
+  // plus bas, le jeu ne se fige pas définitivement.
+  requestAnimationFrame(frame);
+  const frameTime = (now - last) / 1000;
   last = now;
+  // Compte à rebours de reprise (en temps réel)
+  handlePauseEvents(pause.update(hidden ? 0 : Math.min(0.1, Math.max(0, frameTime))));
+  const frozen = hidden || !pause.running; // jeu figé (mais toujours dessiné)
+  // dt = temps écoulé (secondes), plafonné si l'image a pris du retard
+  // (Game.update découpe ensuite ce temps en petits pas pour rester précis)
+  const realDt = frozen ? 0 : Math.min(0.05, Math.max(0, frameTime));
   // Ralenti au moment d'être attrapé
   const dt = realDt * game.timeScale;
+
+  // Fluidité : on ne mesure que pendant la course (les menus ne comptent pas)
+  if (!frozen && game.status === 'running') {
+    const ratio = quality.sample(frameTime);
+    if (ratio !== null) {
+      renderer.renderer.setPixelRatio(ratio);
+      renderer.resize();
+    }
+  }
 
   const events = game.update(dt);
   handleEvents(events);
@@ -207,15 +358,41 @@ function frame(now) {
     }
   }
   renderer.render(game, dt);
-
-  requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
 
-window.addEventListener('resize', () => renderer.resize());
+// --- Redimensionnement et rotation de l'écran ---
+// Sur téléphone, la taille de l'écran n'est pas toujours à jour au moment de
+// l'événement (surtout sur iPhone après une rotation) : on recalcule à l'image
+// suivante, puis encore une fois un peu plus tard pour être sûr.
+let resizeQueued = false;
+let lastSize = '';
+function applyResize() {
+  resizeQueued = false;
+  const size = `${window.innerWidth}x${window.innerHeight}`;
+  if (size === lastSize) return;
+  lastSize = size;
+  renderer.resize();
+}
+function queueResize() {
+  if (!resizeQueued) {
+    resizeQueued = true;
+    requestAnimationFrame(applyResize);
+  }
+  setTimeout(applyResize, 300);
+}
+window.addEventListener('resize', queueResize);
+window.addEventListener('orientationchange', queueResize);
+window.visualViewport?.addEventListener('resize', queueResize);
 
-// Quand on quitte l'onglet ou l'appli, le jeu se met en pause
+// Quand on quitte l'onglet ou l'appli, la partie se met en pause.
+// Au retour, elle attend que le joueur appuie sur « Reprendre » (puis 3-2-1).
 document.addEventListener('visibilitychange', () => {
-  paused = document.hidden;
-  sound.suspend(paused);
+  hidden = document.hidden;
+  if (hidden) {
+    pauseGame('hidden');
+    sound.suspend(true);
+  } else if (pause.running) {
+    sound.suspend(false); // écran titre ou fin de partie : le son revient tout de suite
+  }
 });

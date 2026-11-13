@@ -3,6 +3,8 @@
 // Tout ce qui est du texte affiché par-dessus la 3D passe par ici.
 // =========================================================
 
+import { t } from '../i18n/index.js';
+
 const $ = (id) => document.getElementById(id);
 
 export class UI {
@@ -36,7 +38,22 @@ export class UI {
       titleMissions: $('title-missions'),
       goGrade: $('go-grade'),
       goMissions: $('go-missions'),
+      plate: $('hud-plate'),
+      chaseRow: $('gauge-chase-row'),
+      vignette: $('vignette'),
+      goPv: $('go-pv'),
+      challenge: $('btn-challenge'),
+      pause: $('pause-screen'),
+      pauseCard: document.querySelector('#pause-screen .card'),
+      pauseCount: $('pause-count'),
+      resume: $('btn-resume'),
     };
+    this.lastRun = { score: 0, distance: 0 };
+    this.pauseTimer = null;
+    this.onResume = null;
+    this.lastScore = 0;
+    this.lastHurt = 0;
+    this.dangerLevel = '';
     this.bubbleTimer = null;
     this.lastEffects = '';
 
@@ -45,6 +62,10 @@ export class UI {
     $('btn-home').addEventListener('click', onHome);
     $('btn-tutorial').addEventListener('click', onTutorial);
     this.el.mute.addEventListener('click', onToggleMute);
+    this.el.challenge.addEventListener('click', () => this.challengeFriend());
+    this.el.resume.addEventListener('click', () => this.startCountdown());
+    // Les boutons par-dessus le jeu ne doivent pas déclencher de swipe
+    for (const b of [this.el.resume, this.el.challenge]) b.addEventListener('pointerdown', (e) => e.stopPropagation());
     // Le bouton son ne doit pas déclencher de swipe
     this.el.mute.addEventListener('pointerdown', (e) => e.stopPropagation());
   }
@@ -55,14 +76,15 @@ export class UI {
       const g = missions.grade;
       this.el.titleGrade.textContent = g.name;
       this.el.titleGradeNext.textContent = g.next
-        ? `Prochain grade : ${g.next.name} (${missions.completedCount}/${g.next.missions} missions)`
-        : 'Grade maximum atteint. Respect, mon Général !';
+        ? t('nextGrade', { name: g.next.name, done: missions.completedCount, need: g.next.missions })
+        : t('maxGrade');
       this.renderMissions(this.el.titleMissions, missions, false);
     }
     this.el.title.classList.remove('hidden');
     this.el.gameover.classList.add('hidden');
     this.el.hud.classList.add('hidden');
     this.clearMessages();
+    this.setDanger(0);
   }
 
   showGame(best) {
@@ -70,7 +92,10 @@ export class UI {
     this.el.gameover.classList.add('hidden');
     this.el.hud.classList.remove('hidden');
     this.el.best.textContent = best;
+    this.lastScore = 0;
+    this.lastHurt = 0;
     this.clearMessages();
+    this.setDanger(0);
   }
 
   showGameOver({ score, distance, best, newBest, phrase, missions }) {
@@ -82,6 +107,12 @@ export class UI {
     this.el.goScore.textContent = score;
     this.el.goDistance.textContent = `${Math.floor(distance)} m`;
     this.el.goBest.textContent = best;
+    this.lastRun = { score, distance: Math.floor(distance) };
+    this.el.challenge.classList.remove('copied');
+    this.el.challenge.textContent = t('challenge');
+    // Numéro de procès-verbal (pour rire) : dépend de la partie
+    this.el.goPv.textContent = String((Math.floor(distance) * 37 + score) % 10000).padStart(4, '0');
+    this.setDanger(0);
     this.el.goNewBest.classList.toggle('hidden', !newBest);
     this.el.hud.classList.add('hidden');
     this.el.gameover.classList.remove('hidden');
@@ -98,8 +129,17 @@ export class UI {
     if (game.drunk !== undefined) this.el.drunk.style.width = `${game.drunk}%`;
     if (game.chaseRatio !== undefined) {
       // Jauge "collègues" : pleine = ils sont tout près !
-      this.el.chase.style.width = `${Math.round((1 - game.chaseRatio) * 100)}%`;
+      const near = 1 - game.chaseRatio;
+      this.el.chase.style.width = `${Math.round(near * 100)}%`;
+      this.setDanger(near);
     }
+    // Choc : flash rouge sur les bords de l'écran
+    const hurt = game.hurtTime ?? 0;
+    if (hurt > this.lastHurt + 0.1) this.retrigger(this.el.vignette, 'hit');
+    this.lastHurt = hurt;
+    // Le score « saute » quand on ramasse quelque chose
+    if (game.score >= this.lastScore + 10) this.retrigger(this.el.plate, 'bump');
+    this.lastScore = game.score;
     const mult = game.multiplier ?? 1;
     this.el.mult.classList.toggle('hidden', mult <= 1);
     this.el.mult.textContent = `×${mult}`;
@@ -113,6 +153,95 @@ export class UI {
       this.lastEffects = key;
       this.el.effects.innerHTML = chips.map((c) => `<span class="effect-chip">${c}</span>`).join('');
     }
+  }
+
+  /**
+   * « Défier un ami » : partage natif du téléphone (navigator.share),
+   * sinon copie du texte dans le presse-papiers.
+   */
+  async challengeFriend() {
+    const { score, distance } = this.lastRun;
+    const url = location.origin + location.pathname;
+    const text = t('challengeText', { score, distance });
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: 'FlicEnCavale', text, url });
+      } catch {
+        /* partage annulé : rien à faire */
+      }
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(`${text} ${url}`);
+      this.el.challenge.textContent = t('challengeCopied');
+      this.el.challenge.classList.add('copied');
+    } catch {
+      this.el.challenge.textContent = t('challengeFailed');
+    }
+  }
+
+  /**
+   * Écran de pause. Appelé quand on quitte l'appli (et visible au retour).
+   * Le bouton « Reprendre » lance un décompte 3-2-1, puis appelle onResume().
+   * @param {() => void} onResume
+   * @param {{ onTick?: (n: number) => void }} [options] onTick(3|2|1) : pour jouer un son à chaque chiffre
+   */
+  showPause(onResume, { onTick } = {}) {
+    clearTimeout(this.pauseTimer);
+    this.onResume = onResume;
+    this.onTick = onTick;
+    this.el.pause.classList.remove('hidden', 'counting');
+    this.el.pauseCard.classList.remove('hidden');
+    this.el.pauseCount.classList.add('hidden');
+  }
+
+  /** Vrai si l'écran de pause (ou son décompte) est affiché. */
+  get pauseVisible() {
+    return !this.el.pause.classList.contains('hidden');
+  }
+
+  /** Cache l'écran de pause sans reprendre (ex. retour à l'écran titre). */
+  hidePause() {
+    clearTimeout(this.pauseTimer);
+    this.el.pause.classList.add('hidden');
+  }
+
+  startCountdown() {
+    this.el.pauseCard.classList.add('hidden');
+    this.el.pause.classList.add('counting');
+    const count = this.el.pauseCount;
+    count.classList.remove('hidden');
+    const step = (n) => {
+      if (n === 0) {
+        this.hidePause();
+        this.onResume?.();
+        return;
+      }
+      count.textContent = n;
+      this.retrigger(count, 'tick');
+      this.onTick?.(n);
+      this.pauseTimer = setTimeout(() => step(n - 1), 900);
+    };
+    step(3);
+  }
+
+  /** Couleur de la jauge et voile rouge selon la proximité des collègues (0 = loin, 1 = attrapé). */
+  setDanger(near) {
+    const level = near > 0.72 ? 'danger' : near > 0.45 ? 'warn' : '';
+    if (level !== this.dangerLevel) {
+      this.dangerLevel = level;
+      this.el.chase.classList.toggle('warn', level === 'warn');
+      this.el.chase.classList.toggle('danger', level === 'danger');
+      this.el.chaseRow.classList.toggle('danger', level === 'danger');
+    }
+    this.el.vignette.style.opacity = near > 0.55 ? String(Math.min(1, (near - 0.55) / 0.35)) : '0';
+  }
+
+  /** Relance une animation CSS (même si elle est déjà en cours). */
+  retrigger(el, cls) {
+    el.classList.remove(cls);
+    void el.offsetWidth;
+    el.classList.add(cls);
   }
 
   /**
@@ -141,7 +270,7 @@ export class UI {
     if (showProgress) for (const m of missions.doneThisRun) add('✅', m.text, '', 'done');
     for (const m of missions.active) {
       // Mission arrivée pendant la partie : elle comptera à la prochaine (seulement utile en fin de partie)
-      if (m.fresh && showProgress) add('🆕', m.text, 'prochaine partie', 'fresh');
+      if (m.fresh && showProgress) add('🆕', m.text, t('nextRun'), 'fresh');
       else add('⬜', m.text, showProgress ? `${missions.progress(m)}/${m.target}` : '');
     }
   }

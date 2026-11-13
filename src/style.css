@@ -1,19 +1,43 @@
 /* =========================================================
    Styles de l'interface (écrans, HUD, bulles).
    Pensé d'abord pour un téléphone en mode portrait.
+
+   Direction artistique « Village en fête » :
+   - les couleurs du 14 Juillet (bleu gendarmerie, rouge Marianne, blanc crème)
+     + le jaune pastis et l'or des médailles ;
+   - un style « autocollant » : contour encre épais + ombre portée nette,
+     comme une BD ou un panneau routier ;
+   - les éléments reprennent des objets du quotidien français :
+     plaque de rue (score), galons (grade), procès-verbal (fin de partie).
+   Les mêmes couleurs sont utilisées en 3D : src/render/palette.js
    ========================================================= */
 
+/* Police des titres : Lilita One (licence libre OFL), fournie par le paquet npm
+   @fontsource/lilita-one et intégrée au jeu (aucun chargement depuis Internet). */
+@import '@fontsource/lilita-one/400.css';
+
 :root {
-  --bleu: #1d4ed8;
-  --bleu-fonce: #1e3a8a;
-  --rouge: #ef4444;
-  --jaune: #facc15;
-  --vert: #22c55e;
-  --blanc: #ffffff;
-  --encre: #111827;
-  --carte: rgba(255, 255, 255, 0.94);
-  --ombre: 0 8px 30px rgba(0, 0, 0, 0.25);
-  --police: 'Trebuchet MS', 'Segoe UI', system-ui, sans-serif;
+  --bleu: #1f3a93;
+  --bleu-vif: #2b59c3;
+  --bleu-pale: #dde6fb;
+  --rouge: #e63946;
+  --rouge-fonce: #b0202d;
+  --creme: #fff8e7;
+  --papier: #fffdf6;
+  --pastis: #f6c945;
+  --or: #f2b705;
+  --vert: #3f8f2a;
+  --vert-pale: #d7f0c8;
+  --vin: #8e1b3a;
+  --encre: #1b1b2f;
+  --gris: #5c5c70;
+  --trait: 3px solid var(--encre);
+  --ombre-nette: 0 4px 0 var(--encre);
+  --ombre-douce: 0 10px 30px rgba(27, 27, 47, 0.28);
+  /* Titres : Lilita One ; textes : polices déjà présentes sur l'appareil */
+  --police-titre: 'Lilita One', 'Arial Rounded MT Bold', 'Trebuchet MS', system-ui, sans-serif;
+  --police: system-ui, -apple-system, 'Segoe UI', Roboto, 'Trebuchet MS', sans-serif;
+  --police-pv: 'Courier New', ui-monospace, monospace;
 }
 
 * {
@@ -23,10 +47,11 @@
 
 html,
 body {
+  font-synthesis: none;
   margin: 0;
   height: 100%;
   overflow: hidden;
-  background: #7dd3fc;
+  background: #9fd3f2;
   color: var(--encre);
   font-family: var(--police);
   /* Empêche le zoom / défilement du navigateur pendant les swipes */
@@ -53,49 +78,161 @@ body {
   display: none !important;
 }
 
+.muted {
+  color: var(--gris);
+  font-weight: 600;
+}
+
+button:focus-visible,
+summary:focus-visible {
+  outline: 3px solid var(--pastis);
+  outline-offset: 3px;
+}
+
 /* ---------- Écrans (titre, game over) ---------- */
 .screen {
   position: absolute;
   inset: 0;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  /* (pas de centrage flex : la carte est centrée avec margin:auto,
+     ce qui permet de faire défiler une carte plus haute que l'écran) */
   padding: 16px;
   padding-top: max(16px, env(safe-area-inset-top));
   padding-bottom: max(16px, env(safe-area-inset-bottom));
-  background: linear-gradient(180deg, rgba(29, 78, 216, 0.55), rgba(239, 68, 68, 0.35));
+  background: radial-gradient(ellipse at center, rgba(27, 27, 47, 0.15), rgba(27, 27, 47, 0.55));
   overflow-y: auto;
   touch-action: pan-y;
+  animation: fadein 0.3s ease-out;
 }
 
 .card {
+  margin: auto;
   width: 100%;
   max-width: 420px;
-  background: var(--carte);
-  border-radius: 24px;
-  padding: 22px 20px;
-  box-shadow: var(--ombre);
+  background: var(--papier);
+  border-radius: 22px;
+  padding: 18px;
+  border: var(--trait);
+  box-shadow: 0 6px 0 var(--encre), var(--ombre-douce);
   text-align: center;
-  border: 4px solid var(--bleu);
 }
 
+/* Écran titre : on laisse voir Gérard (la 3D) au milieu */
+.screen-title {
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: linear-gradient(180deg, rgba(27, 27, 47, 0.35) 0%, rgba(27, 27, 47, 0) 30%, rgba(27, 27, 47, 0) 50%, rgba(27, 27, 47, 0.45) 100%);
+}
+.title-top {
+  width: 100%;
+  max-width: 460px;
+  text-align: center;
+}
+.screen-title .sheet {
+  margin: 0;
+}
+.sheet {
+  animation: slideup 0.45s cubic-bezier(0.2, 1.4, 0.4, 1);
+}
+/* Sur un écran large, la carte va à droite et Gérard reste à gauche */
+@media (min-aspect-ratio: 1/1) and (min-width: 700px) {
+  .screen-title {
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .screen-title .sheet {
+    margin: auto 0;
+    padding-right: max(5vw, 24px);
+  }
+  .title-top {
+    position: absolute;
+    top: max(24px, env(safe-area-inset-top));
+    left: 4vw;
+    max-width: 44vw;
+    text-align: left;
+  }
+  .title-top .tricolore {
+    margin-left: 0;
+  }
+  .title-top .pitch {
+    margin-left: 0;
+    padding: 10px 14px;
+    background: rgba(27, 27, 47, 0.62);
+    border-radius: 14px;
+    text-shadow: none;
+  }
+}
+
+/* Le logo : deux autocollants penchés, comme une affiche de fête de village */
 .logo {
-  font-size: clamp(36px, 11vw, 52px);
+  margin: 4px 0 0;
+  font-family: var(--police-titre);
+  font-size: clamp(40px, 13vw, 68px);
   font-weight: 900;
   letter-spacing: -1px;
   line-height: 1;
-  margin-bottom: 12px;
-  text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.12);
-  transform: rotate(-3deg);
+  white-space: nowrap;
 }
-.logo-flic { color: var(--bleu); }
-.logo-en { color: #9ca3af; font-size: 0.7em; }
-.logo-cavale { color: var(--rouge); }
+.logo > span {
+  display: inline-block;
+  -webkit-text-stroke: 2px var(--encre);
+  paint-order: stroke fill;
+  text-shadow: 0 5px 0 var(--encre);
+}
+.logo-flic {
+  color: #fff;
+  background: var(--bleu);
+  padding: 2px 12px 6px;
+  border: var(--trait);
+  border-radius: 14px;
+  box-shadow: var(--ombre-nette);
+  transform: rotate(-6deg);
+}
+.logo-en {
+  color: var(--pastis);
+  font-size: 0.5em;
+  margin: 0 -2px;
+  transform: translateY(-0.6em) rotate(-8deg);
+  position: relative;
+  z-index: 1;
+}
+.logo-cavale {
+  color: #fff;
+  background: var(--rouge);
+  padding: 2px 12px 6px;
+  border: var(--trait);
+  border-radius: 14px;
+  box-shadow: var(--ombre-nette);
+  transform: rotate(3deg);
+}
+.tricolore {
+  display: flex;
+  width: 120px;
+  height: 8px;
+  margin: 14px auto 0;
+  border: 2px solid var(--encre);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.tricolore i {
+  flex: 1;
+}
+.tricolore i:nth-child(1) { background: var(--bleu); }
+.tricolore i:nth-child(2) { background: #fff; }
+.tricolore i:nth-child(3) { background: var(--rouge); }
 
 .pitch {
   font-size: 15px;
   line-height: 1.4;
-  margin: 8px 0 14px;
+  margin: 10px auto 0;
+  max-width: 380px;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7), 0 0 12px rgba(0, 0, 0, 0.45);
+}
+.pitch strong {
+  color: var(--pastis);
 }
 
 .controls,
@@ -104,7 +241,7 @@ body {
   padding: 0;
   margin: 0 0 12px;
   text-align: left;
-  font-size: 14px;
+  font-size: 15px;
 }
 .controls li,
 .bonus-list li {
@@ -116,7 +253,8 @@ body {
   text-align: center;
 }
 .bonus-list {
-  background: #fef9c3;
+  background: #fdf1c7;
+  border: 2px solid var(--encre);
   border-radius: 12px;
   padding: 8px 12px;
 }
@@ -125,80 +263,176 @@ body {
   .kbd-hint { display: none; }
 }
 
+/* ---------- Boutons (gros, faciles à toucher, effet « on appuie dessus ») ---------- */
 .btn-primary,
 .btn-secondary {
   display: block;
   width: 100%;
-  border: none;
+  min-height: 48px;
+  border: var(--trait);
   border-radius: 16px;
-  font-family: inherit;
-  font-weight: 800;
+  font-family: var(--police-titre);
+  font-weight: 900;
   cursor: pointer;
   touch-action: manipulation;
+  transition: transform 0.06s, box-shadow 0.06s;
 }
 .btn-primary {
-  margin-top: 8px;
-  padding: 16px;
-  font-size: 22px;
-  color: var(--blanc);
+  margin-top: 6px;
+  padding: 14px;
+  font-size: 24px;
+  letter-spacing: 0.3px;
+  color: #fff;
   background: var(--rouge);
-  box-shadow: 0 6px 0 #b91c1c;
+  box-shadow: 0 6px 0 var(--encre);
+  text-shadow: 0 2px 0 var(--rouge-fonce);
+  animation: wiggle 2.6s ease-in-out infinite;
 }
 .btn-primary:active {
   transform: translateY(4px);
-  box-shadow: 0 2px 0 #b91c1c;
+  box-shadow: 0 2px 0 var(--encre);
+  animation: none;
 }
 .btn-secondary {
   margin-top: 12px;
-  padding: 12px;
-  font-size: 16px;
-  color: var(--bleu-fonce);
-  background: #dbeafe;
+  padding: 10px;
+  font-size: 17px;
+  color: var(--bleu);
+  background: var(--bleu-pale);
+  box-shadow: 0 3px 0 var(--encre);
+}
+.btn-secondary:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--encre);
 }
 
 .best-line {
-  margin-top: 12px;
-  font-size: 14px;
-  color: #4b5563;
+  margin-top: 10px;
+  font-size: 15px;
+  color: var(--gris);
+}
+.best-line strong {
+  color: var(--encre);
 }
 
-/* ---------- Game over ---------- */
-.go-title {
-  font-size: 40px;
+/* ---------- Game over : le procès-verbal ---------- */
+.pv {
+  position: relative;
+  background: var(--papier);
+  border-radius: 6px 6px 18px 18px;
+  text-align: left;
+  animation: slideup 0.4s cubic-bezier(0.2, 1.3, 0.4, 1);
+}
+/* Bord perforé en haut, comme un carnet à souches */
+.pv::before {
+  content: '';
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  top: 8px;
+  border-top: 3px dotted rgba(27, 27, 47, 0.35);
+}
+.pv-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+  font-family: var(--police-pv);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--bleu);
+}
+.pv-title {
+  margin-top: 4px;
+  font-family: var(--police-titre);
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--bleu);
+  border-bottom: 3px double var(--bleu);
+  padding-bottom: 4px;
+}
+/* Le tampon rouge */
+.stamp {
+  display: table;
+  margin: 14px auto 14px;
+  padding: 0 12px 2px;
+  background: rgba(255, 253, 246, 0.6);
+  font-family: var(--police-titre);
+  font-size: 30px;
   font-weight: 900;
   color: var(--rouge);
-  transform: rotate(-2deg);
+  border: 4px solid var(--rouge);
+  border-radius: 10px;
+  text-transform: uppercase;
+  transform: rotate(-8deg);
+  opacity: 0.92;
+  animation: stamp 0.35s 0.25s cubic-bezier(0.3, 1.6, 0.5, 1) both;
+}
+.pv-motif {
+  margin: 8px 0 0;
+  font-family: var(--police-pv);
+  font-size: 14px;
+  font-weight: 700;
+}
+.pv-field {
+  display: inline-block;
+  background: var(--bleu);
+  color: #fff;
+  border-radius: 4px;
+  padding: 0 6px;
+  margin-right: 4px;
+  font-size: 12px;
+  text-transform: uppercase;
 }
 .go-phrase {
   font-size: 17px;
   line-height: 1.4;
-  margin: 10px 0 16px;
+  margin: 8px 0 12px;
   font-style: italic;
 }
 .go-stats {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   gap: 8px;
   margin-bottom: 10px;
 }
 .go-stats > div {
+  flex: 1;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  background: #fff;
+  border: 2px solid var(--encre);
+  border-radius: 12px;
+  padding: 6px 4px;
 }
 .go-label {
   font-size: 12px;
+  font-weight: 700;
   text-transform: uppercase;
-  color: #6b7280;
+  color: var(--gris);
 }
 .go-value {
+  font-family: var(--police-titre);
   font-size: 24px;
   font-weight: 900;
   color: var(--bleu);
+  font-variant-numeric: tabular-nums;
 }
 .go-newbest {
+  text-align: center;
+  font-family: var(--police-titre);
+  font-size: 18px;
   font-weight: 900;
-  color: #b45309;
-  margin-bottom: 6px;
+  color: var(--encre);
+  background: var(--pastis);
+  border: var(--trait);
+  border-radius: 12px;
+  padding: 6px;
+  margin-bottom: 10px;
   animation: pulse 0.8s ease-in-out infinite alternate;
 }
 
@@ -216,35 +450,58 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  gap: 8px;
 }
-.hud-score {
+.hud-left {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+/* Le score façon plaque de rue parisienne : bleu, liseré blanc, bord vert */
+.plate {
   position: relative;
-  background: rgba(255, 255, 255, 0.85);
-  border-radius: 14px;
-  padding: 4px 12px;
-  min-width: 110px;
+  background: var(--bleu);
+  color: #fff;
+  border: 3px solid var(--encre);
+  border-radius: 12px;
+  padding: 3px 14px 4px;
+  min-width: 112px;
+  box-shadow: inset 0 0 0 2px var(--bleu), inset 0 0 0 4px #fff, var(--ombre-nette);
 }
 .hud-label {
   font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
-  color: #6b7280;
+  opacity: 0.85;
+  margin-top: 3px;
 }
 .hud-value {
-  font-size: 26px;
+  font-family: var(--police-titre);
+  font-size: 30px;
+  line-height: 1.05;
   font-weight: 900;
-  color: var(--bleu-fonce);
   font-variant-numeric: tabular-nums;
+  padding-bottom: 3px;
+}
+.plate.bump .hud-value {
+  animation: bump 0.25s ease-out;
 }
 .hud-mult {
   position: absolute;
-  right: -14px;
-  top: -6px;
-  background: var(--jaune);
+  right: -16px;
+  top: -10px;
+  background: var(--or);
+  color: var(--encre);
+  border: 2px solid var(--encre);
   border-radius: 10px;
-  padding: 2px 6px;
+  padding: 1px 7px;
+  font-family: var(--police-titre);
   font-weight: 900;
-  font-size: 14px;
-  transform: rotate(10deg);
+  font-size: 16px;
+  transform: rotate(12deg);
+  animation: pulse 0.5s ease-in-out infinite alternate;
 }
 .hud-right {
   display: flex;
@@ -252,100 +509,158 @@ body {
   gap: 8px;
 }
 .hud-best {
-  background: rgba(255, 255, 255, 0.85);
+  white-space: nowrap;
+  background: var(--creme);
+  border: 2px solid var(--encre);
   border-radius: 12px;
   padding: 6px 10px;
-  font-size: 13px;
-  font-weight: 700;
+  font-size: 15px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 3px 0 var(--encre);
 }
 .icon-btn {
   pointer-events: auto;
-  border: none;
-  background: rgba(255, 255, 255, 0.85);
+  border: 2px solid var(--encre);
+  background: var(--creme);
   border-radius: 12px;
   font-size: 20px;
-  width: 40px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   cursor: pointer;
   touch-action: manipulation;
+  box-shadow: 0 3px 0 var(--encre);
+}
+.icon-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--encre);
 }
 .gauges {
-  margin-top: 8px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  max-width: 260px;
+  gap: 5px;
+  width: min(230px, 58vw);
+  background: rgba(255, 248, 231, 0.88);
+  border: 2px solid var(--encre);
+  border-radius: 12px;
+  padding: 6px 8px;
 }
 .gauge {
-  display: flex;
+  display: grid;
+  grid-template-columns: 22px 74px 1fr;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
 }
 .gauge-icon {
-  font-size: 18px;
-  width: 24px;
+  font-size: 17px;
   text-align: center;
 }
+.gauge-name {
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
 .gauge-bar {
-  flex: 1;
   height: 12px;
-  background: rgba(255, 255, 255, 0.7);
+  background: #fff;
   border-radius: 6px;
   overflow: hidden;
-  border: 2px solid rgba(0, 0, 0, 0.15);
+  border: 2px solid var(--encre);
 }
 .gauge-fill {
   height: 100%;
   width: 0%;
-  transition: width 0.2s;
+  transition: width 0.2s, background-color 0.3s;
 }
 .gauge-fill.drunk {
-  background: linear-gradient(90deg, #f472b6, #9f1239);
+  background: repeating-linear-gradient(135deg, #b0244a 0 6px, var(--vin) 6px 12px);
 }
 .gauge-fill.chase {
-  background: linear-gradient(90deg, var(--vert), var(--jaune), var(--rouge));
+  background: var(--vert);
+}
+.gauge-fill.chase.warn {
+  background: #f08c00;
+}
+.gauge-fill.chase.danger {
+  background: var(--rouge);
+}
+.gauge.danger {
+  animation: shake 0.35s ease-in-out infinite;
 }
 .hud-effects {
-  margin-top: 6px;
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
 }
 .effect-chip {
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--pastis);
+  border: 2px solid var(--encre);
   border-radius: 10px;
-  padding: 3px 8px;
-  font-size: 13px;
-  font-weight: 800;
+  padding: 2px 8px;
+  font-size: 15px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 2px 0 var(--encre);
+}
+
+/* Voile rouge sur les bords de l'écran (danger / choc) */
+.vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(ellipse at center, transparent 68%, rgba(230, 57, 70, 0.38) 100%);
+  transition: opacity 0.3s;
+}
+.vignette.hit {
+  animation: hitflash 0.45s ease-out;
 }
 
 /* ---------- Popups et bulles ---------- */
+/* En portrait, les phrases s'affichent en bas (sous Gérard) pour ne jamais
+   cacher les obstacles qui arrivent au loin, au milieu de l'écran. */
 .popups {
   position: absolute;
   left: 0;
   right: 0;
-  top: 24%;
+  bottom: calc(max(22px, env(safe-area-inset-bottom)) + 70px);
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   pointer-events: none;
   padding: 0 16px;
 }
+@media (min-aspect-ratio: 1/1) {
+  /* En paysage, il y a de la place dans le ciel, entre le score et le record */
+  .popups {
+    bottom: auto;
+    top: max(12px, env(safe-area-inset-top));
+    flex-direction: column;
+    /* à gauche : score + jauges (~250 px) ; à droite : record + son (~170 px) */
+    left: 262px;
+    right: 176px;
+    padding: 0;
+  }
+
+}
 .popup {
-  max-width: 90%;
-  background: var(--jaune);
+  max-width: min(92%, 460px);
+  background: var(--pastis);
   color: var(--encre);
   font-weight: 900;
-  font-size: clamp(16px, 4.6vw, 22px);
-  padding: 8px 14px;
+  font-size: clamp(15px, 4.2vw, 19px);
+  line-height: 1.2;
+  padding: 6px 12px;
+  border: var(--trait);
   border-radius: 14px;
-  box-shadow: var(--ombre);
+  box-shadow: 0 3px 0 var(--encre);
   text-align: center;
   animation: popin 2.4s ease-out forwards;
 }
-.popup.bad { background: #fecaca; }
-.popup.good { background: #bbf7d0; }
+.popup.bad { background: #ffc9c9; }
+.popup.good { background: #c9efb4; }
 
 .bubble {
   position: absolute;
@@ -353,14 +668,14 @@ body {
   bottom: max(22px, env(safe-area-inset-bottom));
   transform: translateX(-50%);
   max-width: 88%;
-  background: var(--blanc);
+  background: #fff;
   border: 3px solid var(--bleu);
   border-radius: 18px;
   padding: 8px 14px;
   font-weight: 800;
-  font-size: clamp(14px, 4vw, 18px);
+  font-size: clamp(15px, 4vw, 18px);
   text-align: center;
-  box-shadow: var(--ombre);
+  box-shadow: 0 3px 0 var(--bleu), var(--ombre-douce);
   pointer-events: none;
   animation: bubblein 0.25s ease-out;
 }
@@ -389,96 +704,124 @@ body {
   animation: flash 0.5s ease-out;
 }
 
-@keyframes popin {
-  0% { transform: scale(0.4) rotate(-6deg); opacity: 0; }
-  12% { transform: scale(1.1) rotate(2deg); opacity: 1; }
-  20% { transform: scale(1) rotate(0); }
-  80% { opacity: 1; }
-  100% { transform: translateY(-30px); opacity: 0; }
-}
-@keyframes bubblein {
-  from { transform: translateX(-50%) scale(0.5); opacity: 0; }
-  to { transform: translateX(-50%) scale(1); opacity: 1; }
-}
-@keyframes flash {
-  from { opacity: 0.9; }
-  to { opacity: 0; }
-}
-@keyframes pulse {
-  from { transform: scale(1); }
-  to { transform: scale(1.08); }
-}
-
 /* ---------- Grade et missions ---------- */
 .grade-box {
-  background: linear-gradient(135deg, #1e3a8a, #1d4ed8);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  background: var(--bleu);
   color: #fff;
+  border: var(--trait);
   border-radius: 14px;
   padding: 8px 12px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+}
+/* Galons dorés (chevrons) */
+.grade-stripes {
+  flex: none;
+  width: 30px;
+  height: 34px;
+  background:
+    linear-gradient(135deg, transparent 0 40%, var(--or) 40% 60%, transparent 60%) 0 0 / 15px 12px repeat-y,
+    linear-gradient(-135deg, transparent 0 40%, var(--or) 40% 60%, transparent 60%) 15px 0 / 15px 12px repeat-y;
+}
+.grade-box > div:nth-child(2) {
+  flex: 1;
+}
+.grade-best {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--creme);
+  color: var(--encre);
+  border: 2px solid var(--encre);
+  border-radius: 10px;
+  padding: 2px 8px;
+  font-size: 16px;
+  line-height: 1.2;
+}
+.grade-best strong {
+  font-family: var(--police-titre);
+  font-variant-numeric: tabular-nums;
 }
 .grade-label {
   font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
   text-transform: uppercase;
-  opacity: 0.8;
+  opacity: 0.85;
 }
 .grade-name {
-  font-size: 20px;
+  font-family: var(--police-titre);
+  font-size: 21px;
   font-weight: 900;
+  line-height: 1.15;
 }
 .grade-next {
-  font-size: 12px;
-  opacity: 0.85;
+  font-size: 13px;
+  opacity: 0.9;
 }
 .missions {
   text-align: left;
   margin-bottom: 10px;
 }
 .missions-title {
-  font-weight: 800;
-  font-size: 14px;
-  margin-bottom: 4px;
+  font-weight: 900;
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+.missions-title .muted {
+  font-size: 13px;
 }
 .missions-list {
   list-style: none;
   margin: 0;
   padding: 0;
-  font-size: 14px;
+  font-size: 15px;
 }
 .missions-list li {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 5px 8px;
-  margin-bottom: 4px;
-  background: #f1f5f9;
+  padding: 6px 10px;
+  margin-bottom: 5px;
+  background: #fff;
+  border: 2px solid var(--encre);
   border-radius: 10px;
 }
 .missions-list li.done {
-  background: #bbf7d0;
-  font-weight: 700;
+  background: var(--vert-pale);
+  font-weight: 800;
 }
 .missions-list li.fresh {
-  opacity: 0.7;
+  opacity: 0.75;
+  border-style: dashed;
 }
 .mission-text {
   flex: 1;
 }
 .mission-progress {
-  font-weight: 800;
-  font-size: 13px;
+  font-weight: 900;
+  font-size: 14px;
   color: var(--bleu);
   white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
 .howto {
   text-align: left;
-  margin-bottom: 8px;
+  margin-top: 6px;
 }
 .howto summary {
   cursor: pointer;
   font-weight: 800;
   color: var(--bleu);
-  padding: 6px 0;
+  padding: 10px 0 4px;
+  min-height: 44px;
+  text-align: center;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 .howto .btn-secondary {
   margin-top: 4px;
@@ -488,34 +831,38 @@ body {
 .hint {
   position: absolute;
   left: 50%;
-  top: 25%;
+  bottom: calc(max(22px, env(safe-area-inset-bottom)) + 70px);
   transform: translateX(-50%);
   width: min(88%, 380px);
-  background: rgba(17, 24, 39, 0.82);
+  background: var(--encre);
   color: #fff;
+  border: 3px solid var(--pastis);
   border-radius: 18px;
-  padding: 10px 14px;
+  padding: 8px 14px 10px;
   text-align: center;
   pointer-events: none;
-  animation: bubblein 0.25s ease-out;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.35);
+  animation: hintin 0.25s ease-out;
+}
+@media (min-aspect-ratio: 1/1) {
+  .hint {
+    bottom: auto;
+    top: max(16px, env(safe-area-inset-top));
+  }
 }
 .hint-icon {
-  font-size: 46px;
+  font-size: 42px;
   line-height: 1.1;
   animation: hintmove 0.7s ease-in-out infinite alternate;
 }
 .hint-text {
-  font-size: clamp(16px, 4.6vw, 21px);
+  font-size: clamp(16px, 4.6vw, 20px);
   font-weight: 900;
 }
 .hint[data-dir='up'] .hint-icon { --dx: 0px; --dy: -14px; }
 .hint[data-dir='down'] .hint-icon { --dx: 0px; --dy: 14px; }
 .hint[data-dir='left'] .hint-icon { --dx: -18px; --dy: 0px; }
 .hint[data-dir='right'] .hint-icon { --dx: 18px; --dy: 0px; }
-@keyframes hintmove {
-  from { transform: translate(0, 0); }
-  to { transform: translate(var(--dx, 0px), var(--dy, 0px)); }
-}
 
 /* ---------- Points qui s'envolent ---------- */
 .floaters {
@@ -526,15 +873,293 @@ body {
 }
 .floater {
   position: absolute;
-  top: 56%;
+  top: 58%;
   transform: translateX(-50%);
+  font-family: var(--police-titre);
   font-weight: 900;
-  font-size: 22px;
-  color: #facc15;
-  text-shadow: 0 2px 0 #92400e, 0 0 6px rgba(0, 0, 0, 0.4);
+  font-size: 24px;
+  color: var(--pastis);
+  -webkit-text-stroke: 1.5px var(--encre);
+  paint-order: stroke fill;
+  text-shadow: 0 3px 0 var(--encre);
   animation: floatup 0.9s ease-out forwards;
+}
+
+/* ---------- Animations ---------- */
+@keyframes fadein {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes slideup {
+  from { transform: translateY(40px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+@keyframes stamp {
+  from { transform: scale(2.2) rotate(-12deg); opacity: 0; }
+  to { transform: scale(1) rotate(-8deg); opacity: 0.92; }
+}
+@keyframes popin {
+  0% { transform: scale(0.4) rotate(-6deg); opacity: 0; }
+  12% { transform: scale(1.08) rotate(2deg); opacity: 1; }
+  20% { transform: scale(1) rotate(0); }
+  80% { opacity: 1; }
+  100% { transform: translateY(-16px); opacity: 0; }
+}
+@keyframes bubblein {
+  from { transform: translateX(-50%) scale(0.5); opacity: 0; }
+  to { transform: translateX(-50%) scale(1); opacity: 1; }
+}
+@keyframes bubblein-corner {
+  from { transform: scale(0.5); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+@keyframes hintin {
+  from { transform: translateX(-50%) translateY(20px); opacity: 0; }
+  to { transform: translateX(-50%) translateY(0); opacity: 1; }
+}
+@keyframes hintmove {
+  from { transform: translate(0, 0); }
+  to { transform: translate(var(--dx, 0px), var(--dy, 0px)); }
+}
+@keyframes flash {
+  from { opacity: 0.9; }
+  to { opacity: 0; }
+}
+@keyframes hitflash {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes pulse {
+  from { transform: scale(1) rotate(var(--r, 0deg)); }
+  to { transform: scale(1.08) rotate(var(--r, 0deg)); }
+}
+.hud-mult { --r: 12deg; }
+@keyframes bump {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.25); color: var(--pastis); }
+  100% { transform: scale(1); }
+}
+@keyframes wiggle {
+  0%, 86%, 100% { transform: rotate(0); }
+  90% { transform: rotate(-2deg); }
+  94% { transform: rotate(2deg); }
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
 }
 @keyframes floatup {
   from { transform: translate(-50%, 0) scale(0.8); opacity: 1; }
   to { transform: translate(-50%, -90px) scale(1.2); opacity: 0; }
 }
+
+/* Accessibilité : moins d'animations décoratives si l'appareil le demande */
+@media (prefers-reduced-motion: reduce) {
+  .btn-primary,
+  .hud-mult,
+  .go-newbest,
+  .gauge.danger,
+  .sheet,
+  .pv {
+    animation: none !important;
+  }
+}
+
+/* Sur téléphone : cartes compactes (et on laisse voir Gérard sur l'écran titre) */
+@media (max-aspect-ratio: 1/1) {
+  .screen-title .sheet,
+  .pv {
+    padding: 12px 14px;
+  }
+  .missions-list li {
+    padding: 4px 8px;
+    margin-bottom: 4px;
+    font-size: 14px;
+  }
+  .go-phrase {
+    font-size: 16px;
+    margin: 6px 0 10px;
+  }
+  .go-value {
+    font-size: 21px;
+  }
+  .pv .btn-secondary {
+    margin-top: 10px;
+  }
+  .screen-title .grade-box {
+    padding: 6px 10px;
+    margin-bottom: 8px;
+  }
+  .screen-title .grade-stripes {
+    width: 24px;
+    height: 28px;
+    background-size: 12px 10px;
+    background-position: 0 0, 12px 0;
+  }
+  .screen-title .grade-name {
+    font-size: 18px;
+  }
+  .screen-title .grade-next {
+    font-size: 12px;
+  }
+  .screen-title .missions {
+    margin-bottom: 6px;
+  }
+  .screen-title .best-line {
+    margin-top: 6px;
+    font-size: 14px;
+  }
+  .screen-title .howto summary {
+    padding: 8px 0 0;
+    min-height: 40px;
+  }
+  .pitch {
+    font-size: 14px;
+  }
+  .logo {
+    font-size: clamp(36px, 11.5vw, 60px);
+  }
+}
+/* Petits écrans : on raccourcit l'histoire pour laisser de la place à Gérard */
+@media (max-aspect-ratio: 1/1) and (max-height: 760px) {
+  .pitch-long {
+    display: none;
+  }
+  .tricolore {
+    margin-top: 10px;
+  }
+}
+
+/* ---------- Bouton « Défier un ami » (fin de partie) ---------- */
+.btn-challenge {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  margin-top: 12px;
+  padding: 10px;
+  border: var(--trait);
+  border-radius: 16px;
+  background: var(--pastis);
+  color: var(--encre);
+  font-family: var(--police-titre);
+  font-size: 19px;
+  font-weight: 900;
+  cursor: pointer;
+  touch-action: manipulation;
+  box-shadow: 0 4px 0 var(--encre);
+}
+.btn-challenge:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--encre);
+}
+.btn-challenge.copied {
+  background: var(--vert-pale);
+}
+
+/* ---------- Bouton de langue (écran titre, coin en haut à droite) ---------- */
+.lang-btn {
+  position: absolute;
+  top: max(12px, env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
+  z-index: 2;
+  min-width: 64px;
+  min-height: 44px;
+  padding: 0 10px;
+  border: 2px solid var(--encre);
+  border-radius: 12px;
+  background: var(--creme);
+  color: var(--encre);
+  font-weight: 900;
+  font-size: 15px;
+  cursor: pointer;
+  box-shadow: 0 3px 0 var(--encre);
+  touch-action: manipulation;
+}
+
+/* ---------- Écran de pause ---------- */
+.pause-card {
+  max-width: 340px;
+}
+.pause-title {
+  font-family: var(--police-titre);
+  font-size: 40px;
+  font-weight: 900;
+  color: var(--bleu);
+}
+.pause-text {
+  margin: 6px 0 14px;
+  font-size: 16px;
+}
+.pause-count {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  font-family: var(--police-titre);
+  font-size: min(40vw, 220px);
+  font-weight: 900;
+  color: #fff;
+  -webkit-text-stroke: 6px var(--encre);
+  paint-order: stroke fill;
+  text-shadow: 0 10px 0 var(--encre);
+}
+.pause-count.tick {
+  animation: countdown 0.9s ease-out both;
+}
+@keyframes countdown {
+  0% { transform: scale(1.8); opacity: 0; }
+  25% { transform: scale(1); opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: scale(0.8); opacity: 0; }
+}
+#pause-screen.counting {
+  background: rgba(27, 27, 47, 0.25);
+}
+/* En portrait, quand le bouton de langue est affiché, on descend un peu le logo */
+@media (max-aspect-ratio: 1/1) {
+  .screen-title:has(#btn-lang:not(.hidden)) .title-top {
+    padding-top: 44px;
+  }
+}
+
+/* Paysage : la bulle des collègues va dans le coin en bas à droite (Gérard est au centre) */
+@media (min-aspect-ratio: 1/1) {
+  .bubble {
+    left: auto;
+    right: max(16px, env(safe-area-inset-right));
+    transform: none;
+    max-width: min(34%, 360px);
+    animation-name: bubblein-corner;
+  }
+  .bubble::after {
+    left: 70%;
+  }
+}
+
+/* Bouton pause du HUD (session CODE) : record sur une ligne, pause + son en dessous,
+   pour ne pas déborder sur les téléphones étroits. DESIGN peut affiner. */
+.hud-right {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  max-width: 100px;
+}
+/* DESIGN : icône pause dessinée (deux barres) au lieu de l'emoji, identique sur tous les appareils */
+#btn-pause {
+  font-size: 0;
+  position: relative;
+}
+#btn-pause::before,
+#btn-pause::after {
+  content: '';
+  position: absolute;
+  top: 12px;
+  width: 6px;
+  height: 16px;
+  border-radius: 2px;
+  background: var(--bleu);
+}
+#btn-pause::before { left: 13px; }
+#btn-pause::after { right: 13px; }

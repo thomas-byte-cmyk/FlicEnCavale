@@ -6,46 +6,48 @@
 
 import { makeObstacle } from './obstacles.js';
 import { makeItem } from './items.js';
+import { pack } from '../i18n/index.js';
 
 /** Fin du tutoriel (en mètres) : les vrais obstacles commencent après. */
 export const TUTORIAL_END = 225;
 
 /** Construit les étapes du tutoriel (obstacles déjà placés + consignes). */
 export function buildTutorial() {
+  const texts = pack().tutorial; // consignes dans la langue choisie
   return [
     {
       at: 45,
       icon: '👆',
       dir: 'up',
-      text: 'Glisse vers le HAUT pour sauter les barriques',
+      text: texts[0],
       obstacles: [0, 1, 2].map((l) => makeObstacle('barrique', l, 45)),
     },
     {
       at: 90,
       icon: '👇',
       dir: 'down',
-      text: 'Glisse vers le BAS pour passer sous la baguette',
+      text: texts[1],
       obstacles: [makeObstacle('baguette', null, 90)],
     },
     {
       at: 135,
       icon: '👉',
       dir: 'right',
-      text: 'Glisse à DROITE pour contourner la manif',
+      text: texts[2],
       obstacles: [0, 1].map((l) => makeObstacle('manif', l, 135)),
     },
     {
       at: 180,
       icon: '👈',
       dir: 'left',
-      text: 'Glisse DEUX FOIS à GAUCHE !',
+      text: texts[3],
       obstacles: [1, 2].map((l) => makeObstacle('manif', l, 180)),
     },
     {
       at: 205,
       icon: '☕',
       dir: '',
-      text: 'Attrape le café : il te dessoûle et sème les collègues',
+      text: texts[4],
       items: [makeItem('cafe', 0, 205)],
     },
   ].map((s) => ({ obstacles: [], items: [], shown: false, cleared: false, ...s }));

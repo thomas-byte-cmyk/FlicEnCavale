@@ -1,7 +1,8 @@
 # Publication automatique du jeu sur GitHub Pages.
 # À chaque envoi (push) sur la branche main, GitHub :
 #   1. récupère le code,
-#   2. installe les dépendances et compile le jeu (npm run build),
+#   2. installe les dépendances, lance les tests automatiques (npm test)
+#      et compile le jeu (npm run build) — si un test échoue, rien n'est publié,
 #   3. met en ligne le dossier "dist" sur GitHub Pages.
 name: Publier sur GitHub Pages
 
@@ -30,6 +31,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - run: npm test
       - run: npm run build
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

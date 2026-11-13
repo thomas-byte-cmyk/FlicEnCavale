@@ -7,7 +7,7 @@
 import * as THREE from 'three';
 import { ShapeBuilder, at, box } from './shapes.js';
 import { makeGendarme } from './characters.js';
-import { PROTEST_SLOGANS } from '../game/texts.js';
+import { PLACARD_KINDS, placardTexture, slipperySignTexture } from './pictograms.js';
 
 /** Barrique de vin, debout. */
 function barrique() {
@@ -21,16 +21,18 @@ function barrique() {
   return b.build();
 }
 
-/** Radar automatique sur trépied. */
+/** Radar automatique sur trépied (jaune vif : on le repère de loin sur le bitume gris). */
 function radar() {
   const b = new ShapeBuilder();
-  b.cyl(0.05, 0.05, 0.6, '#555555', 0, 0.3, 0, 6);
-  b.cyl(0.03, 0.03, 0.6, '#555555', -0.2, 0.25, 0.1, 6, 0, 0, 0.4);
-  b.cyl(0.03, 0.03, 0.6, '#555555', 0.2, 0.25, 0.1, 6, 0, 0, -0.4);
-  b.box(0.65, 0.4, 0.45, '#9ca3af', 0, 0.78, 0);
-  b.box(0.6, 0.06, 0.4, '#facc15', 0, 1.0, 0); // bande jaune
-  b.cyl(0.11, 0.11, 0.08, '#111827', -0.14, 0.78, 0.24, 10, Math.PI / 2); // objectif
-  b.box(0.16, 0.12, 0.04, '#fef3c7', 0.16, 0.8, 0.23); // flash
+  // Trépied rayé rouge et blanc, comme une borne de chantier
+  for (let i = 0; i < 3; i++) b.cyl(0.06, 0.06, 0.2, i % 2 ? '#ffffff' : '#e63946', 0, 0.1 + i * 0.2, 0, 6);
+  b.cyl(0.03, 0.03, 0.6, '#3a3a3a', -0.2, 0.25, 0.1, 6, 0, 0, 0.4);
+  b.cyl(0.03, 0.03, 0.6, '#3a3a3a', 0.2, 0.25, 0.1, 6, 0, 0, -0.4);
+  b.box(0.7, 0.42, 0.45, '#f6c945', 0, 0.8, 0); // boîtier jaune
+  b.box(0.72, 0.08, 0.47, '#1b1b2f', 0, 1.0, 0); // toit noir
+  b.box(0.5, 0.26, 0.04, '#1b1b2f', 0, 0.8, 0.23); // face avant
+  b.cyl(0.1, 0.1, 0.06, '#9fd4f5', -0.12, 0.8, 0.26, 10, Math.PI / 2); // objectif
+  b.box(0.14, 0.12, 0.04, '#ffffff', 0.14, 0.82, 0.26); // flash
   return b.build();
 }
 
@@ -159,8 +161,31 @@ function pastis() {
   glass.rotation.z = Math.PI / 2;
   glass.position.set(0.55, 0.1, -0.7);
   g.add(glass);
+  // Panneau « sol glissant » (triangle jaune, compris partout) posé devant la flaque
+  g.add(slipperySign());
   return g;
 }
+
+/** Petit chevalet jaune « sol glissant », vu de face par Gérard qui arrive. */
+let slipperyMat = null;
+function slipperySign() {
+  slipperyMat ??= new THREE.MeshBasicMaterial({ map: slipperySignTexture() });
+  const sign = new THREE.Group();
+  const panel = new THREE.Mesh(new THREE.PlaneGeometry(0.62, 0.62), slipperyMat);
+  panel.position.set(0, 0.36, 0);
+  panel.rotation.x = -0.18; // chevalet un peu incliné
+  const back = at(box(0.64, 0.64, 0.03, '#f6c945'), 0, 0.35, -0.08);
+  back.rotation.x = 0.25;
+  sign.add(back, panel);
+  sign.position.set(-0.75, 0, 1.05);
+  sign.rotation.y = 0.25;
+  return sign;
+}
+
+// Matériaux partagés par tous les agents (créés une seule fois : sinon chaque
+// agent en fabriquait de nouveaux qui n'étaient jamais libérés de la mémoire)
+const gloveMaterial = new THREE.MeshLambertMaterial({ color: '#ffffff' });
+const podiumMaterial = new THREE.MeshLambertMaterial({ color: '#f5f5f5' });
 
 /** Gendarme de la circulation, gants blancs et sifflet, face à Gérard. */
 function agent() {
@@ -168,11 +193,11 @@ function agent() {
   g.rotation.y = Math.PI; // il nous regarde arriver
   const { armR, armL, head } = g.userData;
   // Gants blancs
-  armR.children[1].material = armL.children[1].material = new THREE.MeshLambertMaterial({ color: '#ffffff' });
+  armR.children[1].material = armL.children[1].material = gloveMaterial;
   armR.rotation.x = -2.8; // bras levé : "STOP !"
   head.add(at(box(0.06, 0.05, 0.14, '#9ca3af'), 0.04, -0.1, -0.3)); // sifflet
   // Petite estrade
-  const podium = at(new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.5, 0.2, 12), new THREE.MeshLambertMaterial({ color: '#f5f5f5' })), 0, 0.1, 0);
+  const podium = at(new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.5, 0.2, 12), podiumMaterial), 0, 0.1, 0);
   const wrapper = new THREE.Group();
   g.position.y = 0.2;
   wrapper.add(podium, g);
@@ -182,44 +207,7 @@ function agent() {
 
 // --- Manifestants ---
 
-// Une texture par slogan (dessinée une seule fois sur un petit canvas)
-const sloganTextures = new Map();
-function sloganTexture(text) {
-  if (!sloganTextures.has(text)) {
-    const c = document.createElement('canvas');
-    c.width = 256;
-    c.height = 160;
-    const ctx = c.getContext('2d');
-    ctx.fillStyle = '#fffdf5';
-    ctx.fillRect(0, 0, 256, 160);
-    ctx.strokeStyle = '#111827';
-    ctx.lineWidth = 8;
-    ctx.strokeRect(4, 4, 248, 152);
-    ctx.fillStyle = ['#dc2626', '#1d4ed8', '#111827', '#15803d'][text.length % 4];
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    // Découpe le slogan en lignes qui tiennent sur la pancarte
-    const words = text.split(' ');
-    const lines = [];
-    let line = '';
-    ctx.font = 'bold 34px "Trebuchet MS", sans-serif';
-    for (const w of words) {
-      const test = line ? `${line} ${w}` : w;
-      if (ctx.measureText(test).width > 225 && line) {
-        lines.push(line);
-        line = w;
-      } else line = test;
-    }
-    lines.push(line);
-    const size = lines.length > 3 ? 28 : 34;
-    ctx.font = `bold ${size}px "Trebuchet MS", sans-serif`;
-    lines.forEach((l, i) => ctx.fillText(l, 128, 80 + (i - (lines.length - 1) / 2) * (size + 4)));
-    const tex = new THREE.CanvasTexture(c);
-    tex.colorSpace = THREE.SRGBColorSpace;
-    sloganTextures.set(text, tex);
-  }
-  return sloganTextures.get(text);
-}
+// (Les pancartes n'ont pas de texte : des pictogrammes compris par tous, voir pictograms.js.)
 
 const SHIRTS = ['#f97316', '#a855f7', '#22c55e', '#ec4899', '#eab308', '#06b6d4', '#ef4444'];
 const SKINS = ['#f2c29b', '#d9a066', '#8d5524', '#f5d0b0', '#c68642'];
@@ -248,13 +236,13 @@ function protester(holdsSign) {
   return b.build();
 }
 
-/** Pancarte avec un slogan, sur un manche. */
+/** Pancarte avec un pictogramme (cœur + baguette, radar barré…), sur un manche. */
 function placard() {
   const g = new THREE.Group();
   g.add(at(box(0.05, 0.9, 0.05, '#92400e'), 0, -0.45, 0));
   const board = new THREE.Mesh(
     new THREE.PlaneGeometry(1.05, 0.66),
-    new THREE.MeshBasicMaterial({ map: sloganTexture(pickRandom(PROTEST_SLOGANS)), side: THREE.DoubleSide }),
+    new THREE.MeshBasicMaterial({ map: placardTexture(pickRandom(PLACARD_KINDS)), side: THREE.DoubleSide }),
   );
   board.position.set(0, 0.3, 0.03);
   g.add(board);
