@@ -174,6 +174,20 @@ droit** de l'écran (masqués par les boutons de TikTok) ; finir par « Lien en 
 | 5 | **« Flashé à 42 km/h… à pied »** | Gros plan sur le flash du radar + la réplique, 2-3 flashs d'affilée. | « Gérard collectionne les PV » · *#radar #FlicEnCavale #humour* |
 | 6 | **« Bats mon score si t'es pas un képi »** | Écran de fin avec le score en gros, puis accéléré de la partie. | « Mets ton score en commentaire 👇 » · *#FlicEnCavale #defi* |
 
+### 2 scripts pour le public international (en anglais, mains seulement)
+
+À publier **après la version anglaise**, avec les textes à l'écran en anglais. Ils jouent sur le
+cliché « French village », notre identité à l'international (voir
+[01-positionnement.md § 1.4 bis](01-positionnement.md#14-bis--communication-en-anglais--le-cliché-français-comme-identité)).
+
+| # | Accroche (texte à 0 s) | Ce qu'on voit (15-25 s) | Texte de fin + légende |
+| --- | --- | --- | --- |
+| EN-1 | **« Rate how French this game is (1-10) »** | Les mains jouent ; un **compteur « French level »** en texte s'incrémente à chaque cliché : « Gendarme in a kepi: 2/10 », « Cow on the road: 4/10 », « Giant baguette: 6/10 », « Roundabout: 7/10 », « A strike: 9/10 », « Croissant power-up: 11/10 ». | « Free in your browser, link in bio 🥖 » · *#FrenchVillage #SoFrench #indiegame #FlicEnCavale* |
+| EN-2 | **« POV: you're a French cop and it's strike day »** | Gérard fonce vers la manif, les mains hésitent, swipe de dernière seconde pour la contourner ; zoom sur les pancartes en anglais (« FREE GÉRARD! », « LESS FINES, MORE PÉTANQUE! »). Puis une vache. Texte : « …and then a cow. Typical Tuesday. » | « Which sign would you add? 👇 » · *#France #Strike #OhLaLa #FlicEnCavale* |
+
+Variante facile de EN-1 à recycler : « Things that happen in every French village », un cliché
+par obstacle, même montage.
+
 **Après la traduction anglaise** : republier les meilleures vidéos avec les textes en anglais
 (« The only cop running from a breathalyzer test »), pour toucher un public plus large — utile
 pour les chiffres que regarde Poki.

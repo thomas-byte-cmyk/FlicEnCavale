@@ -1138,3 +1138,11 @@ summary:focus-visible {
     left: 70%;
   }
 }
+
+/* Bouton pause du HUD (session CODE) : record sur une ligne, pause + son en dessous,
+   pour ne pas déborder sur les téléphones étroits. DESIGN peut affiner. */
+.hud-right {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  max-width: 100px;
+}

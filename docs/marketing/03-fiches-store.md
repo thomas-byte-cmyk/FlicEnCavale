@@ -26,9 +26,9 @@
 Gérard le gendarme fuit ses collègues à travers un village plein de vaches, de tracteurs et de manifs !
 ```
 
-**Short description EN** :
+**Short description EN** (l'argument principal = le cliché du village français) :
 ```
-Gérard the French gendarme is on the run from his own colleagues! Dodge cows, tractors and protests.
+The most French chase ever: a gendarme in a kepi runs through a village of cows, baguettes and strikes!
 ```
 
 **Description FR** :
@@ -44,20 +44,25 @@ Réussis des missions pour faire monter Gérard en grade, de Gendarme stagiaire 
 Commandes : glisse à gauche / à droite / en haut / en bas (téléphone) ou les flèches (ordinateur).
 ```
 
-**Description EN** (à relire avec la traduction de la session CODE pour reprendre les mêmes noms) :
+**Description EN** (cliché « French village » en tête ; à aligner sur les noms choisis par la session CODE) :
 ```
-Run, Gérard, run! After the brigade party, Gérard's colleagues want him to take a breath test… and Gérard decides to make a run for it.
+Welcome to the most French village in the world. Cows on the road, tractors at walking pace, baguettes everywhere, a roundabout every 50 metres and, of course, a strike blocking the street.
 
-Swipe to switch lanes, jump over barrels, slide under the giant baguette, and dodge the cow, the tractor, the roundabout and the protest chanting "FREE GÉRARD!". Watch out for the slippery puddles!
+In the middle of it all: Gérard, a gendarme in his kepi, running for his life. After the brigade party, his colleagues want him to take a breath test… and Gérard has decided he'd rather run.
 
-☕ Grab a coffee to shake off your colleagues, 🥐 a croissant to become invincible, 🎖️ a golden kepi to double your score. Beware of the glass of red: it's a trap that makes Gérard stagger!
+🥖 DODGE THE FRENCH CLICHÉS
+Jump over barrels, slide under a giant baguette, swerve around the cow, the tractor, the roundabout and the protesters holding signs that say "FREE GÉRARD!" and "LESS FINES, MORE PÉTANQUE!".
 
-Complete missions to promote Gérard from Trainee Gendarme all the way to General.
+☕ COFFEE & CROISSANTS
+A coffee helps you shake off your colleagues, a croissant makes you unstoppable, a golden kepi doubles your score. The glass of red? A trap: Gérard starts to stagger.
+
+🎖️ FROM TRAINEE TO GENERAL
+Complete missions to climb the ranks, and enjoy dozens of absurd one-liners. Oh là là.
 
 Controls: swipe left / right / up / down (mobile) or arrow keys (desktop).
 ```
 
-**Catégories / tags Poki** (à choisir dans leur liste) : *Running*, *3D*, *Funny*, *Casual*, *Endless*, *Mobile*.
+**Catégories / tags Poki** (à choisir dans leur liste) : *Running*, *3D*, *Funny*, *Casual*, *Endless*, *Mobile* (+ *France* / *Europe* s'ils existent).
 
 **Captures** : `docs/marketing/captures/` (02, 03, 04, 06). **À refaire en anglais** une fois la
 traduction faite, et **sans verre de vin** sur la première capture.
@@ -95,9 +100,24 @@ Ordinateur : les flèches du clavier.
 Jeu parodique, sans aucun lien avec la Gendarmerie nationale. Aucun gendarme n'a soufflé dans un ballon pendant le développement.
 ```
 
+**Version anglaise de la page itch.io** (itch.io est surtout fréquenté par des anglophones :
+mettre **l'anglais en premier**, puis le texte français en dessous, séparés par un trait).
+
+Tagline EN :
+```
+A gendarme in a kepi runs through the most French village ever: cows, baguettes, tractors and strikes!
+```
+
+Description EN : reprendre la **Description EN** de la fiche Poki ci-dessus (§ 3.2), et
+ajouter à la fin :
+```
+Made in France, with love, coffee and a lot of clichés. Playable in English and French.
+This is a parody: no connection whatsoever with the French Gendarmerie.
+```
+
 **Genre** : `Action` · **Tags** (10 max) :
 ```
-endless-runner, 3D, funny, comedy, casual, mobile, french, singleplayer, short, runner
+endless-runner, 3D, funny, comedy, casual, mobile, france, parody, singleplayer, runner
 ```
 **Languages** : French, English · **Inputs** : Keyboard, Touchscreen · **Average session** : *A few minutes*
 
