@@ -173,7 +173,7 @@ export class Renderer {
         if (mesh.userData.agent || mesh.userData.disposable) {
           mesh.traverse((n) => {
             if (n.geometry) n.geometry.dispose();
-            if (n.material && n.material.map) n.material.dispose(); // pancartes (la texture du slogan est gardée)
+            if (n.material && n.material.map) n.material.dispose(); // pancartes (la texture du pictogramme est gardée)
           });
         }
         this.obstacleMeshes.delete(id);

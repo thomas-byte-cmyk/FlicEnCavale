@@ -7,7 +7,7 @@
 import * as THREE from 'three';
 import { ShapeBuilder, at, box } from './shapes.js';
 import { makeGendarme } from './characters.js';
-import { PROTEST_SLOGANS } from '../game/texts.js';
+import { PLACARD_KINDS, placardTexture, slipperySignTexture } from './pictograms.js';
 
 /** Barrique de vin, debout. */
 function barrique() {
@@ -161,7 +161,25 @@ function pastis() {
   glass.rotation.z = Math.PI / 2;
   glass.position.set(0.55, 0.1, -0.7);
   g.add(glass);
+  // Panneau « sol glissant » (triangle jaune, compris partout) posé devant la flaque
+  g.add(slipperySign());
   return g;
+}
+
+/** Petit chevalet jaune « sol glissant », vu de face par Gérard qui arrive. */
+let slipperyMat = null;
+function slipperySign() {
+  slipperyMat ??= new THREE.MeshBasicMaterial({ map: slipperySignTexture() });
+  const sign = new THREE.Group();
+  const panel = new THREE.Mesh(new THREE.PlaneGeometry(0.62, 0.62), slipperyMat);
+  panel.position.set(0, 0.36, 0);
+  panel.rotation.x = -0.18; // chevalet un peu incliné
+  const back = at(box(0.64, 0.64, 0.03, '#f6c945'), 0, 0.35, -0.08);
+  back.rotation.x = 0.25;
+  sign.add(back, panel);
+  sign.position.set(-0.75, 0, 1.05);
+  sign.rotation.y = 0.25;
+  return sign;
 }
 
 // Matériaux partagés par tous les agents (créés une seule fois : sinon chaque
@@ -189,44 +207,7 @@ function agent() {
 
 // --- Manifestants ---
 
-// Une texture par slogan (dessinée une seule fois sur un petit canvas)
-const sloganTextures = new Map();
-function sloganTexture(text) {
-  if (!sloganTextures.has(text)) {
-    const c = document.createElement('canvas');
-    c.width = 256;
-    c.height = 160;
-    const ctx = c.getContext('2d');
-    ctx.fillStyle = '#fffdf5';
-    ctx.fillRect(0, 0, 256, 160);
-    ctx.strokeStyle = '#111827';
-    ctx.lineWidth = 8;
-    ctx.strokeRect(4, 4, 248, 152);
-    ctx.fillStyle = ['#dc2626', '#1d4ed8', '#111827', '#15803d'][text.length % 4];
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    // Découpe le slogan en lignes qui tiennent sur la pancarte
-    const words = text.split(' ');
-    const lines = [];
-    let line = '';
-    ctx.font = 'bold 34px "Trebuchet MS", sans-serif';
-    for (const w of words) {
-      const test = line ? `${line} ${w}` : w;
-      if (ctx.measureText(test).width > 225 && line) {
-        lines.push(line);
-        line = w;
-      } else line = test;
-    }
-    lines.push(line);
-    const size = lines.length > 3 ? 28 : 34;
-    ctx.font = `bold ${size}px "Trebuchet MS", sans-serif`;
-    lines.forEach((l, i) => ctx.fillText(l, 128, 80 + (i - (lines.length - 1) / 2) * (size + 4)));
-    const tex = new THREE.CanvasTexture(c);
-    tex.colorSpace = THREE.SRGBColorSpace;
-    sloganTextures.set(text, tex);
-  }
-  return sloganTextures.get(text);
-}
+// (Les pancartes n'ont pas de texte : des pictogrammes compris par tous, voir pictograms.js.)
 
 const SHIRTS = ['#f97316', '#a855f7', '#22c55e', '#ec4899', '#eab308', '#06b6d4', '#ef4444'];
 const SKINS = ['#f2c29b', '#d9a066', '#8d5524', '#f5d0b0', '#c68642'];
@@ -255,13 +236,13 @@ function protester(holdsSign) {
   return b.build();
 }
 
-/** Pancarte avec un slogan, sur un manche. */
+/** Pancarte avec un pictogramme (cœur + baguette, radar barré…), sur un manche. */
 function placard() {
   const g = new THREE.Group();
   g.add(at(box(0.05, 0.9, 0.05, '#92400e'), 0, -0.45, 0));
   const board = new THREE.Mesh(
     new THREE.PlaneGeometry(1.05, 0.66),
-    new THREE.MeshBasicMaterial({ map: sloganTexture(pickRandom(PROTEST_SLOGANS)), side: THREE.DoubleSide }),
+    new THREE.MeshBasicMaterial({ map: placardTexture(pickRandom(PLACARD_KINDS)), side: THREE.DoubleSide }),
   );
   board.position.set(0, 0.3, 0.03);
   g.add(board);
