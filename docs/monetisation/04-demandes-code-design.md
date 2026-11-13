@@ -1,5 +1,13 @@
 # 04 — Demandes à transmettre aux sessions CODE et DESIGN
 
+> **Mise à jour du 13/11/2026 (plan sans Poki)** :
+> - ✅ **Toujours d'actualité** : étape 0 (C0-1 GoatCounter, C0-2 bouton Ko-fi, D0-1), C1-6
+>   (anglais), étape 2 (médailles cumulées et vestiaire, sans les pubs récompensées).
+> - 🆕 **C0-3** : un fichier .zip de la version web standard pour itch.io et Newgrounds. Voir plus bas.
+> - 🗄️ **Archivé** : D1-1 (adoucir le thème alcool, annulé : le vin rapporte de nouveau des
+>   points), C1-2 à C1-5 et C1-7 dans leur version Poki. Elles ne seront reprises que si
+>   CrazyGames accepte le jeu (étape 4 du README).
+
 Retour au [sommaire](README.md).
 
 Chaque demande a un identifiant (`C` = CODE, `D` = DESIGN, puis le numéro d'étape) pour
@@ -24,8 +32,18 @@ sur un portail ou un store, un jeu moins agréable est moins montré et rapporte
   jamais pendant la course. Il s'ouvre dans un nouvel onglet (`target="_blank" rel="noopener"`).
 - **Absent** des versions portails (voir C1-4).
 
-### D0-1 · Visuel Ko-fi
+### C0-3 · Fichiers pour itch.io et Newgrounds
+- itch.io et Newgrounds acceptent un .zip contenant `index.html` à la racine. `npm run build` produit
+  déjà `dist/` avec des chemins relatifs (`base: './'`). Il suffit d'ajouter une commande
+  `zip:web` sur le modèle de `zip:poki` (fichier `FlicEnCavale-web.zip`).
+- Vérifier que le jeu fonctionne **dans une iframe** (les deux sites l'affichent ainsi) :
+  focus clavier après le premier clic, plein écran, son après interaction.
+- Le bouton Ko-fi peut rester dans ces versions (itch.io et Newgrounds autorisent les liens).
+
+### D0-1 · Visuels Ko-fi, itch.io et Newgrounds
 - Image carrée de Gérard tenant une tasse de café, pour la page Ko-fi et le bouton.
+- itch.io : image de couverture **630×500** et 3 à 5 captures d'écran.
+- Newgrounds : icône **400×400** (format indicatif, à vérifier au moment de l'envoi).
 
 ---
 
@@ -35,7 +53,7 @@ sur un portail ou un store, un jeu moins agréable est moins montré et rapporte
 > [`05-poki-prerequis-techniques.md`](05-poki-prerequis-techniques.md) (SDK, pause pendant les pubs,
 > poids, langue, portrait). Les demandes ci-dessous en sont le résumé.
 
-### D1-1 · Désamorcer le thème alcool (✅ **validé par l'utilisateur le 13/11/2026**, implémenté par la session CODE)
+### D1-1 · ~~Désamorcer le thème alcool~~ (🗄️ **annulé le 13/11/2026** : l'alcool humoristique est conservé, le vin rapporte de nouveau des points)
 - 🍷 **Verre de rouge** : il ne donne **plus de points** (`SCORE.wine` à 0 ou retiré). Il reste
   un **piège** qui fait monter l'ivresse. Ajouter une bulle comique quand Gérard en prend un
   (« Hips… c'était pas de l'eau ? »).

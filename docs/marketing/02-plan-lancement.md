@@ -1,98 +1,56 @@
-# 2. Plan de lancement — 0 €, 1 à 3 h par semaine, Poki en priorité
+# 2. Plan de lancement — 0 €, 1 à 3 h par semaine, sans Poki
 
-> **Cadre validé par l'utilisateur (13/11/2026)** :
+> **Cadre validé par l'utilisateur (mis à jour le 13/11/2026)** :
 > - **Projet plaisir** : s'amuser, et si possible couvrir les petits frais.
 > - **Budget : 0 €.** Pas d'appli mobile pour l'instant.
 > - **Temps : 1 à 3 h par semaine.**
-> - **Vidéos : mains seulement** (ni visage ni voix).
-> - **Pas de presse locale.**
-> - **Jeu en français + anglais** (traduction faite par la session CODE).
-> - **Thème alcool adouci** : le verre de vin ne rapporte plus de points, c'est un piège comique.
-> - **Portail visé en priorité : Poki** (exclusivité web acceptée). **CrazyGames en repli** si Poki refuse.
+> - **Vidéos : mains seulement** (ni visage ni voix). **Pas de presse locale.**
+> - **Jeu en français + anglais.**
+> - **L'humour du jeu reste tel quel** : le verre de rouge rapporte de nouveau des points.
+> - **Poki abandonné** : ses règles interdisent explicitement l'alcool et les stéréotypes.
+>   Les anciens textes Poki sont archivés dans [archives/poki.md](archives/poki.md).
 >
-> Pour les règles « ce qu'on montre / ce qu'on évite », voir
+> Pour les règles « ce qu'on montre / ce qu'on évite » et l'âge conseillé, voir
 > [01-positionnement.md § 1.4](01-positionnement.md#14-️-risques-dimage-et-de-modération-à-lire-absolument).
 
 ## 2.0 L'idée générale
 
-1. **Poki d'abord.** Poki est un site de jeux gratuits très visité. S'il accepte le jeu, il
-   apporte des joueurs sans aucun effort marketing, et il **reverse une part des revenus
-   publicitaires**. C'est la seule piste réaliste pour « couvrir les petits frais » à 0 €.
-2. **Pendant que Poki étudie le jeu, une vidéo courte par semaine** (TikTok, Reels, Shorts) :
-   on tourne une fois et on publie sur les 3 plateformes. On fait connaître le jeu et on
-   apprend quelles blagues font réagir.
-3. **On ne publie pas le jeu sur d'autres sites de jeux** (itch.io, CrazyGames…) tant que Poki
-   n'a pas répondu : ça pourrait gâcher l'exclusivité (voir § 2.1).
+1. **Deux maisons pour le jeu** : **GitHub Pages** (notre adresse actuelle, rien à faire) et
+   **itch.io** (la vitrine des jeux indépendants, avec une communauté et des commentaires).
+   Ensuite, si on a le temps : **Newgrounds** et **Game Jolt**, deux sites communautaires qui
+   acceptent l'humour pour ados et adultes grâce à leur système de classification.
+2. **Une vidéo courte par semaine** (TikTok, Reels, Shorts), filmée « mains seulement » : on
+   tourne une fois et on publie sur les 3 plateformes.
+3. **On annonce clairement l'âge conseillé (12 ans et plus)** et on assume un humour bon enfant
+   pour ados et adultes, plutôt que « pour toute la famille » (voir § 2.1).
 4. **La Sainte-Geneviève (jeudi 26 novembre 2026)**, fête des gendarmes, reste notre petite
    date « événement » pour une vidéo.
 
-## 2.1 ⚠️ Poki, l'exclusivité web, itch.io et GitHub Pages
+## 2.1 Où publier le jeu (et ce que chaque site accepte)
 
-### Ce que demande Poki (d'après ce que j'ai pu vérifier)
+> ⚠️ Je n'ai pas pu ouvrir les pages de règles de ces sites depuis mon environnement (accès
+> réseau bloqué). Ce qui suit vient de résumés de recherche : **relis les règles de chaque site
+> au moment de t'inscrire** (lien « Guidelines », « Rules » ou « Terms » en bas de leurs pages).
 
-Je n'ai pas pu ouvrir directement les pages de Poki depuis mon environnement : ce qui suit
-vient de leur site pour développeurs **tel que résumé par des moteurs de recherche** et de
-guides tiers. **À relire sur `developers.poki.com` / `sdk.poki.com` avant de signer quoi que ce soit.**
-
-- **Exclusivité web** : avec un accord exclusif, le jeu n'est publié **que sur Poki pour tout
-  le « web ouvert »**. Ça inclut les autres sites de jeux, mais aussi les plateformes comme
-  Discord ou YouTube Playables.
-- **Ce qui reste autorisé** : **Steam, les stores mobiles (App Store, Google Play) et les
-  consoles** ne sont pas concernés. Une future appli mobile reste donc possible.
-- **Durée** : plusieurs années (les sources parlent de **5 ou 7 ans par défaut**) → lire le
-  contrat proposé.
-- **Revenus** : sur un accord exclusif, le développeur touche une part des revenus
-  publicitaires (les sources parlent de **50 % sur les joueurs amenés par Poki**, et davantage
-  sur les joueurs que tu amènes toi-même grâce à ton lien). Une **licence non exclusive** (paiement
-  forfaitaire unique) existerait aussi.
-- **Accès** : la plateforme « Poki for Developers » a été annoncée **en accès limité (bêta
-  fermée)** à certaines périodes : il faut parfois s'inscrire et attendre une invitation.
-- **Sélection** : une équipe regarde chaque jeu, puis le jeu passe des **tests avec de vrais
-  joueurs** (« Player Fit Test », puis « Web Fit Test »). Poki garde le jeu seulement si les
-  joueurs jouent longtemps et reviennent.
-- **Technique (travail de la session CODE)** : intégrer le **kit Poki (SDK)** (pubs, début et
-  fin de partie), avoir un jeu **léger** (un guide parle d'un premier chargement sous **8 Mo**),
-  et l'anglais aide beaucoup.
-
-### Conséquences pour nos autres liens
-
-| Où | Avant la réponse de Poki | Si Poki accepte (exclusivité) | Si Poki refuse |
+| Site | Priorité | Humour « alcool léger » accepté ? | Ce qu'il faut savoir |
 | --- | --- | --- | --- |
-| **GitHub Pages** (`thomas-byte-cmyk.github.io/FlicEnCavale`) | ✅ On garde : c'est notre lien de test pour les amis et les vidéos. | ⚠️ Le jeu **ne doit probablement plus être jouable ici**. Solution : remplacer la page par une **redirection automatique vers la page Poki** (rien n'est hébergé, c'est juste un panneau « par ici »). Ainsi, **tous les liens déjà publiés dans les vidéos continuent de marcher**. → à demander à la session CODE le moment venu, et à faire valider par Poki. | ✅ On garde. |
-| **itch.io** | ⏸️ **On attend.** Ne pas mettre de version jouable. | ❌ Pas de version jouable. Au mieux une page de présentation avec un lien vers Poki, **seulement si Poki l'accepte par écrit**. | ✅ On publie (fiche prête dans [03-fiches-store.md](03-fiches-store.md)). |
-| **CrazyGames** | ⏸️ On attend. | ❌ Non (autre site de jeux web). | ✅ Plan B : on soumet (§ 2.6). |
-| **Vidéos TikTok/Reels/Shorts** | ✅ Avec le lien GitHub Pages. | ✅ Le lien redirige vers Poki : rien à changer. | ✅ Rien à changer. |
+| **GitHub Pages** (notre adresse actuelle) | ✅ Déjà en ligne | ✅ Oui (c'est notre site) | Rien à faire. C'est le lien des vidéos. |
+| **itch.io** | ✅ Semaine 2 | ✅ Très probablement : itch.io n'impose pas de classification d'âge ; il demande seulement de signaler le contenu **adulte** (sexuel, très violent), ce qui n'est **pas** notre cas. | On indique nous-mêmes l'âge conseillé dans la description (§ 3 de la fiche). |
+| **Newgrounds** | 🟡 Semaine 4 ou après | ✅ Probablement, avec la bonne classification : Newgrounds classe chaque œuvre **E / T / M / A**, et ses consignes indiquent que **la note E (tout public) exclut l'alcool**. Il faudra donc choisir **T (Teen, ados)**. | Communauté anglophone très active, qui aime l'humour décalé. Les nouvelles œuvres peuvent passer par une phase de vote du public. |
+| **Game Jolt** | 🟡 Après le mois 1 | ✅ Probablement : Game Jolt a son propre questionnaire de **maturité** à remplir pour chaque jeu ; répondre honnêtement (« références à l'alcool, humoristiques »). | Plutôt anglophone, public jeune ; la note obtenue filtrera qui voit le jeu. |
+| **CrazyGames** | ❌ Déconseillé | ⚠️ **Probablement le même problème que Poki.** Leur FAQ développeurs dit refuser les jeux qui ne respectent pas les **critères PEGI 12** ou qui ont des « thèmes inappropriés ». Je n'ai pas trouvé de règle qui cite l'alcool mot pour mot, mais un personnage qui boit du vin **et gagne des points en buvant** risque d'être jugé au-delà de PEGI 12, ou « thème inapproprié » pour leur public jeune. | Si l'utilisateur veut tenter quand même : relire leurs « Developer Requirements » et leur poser la question avant d'intégrer leur kit. |
+| **Poki** | ❌ Abandonné | ❌ Non : alcool et stéréotypes explicitement interdits (lu par l'utilisateur). | Archivé : [archives/poki.md](archives/poki.md). |
 
-👉 **Règle simple : tant que Poki n'a pas répondu, le jeu n'est jouable qu'à un seul endroit,
-GitHub Pages.** Et on demande clairement à Poki, dans l'échange, si la redirection GitHub
-Pages → Poki leur convient.
-
-### Soumettre le jeu à Poki — pas à pas
-
-> À faire **après** que la session CODE a terminé : version anglaise, kit Poki (SDK), jeu léger.
-> Ce n'est pas à toi de coder ça ; ton rôle est de créer le compte et de remplir la fiche.
-
-1. Aller sur **developers.poki.com** (le portail des développeurs de Poki).
-2. **Sign up / Créer un compte** avec l'e-mail dédié au jeu (voir § 2.2). Si le portail indique
-   une **liste d'attente** (« waitlist », « closed beta »), s'y inscrire et noter la date : c'est normal.
-3. Une fois connecté : **Add a game / Submit a game**.
-4. Remplir :
-   - **Nom** : `Flic en Cavale` (et le nom anglais choisi avec la session CODE, ex. *Cop on the Run*).
-   - **Description** : textes prêts dans [03-fiches-store.md § 3.2](03-fiches-store.md#32-poki-priorité).
-   - **Fichiers du jeu** : un `.zip` du jeu compilé avec le kit Poki. **Demande à la session CODE
-     de te le fournir** (« donne-moi le zip Poki de FlicEnCavale »).
-   - **Captures / vidéo** : celles de `docs/marketing/captures/` (en refaire en anglais une fois traduit).
-5. Envoyer, puis **répondre vite** aux messages de l'équipe Poki (ils peuvent demander des
-   modifications). Les tests avec joueurs prennent **quelques semaines** en général.
-6. **Avant d'accepter un contrat** : lire la durée de l'exclusivité, la part des revenus et
-   poser la question de la redirection GitHub Pages (§ ci-dessus). Si un point n'est pas clair,
-   demande-le à Poki **par écrit**.
+**Pourquoi le même zip sert partout** : itch.io, Newgrounds et Game Jolt acceptent tous un jeu
+HTML5 envoyé sous forme de **fichier `.zip`** (avec `index.html` à la racine). Demande-le à la
+session CODE (« donne-moi le zip web de FlicEnCavale, version sans kit Poki ») : il n'y a rien
+à installer de ton côté.
 
 ## 2.2 Comptes à créer (1 h, une seule fois)
 
 > Crée d'abord une **adresse e-mail dédiée** au jeu (par exemple une adresse Gmail gratuite
-> `flicencavale.jeu@…`). Elle servira pour Poki, TikTok, Instagram, YouTube, et plus tard
-> pour recevoir les paiements de Poki. Ça sépare ta vie perso du jeu.
+> `flicencavale.jeu@…`). Elle servira pour itch.io, Newgrounds, TikTok, Instagram, YouTube, et plus tard
+> pour recevoir d'éventuels dons. Ça sépare ta vie perso du jeu.
 
 ### TikTok
 
@@ -162,6 +120,9 @@ mois), puis monter et publier une vidéo par semaine.
 
 ### Les 6 scripts (sans voix, texte à l'écran)
 
+> « Le piège du verre de rouge » (ancienne vidéo 4) est **retiré** : le vin rapporte de nouveau
+> des points, ce n'est plus un piège. Remplacé par « Le café, c'est la vie ».
+
 Règles : accroche lisible dès la 1re seconde ; laisser libres le **bas (≈ 20 %) et le bord
 droit** de l'écran (masqués par les boutons de TikTok) ; finir par « Lien en bio 👇 ».
 
@@ -170,27 +131,23 @@ droit** de l'écran (masqués par les boutons de TikTok) ; finir par « Lien en 
 | 1 | **« Le seul gendarme qui fuit un contrôle »** | Les mains jouent ; Gérard esquive une vache puis un tracteur ; bulle des collègues « Gérard, souffle dans le ballon, ça ne fait pas mal ! ». | « Jeu gratuit, lien en bio » · *Cours, Gérard, cours ! 🚔 #FlicEnCavale #jeumobile #humour #france* |
 | 2 | **« POV : tu cours dans ton village un dimanche matin »** | Uniquement les obstacles français, un petit texte sur chacun : « la vache de M. Durand », « le tracteur à 15 km/h », « le rond-point », « la baguette géante », « la manif ». | « C'est quoi le pire obstacle de ton village ? 👇 » · *#FlicEnCavale #village #pov* |
 | 3 | **« Bonne Sainte-Geneviève aux gendarmes 🫡 »** (publier le **jeudi 26/11**) | « Le 26 novembre, les gendarmes fêtent la Sainte-Geneviève »… « Gérard, lui, a un peu trop fêté » → poursuite. | « Respect aux vrais gendarmes. Gérard, lui, est en cavale. » · *#SainteGeneviève #FlicEnCavale* |
-| 4 | **« Le piège du verre de rouge 🍷😵 »** | Les mains hésitent… attrapent le verre de rouge → Gérard titube, la caméra tangue, les collègues se rapprochent, **zéro point gagné**. Puis un café ☕ : il se redresse. | « Morale : prends le café. » · *Le café, c'est la vie ☕ #FlicEnCavale* (Bon message : l'alcool = piège. Très « safe » pour les algorithmes.) |
+| 4 | **« Le café, c'est la vie ☕ »** | La jauge d'ivresse 🍷 est haute : Gérard titube, la caméra tangue, les collègues se rapprochent. Les mains attrapent un café ☕ : la jauge baisse, Gérard se redresse et sème ses collègues. **On ne montre pas le verre de vin en gros plan.** | « Morale : toujours avoir un café sur soi. » · *☕ #FlicEnCavale #cafe #jeumobile* (Message « le café sauve Gérard » : sûr pour les algorithmes.) |
 | 5 | **« Flashé à 42 km/h… à pied »** | Gros plan sur le flash du radar + la réplique, 2-3 flashs d'affilée. | « Gérard collectionne les PV » · *#radar #FlicEnCavale #humour* |
 | 6 | **« Bats mon score si t'es pas un képi »** | Écran de fin avec le score en gros, puis accéléré de la partie. | « Mets ton score en commentaire 👇 » · *#FlicEnCavale #defi* |
 
 ### 2 scripts pour le public international (en anglais, mains seulement)
 
-À publier **après la version anglaise**, avec les textes à l'écran en anglais. Ils jouent sur le
-cliché « French village », notre identité à l'international (voir
-[01-positionnement.md § 1.4 bis](01-positionnement.md#14-bis--communication-en-anglais--le-cliché-français-comme-identité)).
+À publier quand la version anglaise est en ligne, avec les textes à l'écran en anglais. Ton :
+**une lettre d'amour au village français**, on rit *avec* lui, pas *de* lui (voir
+[01-positionnement.md § 1.4 bis](01-positionnement.md#14-bis--communication-en-anglais--un-village-français-raconté-avec-tendresse)).
 
 | # | Accroche (texte à 0 s) | Ce qu'on voit (15-25 s) | Texte de fin + légende |
 | --- | --- | --- | --- |
-| EN-1 | **« Rate how French this game is (1-10) »** | Les mains jouent ; un **compteur « French level »** en texte s'incrémente à chaque cliché : « Gendarme in a kepi: 2/10 », « Cow on the road: 4/10 », « Giant baguette: 6/10 », « Roundabout: 7/10 », « A strike: 9/10 », « Croissant power-up: 11/10 ». | « Free in your browser, link in bio 🥖 » · *#FrenchVillage #SoFrench #indiegame #FlicEnCavale* |
-| EN-2 | **« POV: you're a French cop and it's strike day »** | Gérard fonce vers la manif, les mains hésitent, swipe de dernière seconde pour la contourner ; zoom sur les pancartes en anglais (« FREE GÉRARD! », « LESS FINES, MORE PÉTANQUE! »). Puis une vache. Texte : « …and then a cow. Typical Tuesday. » | « Which sign would you add? 👇 » · *#France #Strike #OhLaLa #FlicEnCavale* |
+| EN-1 | **« Things I love about French villages »** | Les mains jouent ; un petit texte affectueux sur chaque élément : « The cow who owns the road 🐄 », « The tractor in no hurry at all 🚜 », « The bakery's giant baguette 🥖 », « A roundabout for every 200 people », « Bunting all year round 🎉 ». | « Free in your browser, link in bio » · *#FrenchVillage #France #indiegame #FlicEnCavale* |
+| EN-2 | **« The friendliest protest in France »** | Gérard arrive sur la manif, swipe de dernière seconde pour la contourner ; zoom sur les pancartes en anglais (« FREE GÉRARD! », « LESS FINES, MORE PÉTANQUE! »). Puis une vache traverse. Texte : « …and then a cow. Village life. » | « Which sign would you add? 👇 » · *#France #OhLaLa #FlicEnCavale* |
 
-Variante facile de EN-1 à recycler : « Things that happen in every French village », un cliché
-par obstacle, même montage.
-
-**Après la traduction anglaise** : republier les meilleures vidéos avec les textes en anglais
-(« The only cop running from the breathalyser »), pour toucher un public plus large — utile
-pour les chiffres que regarde Poki.
+**Après la traduction anglaise** : republier aussi les meilleures vidéos françaises avec les
+textes en anglais (« The only cop running from the breathalyser »).
 
 **Publier** entre 12 h-13 h ou 18 h-21 h. **Répondre aux commentaires** le jour même
 (5 minutes suffisent). Réponse toute prête aux commentaires politiques : *« Gérard ne fait
@@ -205,7 +162,7 @@ Aujourd'hui : vendredi 13 novembre 2026.
 | Tâche | Temps |
 | --- | --- |
 | Créer l'e-mail dédié + les comptes TikTok, Instagram, YouTube (§ 2.2). | 1 h |
-| Créer le compte sur **developers.poki.com** (s'inscrire à la liste d'attente si besoin). | 15 min |
+| Créer le compte **itch.io** (§ 2.6) et préparer la page en brouillon. | 30 min |
 | Envoyer le lien à 10 proches sur WhatsApp : « Dis-moi ton score et ce qui t'a fait rire ». Transmettre les bugs à la session CODE. | 15 min |
 | Session de tournage : filmer de quoi faire **4 vidéos** (§ 2.3). | 45 min |
 | ⚠️ Jeudi 19 = Beaujolais nouveau : ne rien publier sur le thème du vin. | — |
@@ -215,15 +172,16 @@ Aujourd'hui : vendredi 13 novembre 2026.
 | Tâche | Temps |
 | --- | --- |
 | Lundi : monter et publier la **vidéo 1** sur les 3 plateformes. | 30 min |
+| Mardi : passer la page **itch.io** en public. | 10 min |
 | **Jeudi 26 (Sainte-Geneviève)** : monter et publier la **vidéo 3**. | 30 min |
-| Répondre aux commentaires, noter les chiffres dans le tableau (§ 2.7). | 30 min |
+| Répondre aux commentaires, noter les chiffres dans le tableau (§ 2.8). | 30 min |
 
 ### Semaine 3 — du 30 novembre au 6 décembre (≈ 1 h 30 à 2 h)
 
 | Tâche | Temps |
 | --- | --- |
-| Publier la **vidéo 4** (« Le piège du verre de rouge »). | 30 min |
-| **Soumettre le jeu à Poki** si la session CODE a livré la version anglaise + le kit Poki (§ 2.1). Sinon, faire le point avec elle. | 45 min |
+| Publier la **vidéo 4** (« Le café, c'est la vie »). | 30 min |
+| Si la version anglaise est en ligne : publier la vidéo **EN-1**. | 30 min |
 | Un post sur **une** communauté (§ 2.5), en demandant des retours. | 20 min |
 
 ### Semaine 4 — du 7 au 13 décembre (≈ 1 h 30)
@@ -231,15 +189,14 @@ Aujourd'hui : vendredi 13 novembre 2026.
 | Tâche | Temps |
 | --- | --- |
 | Publier la **vidéo 2** ou **5** (celle dont l'accroche ressemble le plus à la meilleure vidéo jusqu'ici). | 30 min |
-| Suivre les échanges avec Poki (répondre vite). | 15 min |
-| **Bilan** (§ 2.7) : quelle vidéo a marché, d'où viennent les joueurs, que dit Poki ? Décider de la suite. | 30 min |
+| Publier le jeu sur **Newgrounds** (§ 2.6), classification **T**. | 30 min |
+| **Bilan** (§ 2.8) : quelle vidéo a marché, d'où viennent les joueurs ? Décider de la suite. | 30 min |
 
 ### Ensuite (rythme de croisière, ≈ 1 h/semaine)
 
 - 1 vidéo par semaine (tournage groupé une fois par mois).
-- **Si Poki accepte** : faire mettre en place la redirection GitHub Pages → Poki (session CODE),
-  partager le lien Poki, continuer les vidéos. Plus rien d'autre à gérer.
-- **Si Poki refuse** : publier sur **itch.io** (§ 2.6) et soumettre à **CrazyGames** (§ 2.6).
+- Les mois suivants : **Game Jolt** (§ 2.6), puis une petite mise à jour du jeu à annoncer
+  (nouvel obstacle, événement de Noël) pour relancer les vidéos et les pages itch.io / Newgrounds.
 - Mi-décembre : vidéo « Gérard rentre à pied du pot de Noël de la brigade » (thème fêtes, Gérard à pied, jamais en voiture).
 
 ## 2.5 Communautés en ligne (optionnel, 20 min de temps en temps)
@@ -262,33 +219,46 @@ Aujourd'hui : vendredi 13 novembre 2026.
 > esquiver vaches, tracteurs, ronds-points et manifs. **Vos retours m'intéressent** (bugs,
 > difficulté, blagues à ajouter…). Mon record : 1 234. Qui fait mieux ? 👉 [lien]
 
-## 2.6 Plan B : itch.io et CrazyGames (seulement si Poki refuse)
+## 2.6 Publier sur itch.io, Newgrounds et Game Jolt (pas à pas)
 
-### itch.io (30 min)
+### itch.io (30 min, semaine 1-2)
 
-1. Demander à la session CODE le **zip du jeu** (le fichier `index.html` doit être à la racine du zip).
-2. **itch.io** → **Register** (pseudo `flicencavale`, e-mail dédié).
-3. Flèche à côté du pseudo → **Upload new project**.
-4. **Title** `Flic en Cavale` · **Kind of project** : **HTML** · **Pricing** : *No payments*
-   (ou *Donate*, voir avec la session MONÉTISATION) · **Uploads** : le zip, cocher
-   **This file will be played in the browser**.
+1. Demander à la session CODE le **zip web** du jeu (`index.html` à la racine).
+2. **itch.io** → **Register** (pseudo `flicencavale`, e-mail dédié) → confirmer l'e-mail.
+3. Flèche à côté du pseudo (en haut à droite) → **Upload new project**.
+4. **Title** `Flic en Cavale` · **Kind of project** : **HTML** · **Release status** : *In development* ·
+   **Pricing** : *No payments* (ou *Donate*, voir la session MONÉTISATION) · **Uploads** : le zip,
+   cocher **This file will be played in the browser**.
 5. **Embed options** : taille `405 × 720`, cocher **Mobile friendly** (orientation *Portrait*)
    et **Fullscreen button**. Laisser décoché *Automatically start on page load*.
-6. Description, tags, captures : copier [03-fiches-store.md § 3.3](03-fiches-store.md#33-itchio-plan-b-si-poki-refuse).
-7. **Visibility** : d'abord *Draft* → **View page** pour tester → puis *Public*.
+6. Description, tags, âge conseillé : copier [03-fiches-store.md § 3.2](03-fiches-store.md#32-itchio-priorité).
+7. **Content** : ne **pas** cocher la case « adult content / NSFW » (elle concerne le contenu
+   sexuel ou très violent). L'âge conseillé est écrit dans la description.
+8. **Visibility** : d'abord *Draft* → **Save** → **View page** pour tester → puis *Public*.
 
-### CrazyGames
+### Newgrounds (30 min, semaine 4)
 
-1. **developer.crazygames.com** → créer un compte → **Submit a game**.
-2. Ils demandent d'intégrer **leur kit (SDK)** à la place de celui de Poki : travail de la session CODE.
-3. Les jeux sont souvent d'abord testés auprès d'un petit public, puis diffusés plus largement
-   si les chiffres sont bons. Le partage des revenus publicitaires est à voir avec la session MONÉTISATION.
+1. **newgrounds.com** → **Sign up** (pseudo `flicencavale`).
+2. En haut : **Submit** (ou l'icône « + ») → **Game**.
+3. Envoyer le **même zip**, indiquer la taille d'affichage (`405 × 720`, ou plus grand si le
+   site le propose : le jeu s'adapte), titre et description (fiche § 3.3).
+4. **Classification (rating)** : choisir **T (Teen)** et cocher les éléments qui correspondent
+   (références à l'alcool, humour). **Pas E** : les consignes de Newgrounds excluent l'alcool de la note E.
+5. Publier. La communauté peut voter et commenter : répondre aux commentaires les premiers jours.
+
+### Game Jolt (30 min, plus tard)
+
+1. **gamejolt.com** → **Sign up**.
+2. **Dashboard** (tableau de bord) → **Add a game** → titre, description courte (fiche § 3.3).
+3. Remplir l'onglet **Maturity** (questionnaire d'âge) honnêtement : alcool présent, sous forme humoristique.
+4. **Packages** → **Add package** → **Add browser build** → type **HTML** → envoyer le zip.
+5. Ajouter les captures, puis **Publish**.
 
 ## 2.7 Presse et sites spécialisés
 
 Pas de presse locale (choix de l'utilisateur). Les gros sites de jeu vidéo parlent rarement
 d'un petit jeu web gratuit : **on ne démarche pas activement**. Une seule exception utile :
-**si une vidéo dépasse ~ 50 000 vues ou si Poki publie le jeu**, envoyer un mail court à
+**si une vidéo dépasse ~ 50 000 vues ou si le jeu est mis en avant sur itch.io / Newgrounds**, envoyer un mail court à
 2-3 sites « jeux indés » (par ex. IndieMag) et à des créateurs YouTube/Twitch qui testent des
 petits jeux gratuits (1 000 à 50 000 abonnés : ils répondent). Le pitch long est dans
 [01-positionnement.md § 1.6](01-positionnement.md#16-pitchs).
@@ -297,7 +267,7 @@ petits jeux gratuits (1 000 à 50 000 abonnés : ils répondent). Le pitch long 
 
 - **Demander à la session CODE** un outil de mesure d'audience **gratuit et sans cookie**
   (par ex. **GoatCounter**), pour savoir combien de personnes jouent et d'où elles viennent.
-  (Si Poki accepte le jeu, Poki fournit ses propres statistiques.)
+  itch.io, Newgrounds et Game Jolt affichent aussi leurs propres statistiques (vues, parties).
 - **Liens « tracés »** : ajouter un marqueur selon l'endroit où le lien est publié :
   `…/FlicEnCavale/?utm_source=tiktok`, `?utm_source=instagram`, `?utm_source=youtube`, `?utm_source=reddit`.
 - **Tableau de suivi** (Google Sheets, une ligne par vidéo) :
@@ -306,14 +276,13 @@ petits jeux gratuits (1 000 à 50 000 abonnés : ils répondent). Le pitch long 
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 - **À regarder** : le **% de vidéo vue en entier** (en dessous de 30 % → l'accroche est trop
-  faible), et le **nombre de parties par joueur** (au-dessus de 3 → le jeu accroche, et c'est
-  aussi ce que Poki regarde).
+  faible), et le **nombre de parties par joueur** (au-dessus de 3 → le jeu accroche).
 
 **Objectifs réalistes à 4 semaines** (projet plaisir) : 300 à 1 000 joueurs, une vidéo à
-5 000 vues, et **le jeu soumis à Poki**.
+5 000 vues, le jeu **en ligne sur itch.io et Newgrounds**.
 
 ## 2.9 Ce qui coûte 0 € (et ce qu'on évite)
 
-Tout ce plan est gratuit : comptes, CapCut, Poki, itch.io, GoatCounter, GitHub Pages.
+Tout ce plan est gratuit : comptes, CapCut, itch.io, Newgrounds, Game Jolt, GoatCounter, GitHub Pages.
 **À éviter** : acheter des « vues » ou des « abonnés » (faux comptes, risque de bannissement),
 et payer une publicité (inutile à ce stade).

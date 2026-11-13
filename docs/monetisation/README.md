@@ -1,133 +1,117 @@
-# 💶 Monétisation de FlicEnCavale — synthèse et plan
+# 💶 Monétisation de FlicEnCavale — synthèse et plan (version « sans Poki »)
 
-> Document rédigé par la session **MONÉTISATION** (novembre 2026).
+> Document de la session **MONÉTISATION**, mis à jour le 13 novembre 2026.
 > Il ne modifie pas le jeu : il propose une stratégie et liste ce que les sessions
-> CODE et DESIGN devraient faire à chaque étape.
+> CODE et DESIGN pourraient faire.
 
 ## Sommaire
 
 | Fichier | Contenu |
 | --- | --- |
-| `README.md` (ce fichier) | Décisions prises, résumé, plan par étapes |
-| [`05-poki-prerequis-techniques.md`](05-poki-prerequis-techniques.md) | ⭐ **Checklist technique Poki** à transmettre à la session CODE |
-| [`01-comparatif-options.md`](01-comparatif-options.md) | Toutes les options, avec revenus pour 1 000 joueurs, effort et coûts |
-| [`02-points-de-vigilance.md`](02-points-de-vigilance.md) | Thème alcool, RGPD, **fiscalité d'un salarié** (petits revenus) |
-| [`03-guides-pas-a-pas.md`](03-guides-pas-a-pas.md) | Démarches détaillées : Poki, CrazyGames, Ko-fi, mesure d'audience, déclaration d'impôts |
-| [`04-demandes-code-design.md`](04-demandes-code-design.md) | Changements à transmettre aux sessions CODE et DESIGN |
+| `README.md` (ce fichier) | Décisions, verdict honnête, plan sans Poki |
+| [`01-comparatif-options.md`](01-comparatif-options.md) | Toutes les options, avec revenus pour 1 000 joueurs (§9 : compatibilité avec le thème alcool) |
+| [`02-points-de-vigilance.md`](02-points-de-vigilance.md) | Thème alcool, RGPD, **fiscalité d'un salarié** (§3.0) |
+| [`03-guides-pas-a-pas.md`](03-guides-pas-a-pas.md) | Démarches : Ko-fi, **itch.io**, **Newgrounds**, mesure d'audience, CrazyGames, déclaration d'impôts |
+| [`04-demandes-code-design.md`](04-demandes-code-design.md) | Changements à transmettre aux sessions CODE et DESIGN (parties Poki archivées) |
+| [`05-poki-prerequis-techniques.md`](05-poki-prerequis-techniques.md) | 🗄️ **ARCHIVÉ** : checklist technique Poki, conservée au cas où |
 
 ---
 
-## 0. Décisions prises (13 novembre 2026)
+## 0. Décisions (mises à jour le 13/11/2026)
 
 | Question | Décision |
 | --- | --- |
-| Objectif | **Projet plaisir** : couvrir les frais, gagner un peu d'argent de poche, sans pression |
+| Objectif | **Projet plaisir**, sans pression financière |
 | Statut | **Salarié** |
-| Budget | **0 €**, pas de Mac, **pas d'application mobile pour l'instant** |
-| Thème alcool | **Adoucir** : le vin ne rapporte plus de points et devient un piège comique ; la mission « Bois 2 verres » est remplacée (fait par la session CODE) |
-| Portail | **Poki en priorité, exclusivité web acceptée**. CrazyGames en repli si Poki refuse |
-| Langues | **Français + anglais** (la session CODE ajoute l'anglais) |
-
-Conséquences :
-- **Pas de micro-entreprise nécessaire au départ.** Les petits revenus (Poki, dons) se déclarent
-  simplement sur la déclaration de revenus annuelle (voir le §2 ci-dessous et
-  `02-points-de-vigilance.md` §3).
-- Les étapes « publicité sur son propre site » et « application mobile » sont **mises de côté**.
-  Elles restent décrites dans `01-comparatif-options.md` pour plus tard.
-- ⚠️ **Exclusivité web Poki = le jeu ne doit plus être jouable ailleurs sur le web**, en principe
-  y compris sur GitHub Pages. Voir l'étape 2 et la question à poser à Poki.
+| Budget | **0 €**, pas d'application mobile |
+| Poki | ❌ **Abandonné** : les règles officielles de Poki interdisent explicitement l'alcool (section « Content & player safety ») |
+| Thème alcool | **Conservé, humoristique** : le verre de rouge rapporte de nouveau des points |
+| Langues | Français + anglais |
 
 ---
 
-## 1. Le message principal
+## 1. Verdict honnête
 
-1. Un jeu web gratuit rapporte **environ 1 à 10 € pour 1 000 joueurs**. Pour un projet plaisir,
-   c'est parfait : **aucun frais**, et chaque partie jouée sur Poki rapporte un peu.
-2. **Poki** est le portail qui a le plus de trafic (1 milliard de parties par mois revendiqué).
-   Il est **sélectif** : il teste le jeu avant d'accepter. L'exclusivité web donne le **meilleur
-   partage de revenus** et une **mise en avant** du jeu.
-3. Le jeu est déjà **techniquement très bien placé** pour Poki : 0,6 Mo (≈ 150 Ko compressé)
-   contre une limite recommandée de 8 Mo, aucune ressource externe, des commandes tactiles et
-   clavier. Il manque surtout le **SDK Poki**, la **pause pendant les pubs**, le **mode portrait**
-   bien testé et l'**anglais**.
-4. **Côté impôts**, un salarié qui touche quelques centaines d'euros par an n'a **pas besoin de
-   créer d'entreprise** : il déclare le total une fois par an (formulaire 2042-C-PRO,
-   « revenus non commerciaux non professionnels », case **5KU**, à vérifier sur la notice de
-   l'année).
+**Pour un projet plaisir avec un thème alcool assumé, la meilleure option est simplement :
+les dons + la visibilité.** Concrètement :
+
+1. **Le jeu reste gratuit et sans pub** sur GitHub Pages, avec un bouton discret « ☕ Offrir un
+   café à Gérard » (Ko-fi : 0 % de commission sur les dons).
+2. Il est publié **aussi sur itch.io en « payez ce que vous voulez »** (0 € par défaut, avec un
+   don facultatif). itch.io accepte sans problème ce genre d'humour, et sa communauté d'indés
+   aime les jeux burlesques.
+3. Il est publié **sur Newgrounds** pour la visibilité. C'est un public habitué à l'humour
+   décalé, avec un système de classification par âge. Il n'y a **pas de revenus garantis**.
+
+**Ce qu'il faut accepter** : cela rapportera probablement **de 0 à quelques dizaines d'euros
+par an**. Le vrai gain, c'est d'avoir des joueurs, des retours et un projet qu'on peut montrer.
+Les régies publicitaires ne valent pas l'effort à cette échelle, d'autant que le thème alcool
+ferme la plupart des portails « famille ».
+
+**Ce qui ne marche pas** (détails au §2) : Poki (interdit), GameDistribution (inadapté), AdSense
+(demande un domaine payant et un bandeau cookies, et rapporte des centimes).
+**Ce qui reste possible mais incertain** : CrazyGames (public de 13 ans et plus, PEGI 12). Un
+jeu où boire rapporte des points risque d'être jugé au-dessus de PEGI 12. On peut le tenter
+gratuitement, en posant d'abord la question à leur support.
 
 ---
 
-## 2. Plan recommandé (budget 0 €)
+## 2. Compatibilité des options avec un thème alcool humoristique
 
-### Étape 0 — Mesurer et préparer (maintenant, gratuit)
+| Option | Alcool humoristique accepté ? | Argent possible | Effort | Verdict |
+| --- | --- | --- | --- | --- |
+| **Dons Ko-fi** | ✅ aucune règle de contenu sur le jeu | quelques € | ⭐ | ✅ **Oui** |
+| **itch.io** (prix libre) | ✅ oui (on indique le contenu dans les tags et la classification de la page) | quelques € | ⭐ | ✅ **Oui** |
+| **Newgrounds** | ✅ oui, avec la classification interne du site (E / T / M / A ; « T » adapté ici) | prix mensuels pour les meilleurs jeux, partage pub **non confirmé** en 2026 | ⭐ | ✅ **Oui, pour la visibilité** |
+| **CrazyGames** | ⚠️ **incertain**. Public 13+, exigence PEGI 12 ; le vin qui rapporte des points peut être jugé comme un « encouragement » (PEGI 16 selon certains critères rapportés) | partage des revenus pub, faible | ⭐⭐ | 🟡 **À tenter seulement après accord écrit du support** |
+| **GameDistribution** | ❌ probablement non : le jeu serait diffusé sur des centaines de sites tiers, dont des sites pour enfants, et les règles de contenu sont introuvables publiquement | très faible (33 % rapporté) | ⭐⭐ | ❌ **Non** |
+| **AdSense sur son site** | 🟡 le contenu n'est pas interdit en soi (pas de vente d'alcool), mais la catégorie alcool est sensible et Google filtre fortement pour les mineurs | centimes | ⭐⭐⭐ + domaine payant + bandeau cookies | ❌ **Non** (budget 0 €, GitHub Pages non commercial) |
+| **Poki** | ❌ **interdit** par les règles officielles | — | — | ❌ Abandonné |
 
-- Mesure d'audience **sans cookie** (GoatCounter) sur la version GitHub Pages, pour avoir des
-  chiffres à montrer à Poki (temps de jeu, parties par visiteur). Voir `03-guides-pas-a-pas.md`, Guide A.
-- **Ko-fi** : facultatif. Avec l'exclusivité Poki, le bouton Ko-fi ne peut pas être **dans le
-  jeu** sur Poki (pas de lien sortant). Il peut rester sur une page de présentation ou les
-  réseaux sociaux de la session MARKETING.
-- La session CODE termine l'adoucissement du thème alcool et la version anglaise.
+Sources détaillées dans `01-comparatif-options.md` §9.
 
-### Étape 1 — Version « Poki » du jeu (session CODE, quelques jours)
+---
 
-Tout est détaillé dans [`05-poki-prerequis-techniques.md`](05-poki-prerequis-techniques.md).
-En résumé :
-1. Intégrer le **SDK Poki** (un script à charger et 5 fonctions à appeler aux bons moments).
-2. **Couper le son et mettre le jeu en pause** pendant chaque pub.
-3. **Pub entre deux parties** au clic sur « Rejouer », et **pub récompensée « Deuxième
-   chance »** quand Gérard est attrapé (une fois par partie).
-4. Retirer **tout lien externe** et toute mesure d'audience de cette version.
-5. Vérifier le **mode portrait** sur téléphone, le **plein écran** et le **clavier** (pas de
-   défilement de la page).
-6. **Langue** : choisir le français ou l'anglais selon la langue du navigateur.
+## 3. Plan recommandé (budget 0 €)
 
-### Étape 2 — Soumission à Poki (vous, environ 1 heure, puis attente)
+### Étape 1 — Dons et mesure (une soirée)
+- Créer la page **Ko-fi** (Guide B) et le bouton « ☕ Offrir un café à Gérard » sur l'écran titre
+  et l'écran de fin (demande **C0-2**).
+- Ajouter une mesure d'audience **sans cookie** (GoatCounter, Guide A, demande **C0-1**) pour savoir
+  d'où viennent les joueurs (itch.io, Newgrounds, réseaux sociaux…).
 
-- S'inscrire sur **developers.poki.com** et soumettre le jeu. Démarche pas à pas :
-  `03-guides-pas-a-pas.md`, Guide D.
-- **Question à poser à Poki avant de signer l'exclusivité** : « Puis-je garder la version
-  GitHub Pages en ligne, ou dois-je la retirer, ou la remplacer par un lien vers Poki ? ».
-  En général, l'exclusivité web interdit toute autre version jouable sur le web. Prévoir
-  de transformer la page GitHub Pages en **simple page « Jouer sur Poki »**.
-- Le contrat d'exclusivité dure **5 ans par défaut** d'après les conditions publiées par Poki.
-  Le relire (ou me le soumettre) avant d'accepter.
+### Étape 2 — itch.io en « payez ce que vous voulez » (une soirée)
+- Page de jeu HTML5 jouable directement dans le navigateur, prix **0 € avec don suggéré de 2 €**
+  (Guide H).
+- Le même fichier .zip que la version GitHub Pages convient (`npm run build`, puis compresser
+  `dist/`).
 
-### Étape 3 — Si Poki refuse : CrazyGames (repli, gratuit)
+### Étape 3 — Newgrounds (une soirée)
+- Publier dans le portail « Games » avec la classification **T (Teen)** (Guide I).
+- Objectif : des joueurs, des commentaires et, avec de la chance, un prix mensuel.
 
-- *Basic Launch* de 1 à 3 semaines sans pub, puis *Full Launch* avec pubs si les joueurs restent.
-  `03-guides-pas-a-pas.md`, Guide C.
-- La couche publicité (`src/platform/ads.js`) prévue pour Poki sert aussi ici : il suffit
-  d'ajouter la variante CrazyGames.
-- Pas d'exclusivité imposée : on peut aussi garder la version GitHub Pages avec le bouton Ko-fi.
-
-### Étape 4 — Plus tard, si le jeu marche (toujours gratuit)
-
-- **Médailles cumulées et vestiaire de tenues** (cosmétiques gratuits), avec une pub récompensée
-  « ×2 médailles ». Cela fait revenir les joueurs, donc augmente les revenus. Voir
-  `04-demandes-code-design.md`, étape 2.
-- Si les revenus annuels deviennent réguliers et dépassent quelques milliers d'euros, ou si Poki
-  exige un statut professionnel : envisager la **micro-entreprise** (Guide E).
-- L'application mobile reste possible un jour (25 $ pour Android), mais attention : **une
-  exclusivité web Poki ne couvre pas forcément les applications mobiles**. À vérifier dans le contrat.
+### Étape 4 (facultative) — Demander à CrazyGames
+- **Avant** tout travail technique : écrire au support développeur CrazyGames en décrivant
+  honnêtement le jeu (« gendarme ivre burlesque, le verre de vin rapporte des points mais rend la
+  conduite plus difficile ; aucune marque, aucune incitation réelle »). Leur demander si le contenu
+  est compatible avec leurs règles.
+- Si la réponse est **oui** : soumettre en *Basic Launch* (sans SDK, gratuit, Guide C). La couche
+  `src/platform/portal.js` déjà écrite pour Poki pourra être adaptée par la session CODE si le jeu
+  passe en *Full Launch*.
+- Si la réponse est **non** ou s'il n'y a pas de réponse : on s'arrête là, sans regret.
 
 ### Ce que je déconseille
-
-- **Pub sur le site GitHub Pages** : interdit en pratique par les conditions de GitHub Pages
-  (site principalement commercial), incompatible avec l'exclusivité Poki, et bandeau cookies
-  à gérer soi-même.
-- **Pubs pendant la course** ou après chaque mort : cela casse le rythme et fait baisser le
-  temps de jeu, un critère que Poki suit de près.
+- Toute publicité sur la version GitHub Pages (règles de GitHub Pages, bandeau cookies, revenus quasi nuls).
+- Modifier le jeu pour plaire à un portail : vous avez choisi de garder l'humour, c'est cohérent
+  avec un projet plaisir.
 
 ---
 
-## 3. À quoi s'attendre (ordres de grandeur)
+## 4. Fiscalité (inchangée sur le principe)
 
-| Parties sur Poki / mois | Revenu indicatif / mois |
-| --- | --- |
-| 10 000 | quelques euros à ~ 30 € |
-| 100 000 | ~ 30 à 300 € |
-| 1 000 000 | ~ 300 à 3 000 € |
-
-*Estimations à partir de témoignages de développeurs (1 à 5 € pour 1 000 parties sur les portails).
-Poki ne publie pas ses chiffres : ce ne sont pas des promesses. Le facteur principal est la mise
-en avant du jeu par Poki, qui dépend du temps de jeu et de la rétention mesurés pendant leur test.*
+Salarié·e avec de petits revenus : **pas de micro-entreprise**. Le total annuel (dons Ko-fi,
+ventes et dons itch.io, éventuels prix Newgrounds ou revenus CrazyGames) se déclare sur le
+formulaire **2042-C-PRO, case 5KU** (BNC non professionnels, micro-BNC, abattement de 34 %).
+Détails dans `02-points-de-vigilance.md` §3.0 et dans le Guide G.
+Nouveau : **itch.io** demande de remplir un formulaire fiscal américain (W-8BEN) si c'est lui qui
+encaisse les paiements. Voir le Guide H.
