@@ -3,32 +3,23 @@
 > La session MARKETING ne modifie pas le code. Voici, **par ordre de priorité**, ce qui aiderait
 > le plus le jeu à se diffuser. Chaque idée indique pour qui elle est (CODE / DESIGN) et pourquoi.
 >
-> **Mise à jour 13/11/2026** : le plan vise **Poki en priorité** (exclusivité web), à 0 € et
-> 1-3 h/semaine. Les idées spécifiques à Poki sont regroupées dans la section « 🟣 Poki » juste
-> en dessous ; elles passent **avant** le reste.
+> **Mise à jour 13/11/2026 (soir)** : **Poki est abandonné** (alcool et stéréotypes interdits
+> par ses règles). Les prérequis Poki qui figuraient ici sont **archivés** dans
+> [archives/poki.md](archives/poki.md). Le jeu sera publié sur **GitHub Pages, itch.io,
+> Newgrounds et Game Jolt**, à 0 € et 1-3 h/semaine.
 >
 > Constat de départ (en jouant) : le jeu est très drôle, mais **rien ne pousse un joueur à
 > en parler à quelqu'un**, et **on ne sait pas combien de gens y jouent**.
 
-## 🟣 Poki — indispensable pour la soumission (CODE)
+## 🟣 Ce qui change après l'abandon de Poki (CODE)
 
-Les détails sont à vérifier dans la documentation officielle de Poki (`sdk.poki.com`), que je
-n'ai pas pu ouvrir depuis mon environnement.
-- **Version anglaise** (déjà prévue) + **choix de la langue** automatique selon le navigateur.
-- **Kit Poki (SDK)** : signaler le début/la fin de chargement, le début et la fin de partie,
-  et les moments où une pub peut s'afficher (par ex. entre deux parties, **jamais** en pleine
-  course). À coordonner avec la session MONÉTISATION.
-- **Poids du jeu** : viser un premier chargement **le plus léger possible** (un guide parle de
-  moins de 8 Mo). Three.js est le plus gros morceau : vérifier la taille du `dist/`.
-- **Un zip prêt à envoyer** (`index.html` à la racine), fabriqué automatiquement si possible,
-  pour que l'utilisateur n'ait qu'à le télécharger et le déposer sur le portail Poki.
-- **Si Poki accepte** : remplacer la version GitHub Pages par une **simple redirection vers la
-  page Poki** (pour respecter l'exclusivité web sans casser les liens déjà publiés dans les
-  vidéos), **après accord écrit de Poki**. Voir [02-plan-lancement.md § 2.1](02-plan-lancement.md#21-️-poki-lexclusivité-web-itchio-et-github-pages).
-- **Compatibilité avec la viralité** : Poki gère lui-même le partage sur sa plateforme. Les idées
-  ci-dessous (bouton « Défier un ami », lien `?defi=`) devront **pointer vers la page Poki**
-  quand le jeu y sera, et respecter leurs règles (pas de lien sortant vers d'autres sites).
-  À vérifier avec Poki avant de les développer.
+- La **version publiée sur GitHub Pages et le zip web** ne doivent **pas** contenir le kit Poki
+  (il ne sert à rien hors de Poki ; vérifier que le jeu marche bien sans lui).
+- Un **seul zip web** (`index.html` à la racine) sert pour itch.io, Newgrounds et Game Jolt.
+- Plus d'exclusivité : **plus besoin de redirection** de GitHub Pages, et le bouton
+  « Défier un ami » / le lien `?defi=` peuvent pointer directement vers GitHub Pages.
+- Le **verre de rouge rapporte de nouveau des points** (décision de l'utilisateur). Les
+  missions et textes « le vin est un piège » sont à revoir en conséquence.
 
 ## 🔴 Priorité 1 — avant le lancement (semaine 1-2)
 
@@ -113,8 +104,7 @@ Pour les vidéos TikTok/Reels :
 
 ### 8. « Ajouter à l'écran d'accueil » (PWA) — CODE + DESIGN · ~ 1-2 h
 
-> ⚠️ **En attente de la réponse de Poki** : une version installable hébergée sur GitHub Pages
-> serait une distribution web hors Poki. À ne faire que si Poki refuse (ou avec son accord).
+> ✅ Plus de contrainte d'exclusivité depuis l'abandon de Poki : possible dès maintenant.
 
 Un fichier `manifest.webmanifest` + une vraie icône : le jeu s'installe comme une appli
 (icône sur le téléphone, plein écran). Ça augmente fortement le nombre de joueurs qui
@@ -125,7 +115,7 @@ d'accueil » après la 3ᵉ partie.
 
 ### 9. Version anglaise — CODE · ~ 3-5 h (textes à adapter, pas juste traduire)
 
-Déjà décidée (session CODE) : indispensable pour Poki. Tous les textes sont déjà dans
+Déjà faite par la session CODE : utile pour itch.io, Newgrounds et Game Jolt. Tous les textes sont déjà dans
 `src/game/texts.js` et `index.html` : bonne base. Il faut **adapter l'humour** (la pétanque
 et le pastis restent, c'est le charme « so French »). Titre possible : *« Cop on the Run »*
 ou garder *« Flic en Cavale »* (exotique et mémorable).
@@ -159,15 +149,16 @@ saviez que… ? » et des commentaires.
 
 ## ⚖️ Point d'attention pour CODE/DESIGN (lié aux risques d'image)
 
-- ✅ **Décidé par l'utilisateur** : le **verre de rouge ne rapporte plus de points** et devient
-  un **piège comique** (Gérard titube, les collègues se rapprochent) ; la mission « Bois 2 verres
-  de rouge » est remplacée. Idée de remplacement : « Évite 5 verres de rouge » ou « Cours 300 m
-  sans tituber ». Garder des répliques drôles au ramassage (« Oups… c'était pas du jus de raisin ! »).
+- **Décision de l'utilisateur (13/11, soir)** : on garde l'humour du jeu tel quel ; le **verre
+  de rouge rapporte des points** et fait tituber Gérard. L'âge conseillé annoncé est **12+**
+  (voir [01-positionnement.md, risque 3](01-positionnement.md#risque-3--âge-conseillé-et-portails-grand-public)).
+- Suggestion : afficher discrètement **« Conseillé à partir de 12 ans »** sur l'écran titre ou
+  dans « Comment jouer ? » (cohérent avec ce qu'on annonce sur itch.io et Newgrounds).
 - Ne jamais ajouter le **logo officiel** de la Gendarmerie, ni de **marque d'alcool**.
 - **Gérard reste à pied** : pas de voiture conduite par Gérard (lien alcool + conduite à proscrire).
 
 ## 🛠️ Petit outil pratique pour la publication (CODE)
 
 - Ajouter au déploiement GitHub Actions une étape qui produit un **zip téléchargeable** du jeu
-  (contenu de `dist/` avec `index.html` à la racine) : utile pour Poki, et pour itch.io /
-  CrazyGames si Poki refuse.
+  (contenu de `dist/` avec `index.html` à la racine, **sans** kit Poki) : utile pour itch.io,
+  Newgrounds et Game Jolt.

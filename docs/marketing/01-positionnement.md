@@ -1,12 +1,13 @@
 # 1. Positionnement, cible, risques et messages
 
 > Document de la session MARKETING. Il sert de référence pour tout ce qu'on publie
-> sur FlicEnCavale (vidéos, posts, fiche Poki, fiches de store).
+> sur FlicEnCavale (vidéos, posts, fiches itch.io / Newgrounds / Game Jolt).
 >
-> **Mise à jour du 13/11/2026** (réponses de l'utilisateur) : projet plaisir à 0 €, 1-3 h/semaine,
-> vidéos « mains seulement », pas de presse locale, jeu **FR + EN**, **Poki en priorité**, et
-> **thème alcool adouci** : le verre de rouge **ne rapporte plus de points**, c'est un **piège
-> comique**, et la mission « Bois 2 verres » est remplacée (travail de la session CODE).
+> **Mise à jour du 13/11/2026 (soir)** : l'utilisateur **renonce à Poki** (ses règles interdisent
+> l'alcool et les stéréotypes) et **garde l'humour du jeu tel quel** : le verre de rouge
+> rapporte de nouveau des points. Cadre : projet plaisir à 0 €, 1-3 h/semaine, vidéos « mains
+> seulement », pas de presse locale, jeu **FR + EN**. Le village français est présenté **avec
+> tendresse**, pas comme une collection de clichés. Âge conseillé annoncé : **12 ans et plus**.
 
 ## 1.1 Ce qu'est le jeu (vu en y jouant)
 
@@ -31,8 +32,8 @@ Captures de référence : [`captures/`](captures/).
 ## 1.2 Positionnement en une phrase
 
 > **FlicEnCavale, c'est le « Gendarme de Saint-Tropez » version jeu mobile :
-> une course-poursuite burlesque et 100 % franchouillarde, qu'on lance en 2 secondes
-> et qu'on fait tourner à toute la famille.**
+> une course-poursuite burlesque dans un village français raconté avec tendresse,
+> qu'on lance en 2 secondes et qu'on fait tourner aux copains (à partir de 12 ans).**
 
 Ce qui le différencie des milliers d'autres « runners » (Subway Surfers, Temple Run…) :
 
@@ -50,13 +51,13 @@ Ce qui le différencie des milliers d'autres « runners » (Subway Surfers, Temp
 | --- | --- | --- |
 | **Cœur : 18-35 ans français**, joueurs occasionnels sur téléphone | Ils comprennent toutes les références, partagent des mèmes, jouent dans les transports | TikTok, Instagram Reels, Reddit FR, Discord, groupes WhatsApp |
 | **Secondaire : 35-60 ans** « culture Gendarme de Saint-Tropez / Louis de Funès » | Nostalgie du comique troupier, partagent sur Facebook | Facebook, YouTube Shorts |
-| **Bonus : familles** (parents + ados 12-17 ans) | Le jeu est gentil, sans violence | Bouche-à-oreille ; **on ne cible pas activement les enfants** (voir risques) |
+| **Bonus : ados 12-17 ans** (souvent via leurs parents) | Le jeu est gentil, sans violence ; l'alcool y est une blague, pas un modèle | Bouche-à-oreille ; **on ne cible jamais les moins de 12 ans** (voir § 1.4, âge conseillé) |
 | **Niche : gendarmes, policiers, pompiers, militaires** (et leurs proches) | Ils adorent l'autodérision sur leur métier… à condition que ce soit bienveillant | Bouche-à-oreille uniquement, jamais de démarchage « officiel » |
 
 **Langue** : le jeu sera en **français et en anglais** (traduction par la session CODE).
 Les vidéos visent d'abord la **France, la Belgique, la Suisse romande et le Québec** ; la
-version anglaise sert surtout pour **Poki**, dont le public est international… et **jeune**
-(beaucoup d'ados) : raison de plus pour garder l'alcool au rang de simple allusion.
+version anglaise sert pour **itch.io, Newgrounds et Game Jolt**, dont les communautés sont
+surtout anglophones.
 
 ## 1.4 ⚠️ Risques d'image et de modération (à lire absolument)
 
@@ -78,10 +79,10 @@ Le sujet « alcool + gendarmerie » est le **principal atout comique** du jeu…
   le radar** — pas le verre de vin. Le verre de rouge n'apparaît jamais en gros plan ni en vignette.
 - On **parle de l'alcool par allusion** (« pompette », « souffler dans le ballon »,
   « après la fête de la brigade ») plutôt que de le montrer.
-- On met en avant que **l'alcool est un piège dans le jeu** : le verre de rouge ne rapporte
-  rien, Gérard titube et se fait rattraper ; le **café** le sauve. Depuis l'adoucissement du
-  thème, c'est vrai à 100 % mécaniquement, et c'est le bon message (la vidéo n° 4 « Le piège
-  du verre de rouge » en fait même un gag).
+- On met en avant que **l'alcool a un prix dans le jeu** : le verre de rouge rapporte des
+  points, mais Gérard titube, ses commandes deviennent imprécises et ses collègues se
+  rapprochent ; le **café** le sauve. C'est vrai mécaniquement, et c'est le bon message
+  (vidéo n° 4 « Le café, c'est la vie »).
 - On **n'utilise pas les hashtags** liés à l'alcool (#apéro, #vin, #beaujolais, #pastis, #ivre).
 - Pas de publicité payante (budget 0 €, et la modération des pubs est très stricte sur l'alcool).
 
@@ -95,19 +96,31 @@ donc **faible**, mais :
 - **Ne jamais associer la boisson à la réussite** dans la com (« bois du rouge pour faire
   plus de points ! » → interdit chez nous ; préférer « le café, c'est la vie »).
 - Un clin d'œil du type **« À consommer avec modération… le jeu aussi »** dans la description
-  peut rester un clin d'œil dans la description (pas dans la fiche Poki, au public plus jeune).
+  peut rester un clin d'œil en fin de description.
 
-### Risque 3 — Portails et stores : public jeune et classification d'âge
+### Risque 3 — Âge conseillé et portails grand public
 
-- **Poki** (notre priorité) a un public **jeune et familial** et une équipe qui relit chaque
-  jeu. Avec le thème adouci (vin = piège, aucune récompense), le risque de refus pour ce motif
-  **baisse nettement**. Dans la fiche Poki, on ne parle ni d'« alcool » ni de « pompette » :
-  « ses collègues veulent lui faire souffler dans le ballon » suffit
-  (voir [03-fiches-store.md § 3.2](03-fiches-store.md#32-poki-priorité)).
-- **Stores mobiles** (plus tard, si une appli existe) : le questionnaire de classification
-  demande si le jeu fait référence à l'alcool. Un personnage qui boit **sans en tirer de
-  bénéfice** donne en général une classification plus basse qu'avant ; répondre honnêtement.
-- Formulation dans la com : **« tout public, humour bon enfant »** plutôt que « pour enfants ».
+**Le constat** : dans le jeu, Gérard boit un verre de rouge **et gagne des points** (même s'il
+titube ensuite). Pour les systèmes de classification (PEGI en Europe, ESRB aux États-Unis,
+questionnaires des stores et des sites), c'est de la « **consommation d'alcool** » par le
+personnage, pas une simple allusion. Ça a deux conséquences :
+
+1. **Les portails « familiaux » sont fermés ou très risqués** : **Poki** l'interdit
+   explicitement (vérifié par l'utilisateur) ; **CrazyGames** refuse les jeux qui ne respectent
+   pas ses critères **PEGI 12** et les « thèmes inappropriés », donc **probablement la même
+   issue** (pas de règle citant l'alcool trouvée mot pour mot). On ne les vise pas.
+2. **On n'annonce plus « tout public »** mais : **« humour bon enfant, conseillé à partir de
+   12 ans »**. C'est honnête, et ça protège des signalements.
+
+**Ce qu'on annonce, site par site :**
+
+| Où | Ce qu'on indique |
+| --- | --- |
+| **itch.io** (pas de système de classification officiel) | Dans la description : *« Conseillé à partir de 12 ans : humour autour de l'alcool (Gérard est pompette et peut boire un verre de rouge). Aucune violence. »* Ne **pas** cocher « adult content / NSFW » (réservé au contenu sexuel ou très violent). |
+| **Newgrounds** (notes E / T / M / A) | Note **T (Teen)** : leurs consignes excluent l'alcool de la note E (tout public). |
+| **Game Jolt** (questionnaire « Maturity ») | Déclarer : **références et consommation d'alcool, ton humoristique** ; ni violence réaliste, ni contenu sexuel. |
+| **Vidéos / réseaux** | Pas de mention d'âge nécessaire, mais **jamais de ciblage enfant** (pas de hashtags « jeux pour enfants », pas de dessins animés pour enfants dans les sons). |
+| **Stores mobiles** (plus tard) | Répondre honnêtement au questionnaire ; s'attendre à **12+ voire 16+** selon les réponses. |
 
 ### Risque 4 — Image de la Gendarmerie nationale
 
@@ -151,21 +164,31 @@ disperser la manif ! » : c'est **apolitique et ça doit le rester**.
 | --- | --- |
 | Montrer la poursuite, les vaches, les manifs, le radar, la baguette | Montrer le verre de vin en gros plan / en vignette |
 | Allusions : « pompette », « souffler dans le ballon » | Hashtags alcool, noms de marques |
-| « Le café sauve Gérard », « le verre de rouge est un piège » | Présenter l'alcool comme un bonus |
+| « Le café sauve Gérard » | Présenter l'alcool comme la clé de la réussite (« bois pour gagner ») |
 | Humour bienveillant sur le métier | Logo/nom officiels de la Gendarmerie, faux partenariat |
 | Rester apolitique | Rebondir sur une actu police/manif |
 | Gérard est à pied | Toute allusion à la conduite |
 
-## 1.4 bis 🌍 Communication en anglais : le cliché français comme identité
+## 1.4 bis 🌍 Communication en anglais : un village français raconté avec tendresse
 
-**Décision de l'utilisateur** : le côté très français est un **atout**, on le garde comme
-identité, y compris à l'international. Vu de l'étranger, l'argument principal est
-**« le village français cliché »** : gendarme au képi, baguettes, vaches, tracteurs, grèves
-et manifs, croissants, pétanque, ronds-points. Le public anglophone adore ce folklore
-(« so French », « oh là là ») ; on l'assume avec tendresse, sans moquerie méchante.
+**Décision de l'utilisateur** : le côté très français est un **atout** et reste notre identité,
+y compris à l'international. Mais on le présente **avec tendresse**, comme une **carte postale
+affectueuse** du village français, pas comme une moquerie à base de clichés. On rit **avec** le
+village, pas **de** lui.
 
-**Mots-clés à utiliser en anglais** : *French village*, *gendarme*, *kepi*, *baguette*,
-*croissant*, *strike*, *cows*, *roundabout*, *pétanque*, *Oh là là*, *the most French game ever*.
+**Concrètement :**
+- Parler de **« French village life »**, de **« charm »**, de **« a love letter to rural France »**
+  plutôt que de « clichés » ou de « stereotypes ».
+- Décrire les éléments comme des **personnages attachants** : la vache qui se croit chez elle,
+  le tracteur qui n'est jamais pressé, la boulangerie et sa baguette géante, les fanions de la fête
+  du village, les manifestants les plus gentils du monde, et Gérard, brave gendarme au grand cœur.
+- **Éviter** : « the most French game ever », « every French cliché », « lazy French »,
+  « French people always strike » — tout ce qui fait de la France une caricature ou un peuple qu'on moque.
+- Les manifs restent **absurdes et gentilles** (« LESS FINES, MORE PÉTANQUE! »), jamais une
+  pique sur « les Français qui font toujours grève ».
+
+**Mots-clés à utiliser en anglais** : *French village*, *countryside*, *gendarme*, *kepi*,
+*baguette*, *croissant*, *cows*, *tractor*, *pétanque*, *bunting*, *charming*, *cosy chaos*.
 
 ### Références trop franco-françaises à éviter (ou à traduire) en anglais
 
@@ -177,7 +200,7 @@ et manifs, croissants, pétanque, ronds-points. Le public anglophone adore ce fo
 | **Grades** (maréchal des logis, adjudant, brigadier…) | Ne veulent rien dire en anglais | Trainee → Sergeant → Captain → General (au choix de la session CODE) |
 | **Cédez le passage**, PV, procès-verbal | Termes administratifs | « Give way » sign, « fine », « police report » |
 | **Louis de Funès / Gendarme de Saint-Tropez** | Référence culte en France, inconnue ailleurs (sauf en Allemagne / Europe de l'Est) | Ne pas citer en anglais |
-| **Beaujolais, vin, apéro** | Alcool + public jeune de Poki | Ne pas citer |
+| **Beaujolais, vin, apéro** | Promotion de l'alcool | Ne pas citer en accroche |
 | **Actualité sociale réelle** (réformes, grèves précises, slogans réels) | Politique, vieillit vite | Grèves et manifs **génériques et absurdes** (« LESS FINES, MORE PÉTANQUE! ») |
 | **« Flic »** (argot) | Inconnu en anglais | Garder « Flic en Cavale » comme nom exotique, ou « Cop on the Run » |
 
@@ -186,7 +209,7 @@ et manifs, croissants, pétanque, ronds-points. Le public anglophone adore ce fo
 ### Le nom
 
 **FlicEnCavale** est bon : court, compréhensible, il raconte l'histoire. Deux ajustements :
-- **Pour l'écrit « grand public » (Poki, vidéos, stores)**, écrire **« Flic en Cavale »**
+- **Pour l'écrit « grand public » (itch.io, vidéos, stores)**, écrire **« Flic en Cavale »**
   (avec espaces) : plus lisible, mieux trouvé par les moteurs de recherche des stores.
   Garder « FlicEnCavale » comme identifiant (pseudo des comptes, adresse web, hashtag `#FlicEnCavale`).
 - Petit détail : Gérard est **gendarme**, pas policier. « Flic » est accepté pour les deux dans
@@ -214,7 +237,7 @@ sur TikTok, Instagram, YouTube, itch.io, X/Bluesky. Si pris : `flicencavale_jeu`
 
 > Gérard a un peu trop fêté la Sainte-Geneviève, patronne des gendarmes. Ses collègues veulent
 > lui faire souffler dans le ballon ! Esquive vaches, tracteurs, ronds-points et manifs dans ce
-> jeu de course gratuit, 100 % franchouillard. Cours, Gérard, cours !
+> petit jeu de course gratuit, une déclaration d'amour au village français. Cours, Gérard, cours !
 
 ### Pitch long (fiche de jeu, mail à un site spécialisé, ~ 1 000 caractères)
 
@@ -228,11 +251,11 @@ sur TikTok, Instagram, YouTube, itch.io, X/Bluesky. Si pris : `flicencavale_jeu`
 > contourne la vache, le tracteur, le rond-point et le cortège de manifestants qui scande
 > « LIBÉREZ GÉRARD ! ». Attention à la flaque de pastis : ça glisse. Un café pour te remettre les
 > idées en place, un croissant pour devenir invincible, un képi doré pour doubler ton score.
-> Et méfie-toi du verre de rouge : c'est un piège, Gérard se met à tituber.
+> Le verre de rouge ? Beaucoup de points… mais Gérard se met à tituber.
 >
 > Réussis des missions pour faire grimper Gérard de Gendarme stagiaire à Général, et découvre
 > des dizaines de répliques absurdes. Un jeu bon enfant, conçu en France, en français et en
-> anglais, sans inscription : un lien, un doigt, et c'est parti.
+> anglais, sans inscription : un lien, un doigt, et c'est parti. Conseillé à partir de 12 ans.
 >
 > 👉 Jouer : https://thomas-byte-cmyk.github.io/FlicEnCavale/
 >
