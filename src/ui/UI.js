@@ -40,7 +40,15 @@ export class UI {
       chaseRow: $('gauge-chase-row'),
       vignette: $('vignette'),
       goPv: $('go-pv'),
+      challenge: $('btn-challenge'),
+      pause: $('pause-screen'),
+      pauseCard: document.querySelector('#pause-screen .card'),
+      pauseCount: $('pause-count'),
+      resume: $('btn-resume'),
     };
+    this.lastRun = { score: 0, distance: 0 };
+    this.pauseTimer = null;
+    this.onResume = null;
     this.lastScore = 0;
     this.lastHurt = 0;
     this.dangerLevel = '';
@@ -52,6 +60,10 @@ export class UI {
     $('btn-home').addEventListener('click', onHome);
     $('btn-tutorial').addEventListener('click', onTutorial);
     this.el.mute.addEventListener('click', onToggleMute);
+    this.el.challenge.addEventListener('click', () => this.challengeFriend());
+    this.el.resume.addEventListener('click', () => this.startCountdown());
+    // Les boutons par-dessus le jeu ne doivent pas déclencher de swipe
+    for (const b of [this.el.resume, this.el.challenge]) b.addEventListener('pointerdown', (e) => e.stopPropagation());
     // Le bouton son ne doit pas déclencher de swipe
     this.el.mute.addEventListener('pointerdown', (e) => e.stopPropagation());
   }
@@ -93,6 +105,9 @@ export class UI {
     this.el.goScore.textContent = score;
     this.el.goDistance.textContent = `${Math.floor(distance)} m`;
     this.el.goBest.textContent = best;
+    this.lastRun = { score, distance: Math.floor(distance) };
+    this.el.challenge.classList.remove('copied');
+    this.el.challenge.textContent = '📣 Défier un ami';
     // Numéro de procès-verbal (pour rire) : dépend de la partie
     this.el.goPv.textContent = String((Math.floor(distance) * 37 + score) % 10000).padStart(4, '0');
     this.setDanger(0);
@@ -136,6 +151,76 @@ export class UI {
       this.lastEffects = key;
       this.el.effects.innerHTML = chips.map((c) => `<span class="effect-chip">${c}</span>`).join('');
     }
+  }
+
+  /**
+   * « Défier un ami » : partage natif du téléphone (navigator.share),
+   * sinon copie du texte dans le presse-papiers.
+   */
+  async challengeFriend() {
+    const { score, distance } = this.lastRun;
+    const url = location.origin + location.pathname;
+    const text = `🚔 J'ai fait ${score} points à FlicEnCavale : Gérard a tenu ${distance} m avant de se faire rattraper. Tu fais mieux ?`;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: 'FlicEnCavale', text, url });
+      } catch {
+        /* partage annulé : rien à faire */
+      }
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(`${text} ${url}`);
+      this.el.challenge.textContent = '✅ Texte copié, colle-le à un ami !';
+      this.el.challenge.classList.add('copied');
+    } catch {
+      this.el.challenge.textContent = '😕 Copie impossible sur cet appareil';
+    }
+  }
+
+  /**
+   * Écran de pause. Appelé quand on quitte l'appli (et visible au retour).
+   * Le bouton « Reprendre » lance un décompte 3-2-1, puis appelle onResume().
+   * @param {() => void} onResume
+   * @param {{ onTick?: (n: number) => void }} [options] onTick(3|2|1) : pour jouer un son à chaque chiffre
+   */
+  showPause(onResume, { onTick } = {}) {
+    clearTimeout(this.pauseTimer);
+    this.onResume = onResume;
+    this.onTick = onTick;
+    this.el.pause.classList.remove('hidden', 'counting');
+    this.el.pauseCard.classList.remove('hidden');
+    this.el.pauseCount.classList.add('hidden');
+  }
+
+  /** Vrai si l'écran de pause (ou son décompte) est affiché. */
+  get pauseVisible() {
+    return !this.el.pause.classList.contains('hidden');
+  }
+
+  /** Cache l'écran de pause sans reprendre (ex. retour à l'écran titre). */
+  hidePause() {
+    clearTimeout(this.pauseTimer);
+    this.el.pause.classList.add('hidden');
+  }
+
+  startCountdown() {
+    this.el.pauseCard.classList.add('hidden');
+    this.el.pause.classList.add('counting');
+    const count = this.el.pauseCount;
+    count.classList.remove('hidden');
+    const step = (n) => {
+      if (n === 0) {
+        this.hidePause();
+        this.onResume?.();
+        return;
+      }
+      count.textContent = n;
+      this.retrigger(count, 'tick');
+      this.onTick?.(n);
+      this.pauseTimer = setTimeout(() => step(n - 1), 900);
+    };
+    step(3);
   }
 
   /** Couleur de la jauge et voile rouge selon la proximité des collègues (0 = loin, 1 = attrapé). */
