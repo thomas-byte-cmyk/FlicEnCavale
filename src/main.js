@@ -34,6 +34,9 @@ const ui = new UI({
 ui.setMuted(muted);
 ui.showTitle(best);
 
+// En mode développement uniquement : accès au jeu depuis la console du navigateur (pour tester)
+if (import.meta.env.DEV) window.__game = game;
+
 const input = new Input(document.getElementById('app'), (action) => game.handleAction(action));
 
 function startGame() {
@@ -46,6 +49,7 @@ function startGame() {
 /** Réagit aux événements produits par la logique du jeu. */
 function handleEvents(events) {
   for (const ev of events) {
+    renderer.onEvent(ev);
     if (ev.type === 'gameover') endGame(ev);
   }
 }

@@ -6,6 +6,7 @@
 import * as THREE from 'three';
 import { World } from './World.js';
 import { makeGendarme, animateRunner, makeBlobShadow } from './characters.js';
+import { createObstacleModel } from './obstacleModels.js';
 
 const SKY = '#8fd3ff';
 
@@ -36,9 +37,11 @@ export class Renderer {
     this.playerShadow = makeBlobShadow(0.5);
     this.scene.add(this.player, this.playerShadow);
 
+    this.obstacleMeshes = new Map(); // numéro d'obstacle → objet 3D
     this.runPhase = 0;
     this.camX = 0;
     this.time = 0;
+    this.shake = 0; // secousse de la caméra après un choc
 
     this.resize();
   }
@@ -63,6 +66,56 @@ export class Renderer {
     this.world.reset();
     this.runPhase = 0;
     this.camX = 0;
+    this.shake = 0;
+  }
+
+  /** Réagit aux événements du jeu qui ont un effet visuel. */
+  onEvent(ev) {
+    if (ev.type === 'hit') this.shake = 0.35;
+    if (ev.type === 'slip') this.shake = 0.15;
+  }
+
+  /** Crée / déplace / supprime les objets 3D des obstacles pour suivre la logique. */
+  syncObstacles(game) {
+    const alive = new Set();
+    for (const o of game.obstacles) {
+      alive.add(o.id);
+      let mesh = this.obstacleMeshes.get(o.id);
+      if (!mesh) {
+        mesh = createObstacleModel(o.type);
+        this.obstacleMeshes.set(o.id, mesh);
+        this.scene.add(mesh);
+      }
+      mesh.position.set(o.x, 0, -(o.at - game.distance));
+
+      // La vache regarde dans le sens où elle marche et se dandine
+      if (o.type === 'vache') {
+        mesh.rotation.y = o.vx < 0 ? Math.PI : 0;
+        if (o.vx) mesh.rotation.z = Math.sin(this.time * 8) * 0.04;
+      }
+      // L'agent agite le bras en sifflant
+      if (o.type === 'agent') {
+        const { armR } = mesh.children[1].userData;
+        armR.rotation.x = -2.8 + Math.sin(this.time * 9) * 0.35;
+      }
+      // Obstacle percuté : il s'envole de façon comique
+      if (o.hit) {
+        const t = game.time - o.hitTime;
+        mesh.position.y = 4 * t - 6 * t * t + 0.3;
+        mesh.position.x += (o.x >= game.player.x ? 1 : -1) * t * 6;
+        mesh.rotation.x = -t * 6;
+        mesh.rotation.z = t * 4;
+      }
+    }
+    // Supprime ce qui n'existe plus dans la logique
+    for (const [id, mesh] of this.obstacleMeshes) {
+      if (!alive.has(id)) {
+        this.scene.remove(mesh);
+        // L'agent est fabriqué à neuf à chaque fois : on libère sa mémoire
+        if (mesh.userData.agent) mesh.traverse((n) => n.geometry && n.geometry.dispose());
+        this.obstacleMeshes.delete(id);
+      }
+    }
   }
 
   /**
@@ -75,6 +128,7 @@ export class Renderer {
     const p = game.player;
 
     this.world.update(game.distance);
+    this.syncObstacles(game);
 
     // --- Gérard ---
     if (game.status === 'running') this.runPhase += dt * game.speed * 1.25;
@@ -87,12 +141,17 @@ export class Renderer {
       jumping: !p.grounded,
       wobble: 0,
     });
+    // Clignote après un choc
+    this.player.visible = !(game.hurtTime > 0 && Math.floor(this.time * 14) % 2 === 0);
     this.playerShadow.position.x = p.x;
     this.playerShadow.scale.setScalar(Math.max(0.4, 1 - p.y * 0.3));
 
     // --- Caméra : derrière et au-dessus de Gérard, elle le suit avec un léger retard ---
     this.camX += (p.x * 0.55 - this.camX) * (1 - Math.exp(-6 * dt));
-    this.camera.position.set(this.camX, 3.9, 6.4);
+    this.shake = Math.max(0, this.shake - dt);
+    const shakeX = (Math.random() - 0.5) * this.shake;
+    const shakeY = (Math.random() - 0.5) * this.shake;
+    this.camera.position.set(this.camX + shakeX, 3.9 + shakeY, 6.4);
     this.camera.lookAt(this.camX * 0.6, 1.0, -9);
 
     this.renderer.render(this.scene, this.camera);

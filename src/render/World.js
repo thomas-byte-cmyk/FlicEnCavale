@@ -94,11 +94,11 @@ function buildSegment(rand) {
   // Guirlande de fanions tricolores au-dessus de la rue (une fois sur deux)
   if (rand() < 0.6) {
     const fz = (rand() - 0.5) * (L - 6);
-    b.box(13, 0.03, 0.03, '#444444', 0, 5.6, fz);
+    b.box(13, 0.03, 0.03, '#444444', 0, 6.6, fz);
     for (let i = 0; i < 18; i++) {
       const fx = -6.2 + i * 0.73;
       const sag = Math.cos((fx / 6.5) * (Math.PI / 2)) * 0.6; // la ficelle pend au milieu
-      b.add(new THREE.ConeGeometry(0.2, 0.42, 3), FLAGS[i % 3], fx, 5.4 - sag, fz, Math.PI, 0, 0);
+      b.add(new THREE.ConeGeometry(0.2, 0.42, 3), FLAGS[i % 3], fx, 6.4 - sag, fz, Math.PI, 0, 0);
     }
   }
   return b.build();

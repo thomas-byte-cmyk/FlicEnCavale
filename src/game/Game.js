@@ -5,7 +5,8 @@
 // que le rendu, l'interface et le son écoutent.
 // =========================================================
 
-import { LANES, PLAYER, SPEED, SCORE } from '../config.js';
+import { LANES, PLAYER, SPEED, SCORE, SPAWN } from '../config.js';
+import { buildRow, rowLength } from './obstacles.js';
 
 export class Game {
   /** @param {{ random?: () => number }} options */
@@ -31,6 +32,10 @@ export class Game {
       slideTime: 0, // temps restant de glissade
       grounded: true,
     };
+
+    this.obstacles = []; // obstacles présents dans la rue
+    this.nextRowAt = SPAWN.firstObstacleAt; // où placer la prochaine rangée
+    this.hurtTime = 0; // temps de clignotement après un choc (pas de nouveau choc)
   }
 
   start() {
@@ -108,6 +113,8 @@ export class Game {
     this.distance += this.speed * dt;
 
     this.updatePlayer(dt);
+    this.spawnAhead();
+    this.updateObstacles(dt);
     return this.events;
   }
 
@@ -132,5 +139,86 @@ export class Game {
     }
 
     if (p.slideTime > 0) p.slideTime = Math.max(0, p.slideTime - dt);
+  }
+
+  // ---------------------------------------------------------
+  // OBSTACLES
+  // ---------------------------------------------------------
+
+  /** Prépare des rangées d'obstacles devant Gérard. */
+  spawnAhead() {
+    while (this.nextRowAt < this.distance + SPAWN.lookAhead) {
+      const row = buildRow(this.random, this.nextRowAt);
+      this.obstacles.push(...row);
+      // Plus on va vite, plus on espace les rangées (pour avoir le temps de réagir)
+      const gap = SPAWN.minGap + this.random() * (SPAWN.maxGap - SPAWN.minGap);
+      this.nextRowAt += rowLength(row) + gap + this.speed * 0.35;
+    }
+  }
+
+  updateObstacles(dt) {
+    const p = this.player;
+    if (this.hurtTime > 0) this.hurtTime -= dt;
+    const playerTop = p.y + (this.sliding ? PLAYER.slideHeight : PLAYER.height);
+
+    for (const o of this.obstacles) {
+      const ahead = o.at - this.distance; // distance entre Gérard et l'obstacle
+
+      // La vache se met à traverser quand Gérard approche
+      if (o.vx && ahead < 45) {
+        o.x += o.vx * dt;
+        if (Math.abs(o.x) > 5.5) o.vx = 0; // arrivée sur le trottoir : elle s'arrête
+      }
+
+      // Le gendarme de la circulation siffle quand on approche
+      if (o.type === 'agent' && !o.done && ahead < 24) {
+        o.done = true;
+        this.emit('whistle', { obstacle: o });
+      }
+
+      if (o.hit) continue;
+
+      // Le radar flashe quand on passe à côté
+      if (o.type === 'radar' && !o.done && ahead < -0.5) {
+        o.done = true;
+        this.emit('flash', { obstacle: o });
+      }
+
+      // --- Collision : les "boîtes" de Gérard et de l'obstacle se touchent-elles ? ---
+      const overlapZ = Math.abs(ahead) < o.depth / 2 + PLAYER.halfDepth;
+      const overlapX = Math.abs(o.x - p.x) < o.width / 2 + PLAYER.halfWidth;
+      const overlapY = p.y < o.yMax && playerTop > o.yMin;
+      if (!(overlapZ && overlapX && overlapY)) continue;
+
+      if (o.effect === 'slip') {
+        if (!o.done) {
+          o.done = true;
+          this.slip();
+        }
+        continue;
+      }
+      this.hitObstacle(o);
+    }
+
+    // On oublie les obstacles loin derrière
+    this.obstacles = this.obstacles.filter((o) => o.at + o.depth > this.distance - SPAWN.despawnBehind);
+  }
+
+  /** Gérard percute un obstacle. */
+  hitObstacle(o) {
+    if (this.hurtTime > 0) return; // encore sonné par le choc précédent
+    o.hit = true;
+    o.hitTime = this.time;
+    this.hurtTime = 1.0;
+    this.speed = Math.max(SPEED.start, this.speed * SPEED.hitSlowdown);
+    this.emit('hit', { obstacle: o });
+  }
+
+  /** Flaque de pastis : ça glisse, Gérard part sur le côté. */
+  slip() {
+    const p = this.player;
+    const options = [p.lane - 1, p.lane + 1].filter((l) => l >= 0 && l <= 2);
+    p.lane = options[Math.floor(this.random() * options.length)];
+    this.emit('slip');
   }
 }
