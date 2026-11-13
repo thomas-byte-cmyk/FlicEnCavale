@@ -1,5 +1,6 @@
 # Fabrique la version Poki du jeu, prête à envoyer.
-# Se lance tout seul à chaque mise à jour de main, ou à la main
+# EN SOMMEIL : le projet ne vise plus Poki (l'alcool y est interdit).
+# Ne se lance plus tout seul ; seulement à la main si besoin
 # (onglet Actions → « Version Poki » → Run workflow).
 # Résultat : en bas de la page de l'exécution, rubrique « Artifacts »,
 # un fichier FlicEnCavale-poki à télécharger. C'est un .zip avec index.html
@@ -7,8 +8,6 @@
 name: Version Poki
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:

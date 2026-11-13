@@ -64,18 +64,27 @@ describe('missions', () => {
     expect(m.stats.noHit).toBe(100); // les 100 premiers mètres restent le record
   });
 
-  it('nouvelle mission : éviter les verres de rouge (remplace « boire du vin »)', () => {
+  it('mission « Bois 2 verres de rouge » (vin1), revenue à sa place', () => {
     const ids = Array.from({ length: 27 }, (_, i) => missionAt(i).id);
-    expect(ids).not.toContain('vin1');
-    expect(ids).toContain('dodgevin1');
-    const before = ids.slice(0, ids.indexOf('dodgevin1'));
+    expect(ids).not.toContain('dodgevin1');
+    expect(ids.indexOf('vin1')).toBe(10); // même place qu'à l'origine (après nowine1)
+    const before = ids.slice(0, ids.indexOf('vin1'));
     const m = new Missions(before);
     m.startRun();
-    expect(m.active[0].id).toBe('dodgevin1');
-    const dodgeVin = { type: 'dodge', kind: 'vin' };
-    const dodgeCoin = { type: 'dodge', kind: 'coin' };
-    expect(m.update(fakeGame(0), [dodgeVin, dodgeVin, dodgeVin, dodgeVin, dodgeCoin]).done).toHaveLength(0);
-    expect(m.update(fakeGame(0), [dodgeVin]).done.map((d) => d.id)).toEqual(['dodgevin1']);
+    expect(m.active[0].id).toBe('vin1');
+    expect(m.active[0].text).toBe('Bois 2 verres de rouge (avec modération)');
+    const vin = { type: 'pickup', kind: 'vin' };
+    expect(m.update(fakeGame(0), [vin]).done).toHaveLength(0);
+    expect(m.update(fakeGame(0), [vin]).done.map((d) => d.id)).toEqual(['vin1']);
+  });
+
+  it('une sauvegarde contenant « dodgevin1 » (version précédente) reste valable', () => {
+    const before = Array.from({ length: 10 }, (_, i) => missionAt(i).id);
+    const m = new Missions([...before, 'dodgevin1']);
+    expect(m.completedCount).toBe(11); // elle compte toujours pour le grade
+    expect(m.active[0].id).toBe('vin1'); // et vin1 est simplement proposée
+    m.startRun();
+    expect(() => m.update(fakeGame(100), [{ type: 'dodge', kind: 'vin' }, { type: 'pickup', kind: 'vin' }])).not.toThrow();
   });
 
   it('mission : se faire siffler par les agents', () => {

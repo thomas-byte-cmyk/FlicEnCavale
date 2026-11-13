@@ -290,7 +290,8 @@ export class UI {
   /** Petit texte qui s'envole ("+10"). x = position horizontale en % de l'écran. */
   floatText(text, x = 50, color = '') {
     const d = document.createElement('div');
-    d.className = 'floater';
+    // Gros gain (verre de vin, 50 points ou plus) : chiffre plus gros, il se remarque
+    d.className = parseInt(String(text).replace(/\D/g, ''), 10) >= 50 ? 'floater big' : 'floater';
     d.textContent = text;
     d.style.left = `${x}%`;
     if (color) d.style.color = color;

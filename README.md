@@ -29,7 +29,7 @@ Le jeu est publié automatiquement sur GitHub Pages à chaque mise à jour de la
   flaque de pastis (ça fait glisser sur la voie d'à côté), cortège de manifestants avec
   pancartes (contourner : on ne peut ni sauter ni glisser).
 - **Bonus** : 🍫 médailles en chocolat (points), ☕ café (dessoûle + éloigne les collègues),
-  🍷 verre de rouge (un piège : aucun point, et l'ivresse monte), 🥐 croissant (invincible),
+  🍷 verre de rouge (beaucoup de points mais l'ivresse monte), 🥐 croissant (invincible),
   🎖️ képi doré (score ×2).
 - **Ivresse** (jauge 🍷) : plus elle est haute, plus Gérard titube, plus la caméra tangue
   et plus ses réactions sont lentes et imprécises.
@@ -93,12 +93,15 @@ permettra plus tard de réutiliser le jeu dans une application mobile.
 
 `npm run build` fabrique la version finale dans le dossier `dist/`.
 
-### Version Poki
+### Version Poki (en sommeil)
+
+> Le projet ne vise plus Poki : leurs règles interdisent l'alcool, qui est au cœur du jeu.
+> Le code reste en place (il ne change rien à la version GitHub) au cas où.
 
 - `npm run build:poki` fabrique la version pour le portail de jeux Poki dans `dist-poki/`
   (avec le kit Poki pour les publicités, sans le bouton « Défier un ami »).
 - `npm run zip:poki` fabrique en plus le fichier `FlicEnCavale-poki.zip` à envoyer à Poki.
-- Sans rien installer : GitHub fabrique ce zip tout seul (onglet **Actions** → **Version Poki**).
+- Sans rien installer : onglet **Actions** → **Version Poki** → **Run workflow** (il ne se lance plus tout seul).
 - Guide complet pour envoyer le jeu : [docs/poki/SOUMISSION.md](docs/poki/SOUMISSION.md).
 
 `npm test` lance les tests automatiques de la logique du jeu (dossier `tests/`, avec

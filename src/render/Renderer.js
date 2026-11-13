@@ -119,8 +119,9 @@ export class Renderer {
         break;
       case 'pickup':
         if (ev.kind === 'vin') {
-          // Piège : pas d'étincelles dorées, mais des éclaboussures de vin et un vertige
-          this.particles.burst({ x: p.x, y: 1.3, count: 14, colors: ['#8e1b3a', '#7b2cbf', '#e63946'], speed: 3, up: 2.2, size: 0.13, drift: run * 0.3 });
+          // Pari risqué : des points (étincelles dorées)… et des éclaboussures de vin + un vertige
+          this.particles.burst({ x: p.x, y: 1.3, count: 12, colors: ['#8e1b3a', '#7b2cbf', '#e63946'], speed: 3, up: 2.2, size: 0.13, drift: run * 0.3 });
+          this.particles.burst({ x: p.x, y: 1.5, count: 8, colors: ['#f2b705', '#fde68a'], speed: 2.5, up: 2.6, size: 0.11, life: 0.7 });
           this.dizzy = 1;
           break;
         }
@@ -214,6 +215,12 @@ export class Renderer {
           sp.position.set(Math.cos(a) * 0.5, 1.0 + Math.sin(this.time * 5 + i) * 0.08, Math.sin(a) * 0.5);
           sp.material.rotation = -this.time * 4;
         });
+        // Étincelles dorées qui scintillent autour du verre (c'est tentant…)
+        trap.sparkles.forEach((sp, i) => {
+          const a = -this.time * 1.4 + (i * Math.PI) / 2;
+          sp.position.set(Math.cos(a) * 0.62, 0.15 + (i % 2) * 0.35, Math.sin(a) * 0.62);
+          sp.scale.setScalar(0.2 + 0.18 * Math.max(0, Math.sin(this.time * 7 + i * 1.7)));
+        });
       }
     }
     for (const [id, mesh] of this.itemMeshes) {
@@ -234,9 +241,9 @@ export class Renderer {
     const p = game.player;
 
     this.world.update(game.distance);
-    // Anneau d'avertissement des verres de vin : pulse entre rouge et violet
-    const pulse = 0.5 + 0.5 * Math.sin(this.time * 6);
-    trapRingMaterial.color.setRGB(0.9 - pulse * 0.42, 0.22 - pulse * 0.05, 0.27 + pulse * 0.48);
+    // Anneau des verres de vin : passe de l'or (tentant) au violet (dangereux)
+    const pulse = 0.5 + 0.5 * Math.sin(this.time * 5);
+    trapRingMaterial.color.setRGB(0.95 - pulse * 0.47, 0.72 - pulse * 0.55, 0.02 + pulse * 0.73);
     this.backdrop.update(dt || 0.016);
     this.syncObstacles(game);
     this.syncItems(game);

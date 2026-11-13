@@ -1,5 +1,9 @@
 # Envoyer FlicEnCavale à Poki, étape par étape
 
+> 💤 **En sommeil (13/11/2026)** : le projet a renoncé à Poki, dont les règles interdisent
+> l'alcool. Ce guide est gardé au cas où. Le zip ne se fabrique plus automatiquement :
+> à l'étape 1, il faut cliquer sur **Run workflow**.
+
 Ce guide explique comment créer ton compte développeur Poki et leur envoyer le jeu.
 Aucune connaissance technique n'est nécessaire : tout se fait dans le navigateur.
 

@@ -30,7 +30,7 @@ export default {
     ctrlSlide: '<span>👇</span> Glisse vers le bas pour te baisser',
     ctrlKeys: '<span>⌨️</span> Sur ordi : les flèches',
     bonusCafe: '☕ <b>Café</b> : dessoûle et sème les collègues',
-    bonusVin: '🍷 <b>Verre de rouge</b> : un piège ! Aucun point, et ça tourne…',
+    bonusVin: '🍷 <b>Verre de rouge</b> : des points… mais ça tourne',
     bonusCroissant: '🥐 <b>Croissant</b> : invincible un moment',
     bonusKepi: '🎖️ <b>Képi doré</b> : score multiplié',
     tutorialAgain: 'Refaire l’entraînement',
@@ -110,7 +110,7 @@ export default {
     slide: 'Glisse {n} fois',
     croissant: ['Mange un croissant', 'Mange {n} croissants'],
     noWine: 'Cours {n} m sans boire de vin',
-    dodgeVin: 'Évite {n} verres de rouge',
+    vin: 'Bois {n} verres de rouge (avec modération)',
     whistle: 'Fais-toi siffler par {n} gendarmes de la circulation',
     passBarrique: 'Passe {n} barriques sans les toucher',
     kepi: ['Trouve un képi doré', 'Trouve {n} képis dorés'],
@@ -209,7 +209,7 @@ export default {
     /** Réaction quand Gérard ramasse un bonus. */
     pickup: {
       cafe: ['Un petit noir, ça requinque !', 'Café serré, idées claires !', 'Ah, ça va mieux !'],
-      vin: ['Hic ! Mauvaise idée, Gérard…', 'Même pas un point ? Arnaque !', 'Le village tangue encore plus…'],
+      vin: ['Juste un petit dernier !', 'Hic ! À la vôtre !', 'C’est pour la science.'],
       croissant: ['Le croissant de la victoire !', 'Pouvoir du beurre AOP !', 'Rien ne m’arrête, j’ai mon croissant !'],
       kepi: ['Promu adjudant-chef !', 'Képi doré : prime de risque activée !', 'Mon général !'],
     },
