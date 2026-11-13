@@ -29,9 +29,13 @@ sur un portail ou un store, un jeu moins agréable est moins montré et rapporte
 
 ---
 
-## Étape 1 — Portails (CrazyGames, puis Poki)
+## Étape 1 — Portails (**Poki en priorité**, CrazyGames en repli)
 
-### D1-1 · Désamorcer le thème alcool (décision de game design : **à valider par l'utilisateur**)
+> ⭐ La checklist technique complète pour Poki est dans
+> [`05-poki-prerequis-techniques.md`](05-poki-prerequis-techniques.md) (SDK, pause pendant les pubs,
+> poids, langue, portrait). Les demandes ci-dessous en sont le résumé.
+
+### D1-1 · Désamorcer le thème alcool (✅ **validé par l'utilisateur le 13/11/2026**, implémenté par la session CODE)
 - 🍷 **Verre de rouge** : il ne donne **plus de points** (`SCORE.wine` à 0 ou retiré). Il reste
   un **piège** qui fait monter l'ivresse. Ajouter une bulle comique quand Gérard en prend un
   (« Hips… c'était pas de l'eau ? »).
@@ -102,6 +106,16 @@ isRewardedAvailable()   // pour cacher le bouton si aucune pub n'est disponible
 - **Au maximum une pub toutes les 3 minutes**. Les portails limitent eux-mêmes la fréquence,
   mais ajouter une sécurité côté jeu.
 - Mettre ce réglage dans `src/config.js` (bloc `ADS`), avec un commentaire.
+
+### C1-6 · Version anglaise (FR + EN)
+- Langue choisie avec `navigator.language` (`fr*` → français, sinon anglais), et un bouton 🇫🇷/🇬🇧
+  facultatif. Tous les textes (`texts.js`, missions, grades, interface) passent par un même
+  dictionnaire. Adapter les jeux de mots plutôt que les traduire mot à mot.
+
+### C1-7 · Après la signature d'une exclusivité Poki
+- Remplacer la version jouable sur GitHub Pages par une **page simple « Jouer sur Poki »**
+  (visuel de Gérard + bouton vers la page Poki du jeu), **si le contrat l'exige**. Ne rien faire
+  avant la signature.
 
 ### D1-2 · Visuels pour les portails
 - Vignettes aux formats demandés par chaque portail (CrazyGames : plusieurs formats paysage et

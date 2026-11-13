@@ -43,7 +43,7 @@ si vous passez en usage commercial.
 
 ---
 
-## Guide C — Publier sur CrazyGames · étape 1
+## Guide C — Publier sur CrazyGames · repli si Poki refuse
 
 **Avant de commencer** : les demandes **C1-1 à C1-5** et **D1-1 à D1-3** doivent être faites
 (couche publicité, version portail sans lien externe, thème alcool désamorcé, visuels).
@@ -73,24 +73,41 @@ si vous passez en usage commercial.
 
 ---
 
-## Guide D — Proposer le jeu à Poki · étape 1 (après CrazyGames)
+## Guide D — Proposer le jeu à Poki · ⭐ priorité
 
-1. Aller sur **developers.poki.com** → créer un compte → « Submit your game ».
-2. Poki demande d'abord un **lien vers une version jouable** (votre GitHub Pages convient).
-   Ils testent la jouabilité et le potentiel avant de proposer un contrat.
-3. **Avant de signer** : bien lire le **type de contrat**.
-   - *Web exclusive* : meilleur partage et mise en avant, mais le jeu ne peut plus être publié
-     ailleurs sur le web (y compris CrazyGames, et peut-être votre propre site) pendant la durée
-     du contrat (5 ans par défaut, d'après leurs conditions publiées).
-   - *Non exclusive* : licence forfaitaire unique, sans partage des revenus.
-   👉 Me reposer la question (session MONÉTISATION) avec le contrat sous les yeux.
-4. Intégration du **SDK Poki** (demande **C1-2**, variante Poki) : appels `gameplayStart()` /
-   `gameplayStop()`, `commercialBreak()` entre les parties, `rewardedBreak()` pour la deuxième chance.
-5. Soumission du build via leur outil (« Poki for Developers »), comme pour CrazyGames.
+**Avant de commencer** : la session CODE doit avoir terminé la checklist
+[`05-poki-prerequis-techniques.md`](05-poki-prerequis-techniques.md), ou au minimum avoir une
+version jouable en anglais avec le thème alcool adouci. Poki teste d'abord le jeu tel quel : le
+SDK peut être ajouté après leur accord.
 
----
+1. **Créer le compte** : aller sur **developers.poki.com** → « Sign up » (email ou compte Google).
+2. **Soumettre le jeu** : bouton « Submit your game » (ou équivalent). Poki demande :
+   - un **lien jouable** : votre adresse GitHub Pages convient
+     (`https://thomas-byte-cmyk.github.io/FlicEnCavale/`) ;
+   - un **nom**, une **courte description en anglais** (session MARKETING) ;
+   - éventuellement des **vignettes** et une vidéo (session DESIGN).
+3. **Attendre leur test** : Poki fait jouer un petit échantillon de joueurs et mesure le temps
+   de jeu et la rétention. Comptez **quelques jours à quelques semaines**. Poki est sélectif : un
+   refus n'est pas un échec, et on passe alors à CrazyGames (Guide C).
+4. **Si Poki est intéressé**, il propose un **contrat**. Avant de signer :
+   - vérifier qu'il s'agit bien du contrat **« Web exclusive »** (partage des revenus et mise en
+     avant). La version **non exclusive** est une licence forfaitaire unique, sans partage ;
+   - **durée** : 5 ans par défaut d'après les conditions publiées par Poki ;
+   - poser la question : **« Puis-je laisser la version GitHub Pages en ligne ? »**. Probablement
+     non : il faudra la remplacer par une page « Jouer sur Poki » (session CODE) ;
+   - poser la question : **« L'exclusivité couvre-t-elle aussi une future application mobile ? »** ;
+   - demander **comment se passe le paiement** (seuil, fréquence, documents demandés à un particulier) ;
+   - vous pouvez me soumettre le contrat (session MONÉTISATION) avant d'accepter.
+5. **Intégration du SDK** : la session CODE suit `05-poki-prerequis-techniques.md`, produit un
+   dossier `dist-poki/`, puis vous le compressez en **.zip** (clic droit → « Compresser »).
+6. **Envoi du .zip** dans l'espace développeur Poki. Leur équipe vérifie la qualité (mode portrait,
+   pubs, son coupé…) et peut demander des corrections.
+7. **Mise en ligne** : le jeu apparaît sur poki.com. Le tableau de bord développeur indique les
+   parties et les revenus.
+8. **Paiement** : renseigner IBAN et identité. Noter chaque versement reçu dans votre tableur
+   pour la déclaration de revenus (Guide G).
 
-## Guide E — Créer sa micro-entreprise · avant l'étape 1 Full Launch ou l'étape 4
+## Guide E — Créer sa micro-entreprise · **seulement si les revenus deviennent réguliers et significatifs**
 
 1. **Vérifier** son contrat de travail (exclusivité ?) si vous êtes salarié·e.
 2. Aller sur **formalites.entreprises.gouv.fr** (guichet unique, **gratuit**). Attention aux sites
@@ -118,7 +135,7 @@ si vous passez en usage commercial.
 
 ---
 
-## Guide F — Publier l'app sur Google Play · étape 4
+## Guide F — Publier l'app sur Google Play · (mis de côté : pas d'app mobile pour l'instant)
 
 1. **Créer le compte** : play.google.com/console → s'inscrire en tant que **compte personnel** ou
    **organisation**. Une micro-entreprise peut s'inscrire comme organisation (il faudra alors un
@@ -154,3 +171,27 @@ si vous passez en usage commercial.
 Business Program* (commission de 15 %), utiliser un **Mac** avec Xcode (ou un service de compilation
 dans le cloud), et remplir les équivalents dans App Store Connect (âge, étiquette de confidentialité,
 achats intégrés).
+
+---
+
+## Guide G — Déclarer ses petits revenus (salarié·e, sans micro-entreprise)
+
+Une fois par an, au printemps, pour les sommes reçues l'année précédente.
+
+1. **Pendant l'année** : noter dans un tableur chaque somme reçue (date, source « Poki » ou
+   « Ko-fi », montant arrivé sur le compte en euros).
+2. **Au printemps** (ouverture de la déclaration en ligne, généralement en avril) : se connecter
+   sur **impots.gouv.fr** → « Déclarer mes revenus ».
+3. À l'étape « **Annexes** » ou « Revenus et charges », cocher **« Revenus des professions non
+   salariées »**. Cela ajoute le formulaire **2042-C-PRO**.
+4. Aller au cadre **« Revenus non commerciaux non professionnels »** → **Régime déclaratif
+   spécial (micro-BNC)** → **case 5KU** (vous) ou **5LU** (conjoint·e).
+   ⚠️ Vérifier l'intitulé exact : la case est décrite comme « recettes brutes, sans déduction
+   d'abattement ». Si le libellé ne correspond pas, l'aide en ligne de la déclaration
+   (bouton « ? ») ou la messagerie de votre espace particulier répondra.
+5. Saisir le **total** de l'année, **sans** retirer d'abattement ni de frais : l'administration
+   applique automatiquement l'abattement de 34 %.
+6. Valider la déclaration. L'impôt et les prélèvements sociaux correspondants apparaîtront sur
+   l'avis d'imposition de l'été.
+7. En cas de doute, poser la question par écrit via la **messagerie sécurisée** de votre espace
+   impots.gouv.fr. La réponse écrite vous protège.
