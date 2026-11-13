@@ -90,11 +90,68 @@ const templates = new Map();
 const haloGeometry = new THREE.RingGeometry(0.35, 0.6, 20);
 const haloMaterial = new THREE.MeshBasicMaterial({ color: '#fff59d', transparent: true, opacity: 0.6, side: THREE.DoubleSide, depthWrite: false });
 
+// --- Le verre de vin est un PIÈGE : il doit se distinguer des bonus d'un coup d'œil ---
+// Pas d'or ni d'étincelles (réservés aux bonus) : un anneau rouge-violet qui pulse,
+// des spirales de vertige qui tournent au-dessus, et un verre qui tangue (voir Renderer).
+const trapRingGeometry = new THREE.RingGeometry(0.38, 0.72, 24);
+export const trapRingMaterial = new THREE.MeshBasicMaterial({ color: '#e63946', transparent: true, opacity: 0.85, side: THREE.DoubleSide, depthWrite: false });
+
+/** Texture d'une spirale de vertige (violette, contour blanc pour ressortir sur tous les fonds). */
+let swirlTexture = null;
+function getSwirlTexture() {
+  if (swirlTexture) return swirlTexture;
+  const c = document.createElement('canvas');
+  c.width = c.height = 128;
+  const ctx = c.getContext('2d');
+  ctx.lineCap = 'round';
+  const spiral = () => {
+    ctx.beginPath();
+    for (let a = 0; a < Math.PI * 5; a += 0.1) {
+      const r = 4 + a * 3.6;
+      const x = 64 + Math.cos(a) * r;
+      const y = 64 + Math.sin(a) * r;
+      if (a === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+  };
+  ctx.strokeStyle = '#ffffff';
+  ctx.lineWidth = 24;
+  spiral();
+  ctx.strokeStyle = '#5a189a';
+  ctx.lineWidth = 13;
+  spiral();
+  swirlTexture = new THREE.CanvasTexture(c);
+  swirlTexture.colorSpace = THREE.SRGBColorSpace;
+  return swirlTexture;
+}
+let swirlMaterial = null;
+
+/** Ajoute au verre de vin ses signes de danger (anneau + 3 spirales). */
+function addTrapSigns(g) {
+  const ring = new THREE.Mesh(trapRingGeometry, trapRingMaterial);
+  ring.rotation.x = -Math.PI / 2;
+  ring.position.y = -0.85;
+  g.add(ring);
+  swirlMaterial ??= new THREE.SpriteMaterial({ map: getSwirlTexture(), transparent: true, depthWrite: false });
+  const swirls = [];
+  for (let i = 0; i < 3; i++) {
+    const sp = new THREE.Sprite(swirlMaterial);
+    sp.scale.setScalar(0.56);
+    g.add(sp);
+    swirls.push(sp);
+  }
+  g.userData.trap = { ring, swirls };
+}
+
 export function createItemModel(kind) {
   if (!templates.has(kind)) templates.set(kind, FACTORIES[kind]());
   const g = new THREE.Group();
   const model = templates.get(kind).clone();
-  if (kind !== 'coin') {
+  if (kind === 'vin') {
+    model.scale.setScalar(1.6);
+    addTrapSigns(g);
+  } else if (kind !== 'coin') {
     model.scale.setScalar(1.6); // les bonus sont plus gros
     const halo = new THREE.Mesh(haloGeometry, haloMaterial);
     halo.rotation.x = -Math.PI / 2;

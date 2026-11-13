@@ -93,6 +93,14 @@ permettra plus tard de réutiliser le jeu dans une application mobile.
 
 `npm run build` fabrique la version finale dans le dossier `dist/`.
 
+### Version Poki
+
+- `npm run build:poki` fabrique la version pour le portail de jeux Poki dans `dist-poki/`
+  (avec le kit Poki pour les publicités, sans le bouton « Défier un ami »).
+- `npm run zip:poki` fabrique en plus le fichier `FlicEnCavale-poki.zip` à envoyer à Poki.
+- Sans rien installer : GitHub fabrique ce zip tout seul (onglet **Actions** → **Version Poki**).
+- Guide complet pour envoyer le jeu : [docs/poki/SOUMISSION.md](docs/poki/SOUMISSION.md).
+
 `npm test` lance les tests automatiques de la logique du jeu (dossier `tests/`, avec
 [Vitest](https://vitest.dev)). Ils vérifient par exemple que chaque rangée d'obstacles
 a toujours une solution, que les bonus et missions marchent, et que la sauvegarde

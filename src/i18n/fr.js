@@ -45,6 +45,11 @@ export default {
     missionsGo: '🎯 Missions —&nbsp;',
     replay: 'Rejouer',
     home: 'Écran titre',
+    // « Deuxième chance » (version Poki : pub récompensée, le joueur sait qu'il va voir une pub)
+    revive: '📺 Regarder une pub pour s’échapper',
+    reviveWaiting: '📺 Pub en cours…',
+    reviveFailed: '😕 Pas de pub disponible',
+    revived: 'Deuxième chance ! Cours, Gérard !',
     // « Défier un ami » (fin de partie)
     challenge: '📣 Défier un ami',
     challengeText: '🚔 J’ai fait {score} points à FlicEnCavale : Gérard a tenu {distance} m avant de se faire rattraper. Tu fais mieux ?',
