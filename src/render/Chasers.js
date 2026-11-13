@@ -46,7 +46,7 @@ export class Chasers {
       g.scale.setScalar(0.85);
       const shadow = makeBlobShadow(0.45);
       this.group.add(g, shadow);
-      return { g, shadow, x: 0, phase: i * 1.7, offsetX: [-1.15, 1.15, 0][i], offsetZ: [0, 0.6, 2.2][i] };
+      return { g, shadow, x: 0, phase: i * 1.7, offsetX: [-1.5, 1.5, 0][i], offsetZ: [0, 0.6, 4.2][i] };
     });
 
     // Le brigadier brandit le fameux ballon d'alcoolémie

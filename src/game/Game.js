@@ -218,6 +218,10 @@ export class Game {
 
       // La vache se met à traverser quand Gérard approche
       if (o.vx && ahead < 45) {
+        if (!o.done) {
+          o.done = true;
+          this.emit('moo', { obstacle: o });
+        }
         o.x += o.vx * dt;
         if (Math.abs(o.x) > 5.5) o.vx = 0; // arrivée sur le trottoir : elle s'arrête
       }

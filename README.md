@@ -20,6 +20,22 @@ Le jeu est publié automatiquement sur GitHub Pages à chaque mise à jour de la
 | Sauter | glisser vers le haut | ↑ (ou Espace) |
 | Se baisser / glisser | glisser vers le bas | ↓ |
 
+## 🍷 Règles
+
+- Gérard court tout seul, de plus en plus vite. **Score = distance + objets ramassés.**
+- Chaque obstacle percuté rapproche les collègues (jauge 🚓). S'ils le rattrapent : fin de partie.
+- **Obstacles** : barriques (sauter), radar (sauter), panneau « Cédez le passage » et baguette
+  géante (glisser dessous), vache, tracteur, rond-point et gendarme qui siffle (changer de voie),
+  flaque de pastis (ça fait glisser sur la voie d'à côté).
+- **Bonus** : 🍫 médailles en chocolat (points), ☕ café (dessoûle + éloigne les collègues),
+  🍷 verre de rouge (beaucoup de points mais l'ivresse monte), 🥐 croissant (invincible),
+  🎖️ képi doré (score ×2).
+- **Ivresse** (jauge 🍷) : plus elle est haute, plus Gérard titube, plus la caméra tangue
+  et plus ses réactions sont lentes et imprécises.
+
+Pour ajouter des blagues : tout est dans `src/game/texts.js`.
+Pour régler la difficulté : tout est dans `src/config.js`.
+
 ## 🧱 Technique
 
 - [Three.js](https://threejs.org) pour la 3D (formes simples, aucune image ni modèle externe)
