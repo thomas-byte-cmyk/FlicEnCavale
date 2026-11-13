@@ -21,16 +21,18 @@ function barrique() {
   return b.build();
 }
 
-/** Radar automatique sur trépied. */
+/** Radar automatique sur trépied (jaune vif : on le repère de loin sur le bitume gris). */
 function radar() {
   const b = new ShapeBuilder();
-  b.cyl(0.05, 0.05, 0.6, '#555555', 0, 0.3, 0, 6);
-  b.cyl(0.03, 0.03, 0.6, '#555555', -0.2, 0.25, 0.1, 6, 0, 0, 0.4);
-  b.cyl(0.03, 0.03, 0.6, '#555555', 0.2, 0.25, 0.1, 6, 0, 0, -0.4);
-  b.box(0.65, 0.4, 0.45, '#9ca3af', 0, 0.78, 0);
-  b.box(0.6, 0.06, 0.4, '#facc15', 0, 1.0, 0); // bande jaune
-  b.cyl(0.11, 0.11, 0.08, '#111827', -0.14, 0.78, 0.24, 10, Math.PI / 2); // objectif
-  b.box(0.16, 0.12, 0.04, '#fef3c7', 0.16, 0.8, 0.23); // flash
+  // Trépied rayé rouge et blanc, comme une borne de chantier
+  for (let i = 0; i < 3; i++) b.cyl(0.06, 0.06, 0.2, i % 2 ? '#ffffff' : '#e63946', 0, 0.1 + i * 0.2, 0, 6);
+  b.cyl(0.03, 0.03, 0.6, '#3a3a3a', -0.2, 0.25, 0.1, 6, 0, 0, 0.4);
+  b.cyl(0.03, 0.03, 0.6, '#3a3a3a', 0.2, 0.25, 0.1, 6, 0, 0, -0.4);
+  b.box(0.7, 0.42, 0.45, '#f6c945', 0, 0.8, 0); // boîtier jaune
+  b.box(0.72, 0.08, 0.47, '#1b1b2f', 0, 1.0, 0); // toit noir
+  b.box(0.5, 0.26, 0.04, '#1b1b2f', 0, 0.8, 0.23); // face avant
+  b.cyl(0.1, 0.1, 0.06, '#9fd4f5', -0.12, 0.8, 0.26, 10, Math.PI / 2); // objectif
+  b.box(0.14, 0.12, 0.04, '#ffffff', 0.14, 0.82, 0.26); // flash
   return b.build();
 }
 

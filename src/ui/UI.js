@@ -36,7 +36,14 @@ export class UI {
       titleMissions: $('title-missions'),
       goGrade: $('go-grade'),
       goMissions: $('go-missions'),
+      plate: $('hud-plate'),
+      chaseRow: $('gauge-chase-row'),
+      vignette: $('vignette'),
+      goPv: $('go-pv'),
     };
+    this.lastScore = 0;
+    this.lastHurt = 0;
+    this.dangerLevel = '';
     this.bubbleTimer = null;
     this.lastEffects = '';
 
@@ -63,6 +70,7 @@ export class UI {
     this.el.gameover.classList.add('hidden');
     this.el.hud.classList.add('hidden');
     this.clearMessages();
+    this.setDanger(0);
   }
 
   showGame(best) {
@@ -70,7 +78,10 @@ export class UI {
     this.el.gameover.classList.add('hidden');
     this.el.hud.classList.remove('hidden');
     this.el.best.textContent = best;
+    this.lastScore = 0;
+    this.lastHurt = 0;
     this.clearMessages();
+    this.setDanger(0);
   }
 
   showGameOver({ score, distance, best, newBest, phrase, missions }) {
@@ -82,6 +93,9 @@ export class UI {
     this.el.goScore.textContent = score;
     this.el.goDistance.textContent = `${Math.floor(distance)} m`;
     this.el.goBest.textContent = best;
+    // Numéro de procès-verbal (pour rire) : dépend de la partie
+    this.el.goPv.textContent = String((Math.floor(distance) * 37 + score) % 10000).padStart(4, '0');
+    this.setDanger(0);
     this.el.goNewBest.classList.toggle('hidden', !newBest);
     this.el.hud.classList.add('hidden');
     this.el.gameover.classList.remove('hidden');
@@ -98,8 +112,17 @@ export class UI {
     if (game.drunk !== undefined) this.el.drunk.style.width = `${game.drunk}%`;
     if (game.chaseRatio !== undefined) {
       // Jauge "collègues" : pleine = ils sont tout près !
-      this.el.chase.style.width = `${Math.round((1 - game.chaseRatio) * 100)}%`;
+      const near = 1 - game.chaseRatio;
+      this.el.chase.style.width = `${Math.round(near * 100)}%`;
+      this.setDanger(near);
     }
+    // Choc : flash rouge sur les bords de l'écran
+    const hurt = game.hurtTime ?? 0;
+    if (hurt > this.lastHurt + 0.1) this.retrigger(this.el.vignette, 'hit');
+    this.lastHurt = hurt;
+    // Le score « saute » quand on ramasse quelque chose
+    if (game.score >= this.lastScore + 10) this.retrigger(this.el.plate, 'bump');
+    this.lastScore = game.score;
     const mult = game.multiplier ?? 1;
     this.el.mult.classList.toggle('hidden', mult <= 1);
     this.el.mult.textContent = `×${mult}`;
@@ -113,6 +136,25 @@ export class UI {
       this.lastEffects = key;
       this.el.effects.innerHTML = chips.map((c) => `<span class="effect-chip">${c}</span>`).join('');
     }
+  }
+
+  /** Couleur de la jauge et voile rouge selon la proximité des collègues (0 = loin, 1 = attrapé). */
+  setDanger(near) {
+    const level = near > 0.72 ? 'danger' : near > 0.45 ? 'warn' : '';
+    if (level !== this.dangerLevel) {
+      this.dangerLevel = level;
+      this.el.chase.classList.toggle('warn', level === 'warn');
+      this.el.chase.classList.toggle('danger', level === 'danger');
+      this.el.chaseRow.classList.toggle('danger', level === 'danger');
+    }
+    this.el.vignette.style.opacity = near > 0.55 ? String(Math.min(1, (near - 0.55) / 0.35)) : '0';
+  }
+
+  /** Relance une animation CSS (même si elle est déjà en cours). */
+  retrigger(el, cls) {
+    el.classList.remove(cls);
+    void el.offsetWidth;
+    el.classList.add(cls);
   }
 
   /**

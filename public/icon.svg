@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Icône FlicEnCavale : la tête de Gérard (képi, nez rouge, moustache) sur fond bleu gendarmerie -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2b59c3"/>
+      <stop offset="1" stop-color="#1f3a93"/>
+    </linearGradient>
+    <clipPath id="r"><rect width="512" height="512" rx="112"/></clipPath>
+  </defs>
+  <g clip-path="url(#r)">
+    <rect width="512" height="512" fill="url(#bg)"/>
+    <!-- Rayons de soleil (fête) -->
+    <g fill="#ffffff" opacity="0.07">
+      <path d="M256 300 L-40 60 L40 -40 Z"/><path d="M256 300 L150 -60 L300 -60 Z"/>
+      <path d="M256 300 L420 -60 L560 40 Z"/><path d="M256 300 L560 200 L560 360 Z"/>
+      <path d="M256 300 L-60 260 L-60 420 Z"/>
+    </g>
+    <!-- Bande tricolore en bas -->
+    <rect y="452" width="171" height="60" fill="#1f3a93"/>
+    <rect x="171" y="452" width="170" height="60" fill="#fff8e7"/>
+    <rect x="341" y="452" width="171" height="60" fill="#e63946"/>
+    <rect y="446" width="512" height="10" fill="#1b1b2f"/>
+    <!-- Tête -->
+    <g transform="rotate(-6 256 290)">
+      <!-- oreilles -->
+      <circle cx="132" cy="300" r="30" fill="#f2c29b" stroke="#1b1b2f" stroke-width="10"/>
+      <circle cx="380" cy="300" r="30" fill="#f2c29b" stroke="#1b1b2f" stroke-width="10"/>
+      <!-- visage -->
+      <ellipse cx="256" cy="300" rx="122" ry="128" fill="#f2c29b" stroke="#1b1b2f" stroke-width="12"/>
+      <!-- joues roses (pompette) -->
+      <ellipse cx="180" cy="335" rx="26" ry="16" fill="#f28b82" opacity="0.8"/>
+      <ellipse cx="332" cy="335" rx="26" ry="16" fill="#f28b82" opacity="0.8"/>
+      <!-- yeux un peu dans le vague -->
+      <ellipse cx="208" cy="282" rx="16" ry="20" fill="#1b1b2f"/>
+      <ellipse cx="304" cy="282" rx="16" ry="20" fill="#1b1b2f"/>
+      <circle cx="213" cy="275" r="5" fill="#fff"/>
+      <circle cx="309" cy="275" r="5" fill="#fff"/>
+      <path d="M186 254 q22 -10 44 2" stroke="#1b1b2f" stroke-width="9" fill="none" stroke-linecap="round"/>
+      <path d="M282 256 q22 -12 44 -2" stroke="#1b1b2f" stroke-width="9" fill="none" stroke-linecap="round"/>
+      <!-- moustache -->
+      <path d="M256 352 C226 336 186 342 168 372 C200 366 226 374 256 364 C286 374 312 366 344 372 C326 342 286 336 256 352 Z" fill="#3a2414" stroke="#1b1b2f" stroke-width="8" stroke-linejoin="round"/>
+      <!-- nez rouge -->
+      <circle cx="256" cy="322" r="34" fill="#e63946" stroke="#1b1b2f" stroke-width="10"/>
+      <circle cx="244" cy="310" r="9" fill="#ffffff" opacity="0.75"/>
+      <!-- sourire -->
+      <path d="M226 392 q30 22 60 0" stroke="#1b1b2f" stroke-width="9" fill="none" stroke-linecap="round"/>
+      <!-- képi -->
+      <path d="M140 212 L152 112 Q256 82 360 112 L372 212 Z" fill="#141c3a" stroke="#1b1b2f" stroke-width="12" stroke-linejoin="round"/>
+      <rect x="134" y="196" width="244" height="30" rx="8" fill="#e8e8e8" stroke="#1b1b2f" stroke-width="10"/>
+      <path d="M150 226 Q256 266 362 226 L350 246 Q256 280 162 246 Z" fill="#000000" stroke="#1b1b2f" stroke-width="8" stroke-linejoin="round"/>
+      <!-- grenade de la gendarmerie, en or -->
+      <circle cx="256" cy="160" r="20" fill="#f2b705" stroke="#1b1b2f" stroke-width="6"/>
+      <path d="M244 142 q12 -30 24 0" fill="#f2b705" stroke="#1b1b2f" stroke-width="6"/>
+    </g>
+  </g>
+</svg>
