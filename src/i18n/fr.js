@@ -61,6 +61,7 @@ export default {
     missionDone: '✅ Mission réussie : {text}',
     promoted: '⭐ Gérard est promu {name} !',
     // Pause
+    pauseButton: 'Mettre en pause',
     pauseTitle: 'Pause',
     pauseText: 'Gérard reprend son souffle derrière une barrique…',
     resume: '▶ Reprendre',

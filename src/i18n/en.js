@@ -58,6 +58,7 @@ export default {
     tutorialDone: 'Well done! Now it’s for real!',
     missionDone: '✅ Mission complete: {text}',
     promoted: '⭐ Gérard is promoted to {name}!',
+    pauseButton: 'Pause the game',
     pauseTitle: 'Paused',
     pauseText: 'Gérard is catching his breath behind a wine barrel…',
     resume: '▶ Resume',
