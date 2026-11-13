@@ -1146,3 +1146,20 @@ summary:focus-visible {
   justify-content: flex-end;
   max-width: 100px;
 }
+/* DESIGN : icône pause dessinée (deux barres) au lieu de l'emoji, identique sur tous les appareils */
+#btn-pause {
+  font-size: 0;
+  position: relative;
+}
+#btn-pause::before,
+#btn-pause::after {
+  content: '';
+  position: absolute;
+  top: 12px;
+  width: 6px;
+  height: 16px;
+  border-radius: 2px;
+  background: var(--bleu);
+}
+#btn-pause::before { left: 13px; }
+#btn-pause::after { right: 13px; }
