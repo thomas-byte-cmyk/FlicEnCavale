@@ -1,5 +1,11 @@
 # 05 — Prérequis techniques Poki (checklist pour la session CODE)
 
+> 🗄️ **ARCHIVÉ le 13/11/2026.** Poki interdit explicitement l'alcool dans ses règles de contenu
+> (section « Content & player safety »), et l'utilisateur a choisi de garder l'alcool humoristique.
+> Ce document est conservé pour mémoire, et parce qu'une partie (pause et son coupé pendant les
+> pubs, absence de lien externe, langue) resterait utile pour un autre portail comme CrazyGames.
+> Le guide de soumission de la session CODE (`docs/poki/SOUMISSION.md`) est concerné de la même façon.
+
 Retour au [sommaire](README.md).
 
 > Sources : documentation SDK et page des exigences de Poki (sdk.poki.com), guides
