@@ -77,6 +77,27 @@
       <div id="bubble" class="bubble hidden"></div>
       <!-- Consigne du tutoriel (flèche animée) -->
       <div id="hint" class="hint hidden"><div id="hint-icon" class="hint-icon">👆</div><div id="hint-text" class="hint-text"></div></div>
+      <!-- Explication de la vision double (1re fois qu'un fantôme apparaît) : ne bloque pas les contrôles -->
+      <div id="mirage-tip" class="mirage-tip hidden" role="status" aria-live="polite">
+        <svg class="mirage-tip-icon" viewBox="0 0 160 70" aria-hidden="true">
+          <!-- vraie barrique -->
+          <g stroke="#1b1b2f" stroke-width="4">
+            <rect x="8" y="10" width="40" height="50" rx="12" fill="#8b4a1f"/>
+            <path d="M8 24h40M8 46h40" />
+          </g>
+          <!-- flèche de dédoublement -->
+          <path d="M58 35h34" stroke="#1b1b2f" stroke-width="5" stroke-linecap="round" stroke-dasharray="2 9"/>
+          <path d="M88 25l12 10-12 10" fill="none" stroke="#1b1b2f" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- barrique fantôme : transparente, décalée rouge / cyan -->
+          <g fill="none" stroke-width="4" stroke-dasharray="7 5">
+            <rect x="109" y="10" width="40" height="50" rx="12" stroke="#ff3b3b" opacity="0.8"/>
+            <rect x="115" y="10" width="40" height="50" rx="12" stroke="#13c6d4" opacity="0.8"/>
+          </g>
+          <rect x="112" y="10" width="40" height="50" rx="12" fill="#8b4a1f" opacity="0.35"/>
+        </svg>
+        <div id="mirage-tip-text" class="mirage-tip-text"></div>
+      </div>
+
       <!-- Points qui s'envolent ("+10") -->
       <div id="floaters" class="floaters"></div>
       <!-- Flash blanc (radar) -->

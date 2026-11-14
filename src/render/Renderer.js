@@ -11,10 +11,24 @@ import { Chasers } from './Chasers.js';
 import { createItemModel, trapRingMaterial } from './itemModels.js';
 import { mat } from './shapes.js';
 import { Particles } from './Particles.js';
-import { makeMirage, updateMirage, disposeMirage } from './Mirage.js';
+import { makeMirage, updateMirage, disposeMirage, mirageTextSprite } from './Mirage.js';
+import { LANES } from '../config.js';
+import { t } from '../i18n/index.js';
 import { getSetting } from '../platform/settings.js';
 import { Backdrop, makeSkyTexture } from './Backdrop.js';
 import { PALETTE } from './palette.js';
+
+// Ombre ronde sous les VRAIS obstacles (les fantômes n'en ont pas : c'est un indice)
+const obstacleShadowGeometry = new THREE.CircleGeometry(1, 20);
+const obstacleShadowMaterial = new THREE.MeshBasicMaterial({ color: '#000000', transparent: true, opacity: 0.22, depthWrite: false });
+function addObstacleShadow(mesh, o) {
+  const sh = new THREE.Mesh(obstacleShadowGeometry, obstacleShadowMaterial);
+  sh.rotation.x = -Math.PI / 2;
+  sh.position.y = 0.02;
+  sh.scale.set(Math.min(1.4, (o.width ?? 1) * 0.55), Math.min(1.8, (o.depth ?? 1) * 0.6 + 0.2), 1);
+  mesh.add(sh);
+  mesh.userData.groundShadow = sh;
+}
 
 export class Renderer {
   /** @param {HTMLCanvasElement} canvas */
@@ -100,6 +114,8 @@ export class Renderer {
     this.world.reset();
     this.chasers.reset();
     this.particles.clear();
+    for (const p of this.miragePops ?? []) p.sprite.removeFromParent();
+    this.miragePops = [];
     this.runPhase = 0;
     this.camX = 0;
     this.shake = 0;
@@ -142,6 +158,32 @@ export class Renderer {
     if (ev.type === 'slip') this.shake = 0.15;
   }
 
+  /** « Mirage ! » qui s'envole au-dessus de Gérard quand il traverse un fantôme. */
+  popMirageText(x) {
+    const sprite = mirageTextSprite(t('miragePop'));
+    sprite.position.set(x, 2.4, 0);
+    this.scene.add(sprite);
+    (this.miragePops ??= []).push({ sprite, life: 0 });
+  }
+
+  updateMiragePops(dt) {
+    if (!this.miragePops?.length) return;
+    this.miragePops = this.miragePops.filter((p) => {
+      p.life += dt;
+      const k = p.life / 0.9;
+      p.sprite.position.y = 2.4 + k * 1.2;
+      p.sprite.material.opacity = k < 0.6 ? 1 : Math.max(0, 1 - (k - 0.6) / 0.4);
+      const s = 1 + Math.min(0.25, k * 0.8);
+      p.sprite.scale.set(2.2 * s, 0.69 * s, 1);
+      if (k >= 1) {
+        p.sprite.removeFromParent();
+        p.sprite.material.dispose();
+        return false;
+      }
+      return true;
+    });
+  }
+
   /** Crée / déplace / supprime les objets 3D des obstacles pour suivre la logique. */
   syncObstacles(game) {
     const alive = new Set();
@@ -152,10 +194,13 @@ export class Renderer {
         mesh = createObstacleModel(o.type);
         this.obstacleMeshes.set(o.id, mesh);
         this.scene.add(mesh);
-        // Mirage (« vision double ») : même modèle, mais estompable + 2 fantômes colorés
+        // Fantôme (« vision double ») : même modèle, transparent, décalé rouge/cyan, sans ombre
         if (o.mirage ?? false) this.scene.add(makeMirage(mesh, o.type));
+        else if (o.type !== 'pastis') addObstacleShadow(mesh, o);
       }
-      mesh.position.set(o.x, 0, -(o.at - game.distance));
+      // (le fantôme oscille : sa position latérale o.x change à chaque image)
+      mesh.position.set(o.x ?? LANES[o.lane], 0, -(o.at - game.distance));
+      if (mesh.userData.groundShadow) mesh.userData.groundShadow.visible = !o.hit;
 
       // La vache regarde dans le sens où elle marche et se dandine
       if (o.type === 'vache') {
@@ -174,12 +219,14 @@ export class Renderer {
           if (person.userData.placard) person.userData.placard.rotation.z = Math.sin(this.time * 5 + i) * 0.15;
         });
       }
-      // Mirage : indices de près, puis dissipation en volutes quand Gérard le traverse
+      // Fantôme : transparent, tremblant, relié à l'original ; se dissipe quand Gérard le traverse
       if (mesh.userData.mirage) {
         const ahead = o.at - game.distance;
-        if (updateMirage(mesh, o, ahead, { time: this.time, reduceFx: this.reduceFx, playerX: game.player.x })) {
+        const original = o.ghostOf != null ? this.obstacleMeshes.get(o.ghostOf) : undefined;
+        if (updateMirage(mesh, o, original, { time: this.time, reduceFx: this.reduceFx, playerX: game.player.x, ahead })) {
           const y = (o.yMin ?? 0) + 0.8;
-          this.particles.burst({ x: o.x, y, z: 0.3, count: 16, colors: ['#ffffff', '#e9d5ff', '#a5f3fc', '#fecdd3'], speed: 1.6, up: 1.4, size: 0.22, life: 0.9, drift: game.speed * 0.4 });
+          this.particles.burst({ x: mesh.position.x, y, z: 0.3, count: 16, colors: ['#ffffff', '#e9d5ff', '#a5f3fc', '#fecdd3'], speed: 1.6, up: 1.4, size: 0.22, life: 0.9, drift: game.speed * 0.4 });
+          this.popMirageText(game.player.x);
           this.onMiragePass?.(o);
         }
         continue; // un mirage ne s'envole jamais (on ne le percute pas)
@@ -298,6 +345,7 @@ export class Renderer {
     }
     this.chasers.update(game, this.time, dt);
     this.particles.update(dt);
+    this.updateMiragePops(dt);
     // Clignote après un choc
     this.player.visible = !(game.hurtTime > 0 && Math.floor(this.time * 14) % 2 === 0);
     this.playerShadow.position.x = p.x;
