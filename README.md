@@ -34,14 +34,14 @@ Le jeu est publié automatiquement sur GitHub Pages à chaque mise à jour de la
 - **Ivresse** (jauge 🍷) : plus elle est haute, plus Gérard titube, plus la caméra tangue
   et plus ses réactions sont lentes et imprécises.
 
-- **Vision double** (v1.1) : au-dessus de 30 % d'ivresse, Gérard voit des **mirages** : de faux
-  obstacles posés sur une voie libre, qu'on traverse sans dommage (et avec un petit bonus).
-  Les vrais obstacles restent dangereux, et il reste toujours une voie libre visible.
-  Un café dissipe les mirages. En échange, l'ivresse **multiplie les points** : ×1 sous 30 %,
-  ×2 de 30 à 70 %, ×3 au-dessus (et encore ×2 avec le képi doré). Réglages : `MIRAGE` et
-  `DRUNK_MULTIPLIER` dans `src/config.js`.
-- **Réglages** : son, vibrations, « réduire les effets » (caméra qui tangue moins, mirages
-  décalés) et langue (`src/platform/settings.js`). Crédits et licences : `public/CREDITS.txt`.
+- **Vision double** (v1.2) : au-dessus de 30 % d'ivresse, Gérard **voit double** : un vrai obstacle
+  se dédouble et sa copie **fantôme**, transparente, oscille vers la voie d'à côté. Le fantôme se
+  traverse sans dommage (petit bonus) ; le vrai obstacle reste dangereux. La première fois, le jeu
+  ralentit un instant et l'explique. Un café dissipe les fantômes. En échange, l'ivresse
+  **multiplie les points** : ×1 sous 30 %, ×2 de 30 à 70 %, ×3 au-dessus (et encore ×2 avec le
+  képi doré). Réglages : `MIRAGE` et `DRUNK_MULTIPLIER` dans `src/config.js`.
+- **Réglages** : son, vibrations, « réduire les effets » (caméra qui tangue moins, fantômes
+  qui oscillent moins et plus lentement) et langue (`src/platform/settings.js`). Crédits et licences : `public/CREDITS.txt`.
 - **Missions** : 3 défis à la fois (« Bois 2 cafés », « Contourne 3 manifs »…) à réussir en une partie.
   Chaque mission réussie fait monter Gérard en grade, de Gendarme stagiaire jusqu'à Général.
   La liste des missions est dans `src/game/missions.js` (leurs textes dans `src/i18n/`).

@@ -1,84 +1,78 @@
 // =========================================================
-// VISION DOUBLE : les « mirages ».
-// Quand Gérard a bu, certaines rangées d'obstacles sont accompagnées d'un
-// faux obstacle, posé sur une voie libre. On le traverse sans dommage :
-// il trompe seulement le joueur sur la voie qui est libre.
+// VISION DOUBLE : les « mirages » (fantômes).
+// Quand Gérard a bu, un VRAI obstacle de la rangée se dédouble : sa copie
+// fantôme naît sur la même voie, puis oscille (aller-retour) vers une voie
+// voisine, comme quand on voit double. Le fantôme se traverse sans dommage ;
+// l'original reste un obstacle normal, aussi dangereux qu'avant.
 //
-// Règles de sécurité (vérifiées par les tests sur des milliers de rangées) :
-//   1. un mirage n'est posé QUE sur une voie réellement libre ;
-//   2. il reste toujours au moins une voie libre SANS mirage :
-//      la rangée garde donc une solution visible et réelle ;
-//   3. pas de mirage sur les rangées sans voie libre (mur de barriques,
-//      baguette…) ni sur celles avec une vache qui traverse.
-// Aucun dessin ici : les mirages sont des obstacles avec mirage: true.
+// Champs d'un fantôme (lus par le rendu à chaque image) :
+//   mirage: true, ghostOf: id de l'original, x: position actuelle,
+//   baseX: voie de l'original, swayAmp: amplitude signée (mètres, vers la voie voisine),
+//   swayPhase: décalage de départ, swayPeriod: durée d'un aller-retour (s).
+// Aucun dessin ici.
 // =========================================================
 
-import { LANES, PLAYER, MIRAGE } from '../config.js';
+import { LANES, MIRAGE } from '../config.js';
 import { makeObstacle } from './obstacles.js';
 
-/** Types d'obstacles qui peuvent apparaître en mirage (ceux qui occupent une voie). */
-const MIRAGE_TYPES = ['barrique', 'radar', 'agent', 'cedez', 'manif', 'tracteur'];
+/** Écart entre deux voies (mètres). */
+const LANE_WIDTH = LANES[1] - LANES[0];
 
-/** Chance qu'une rangée ait un mirage, selon l'ivresse (0 → 100). */
+/** Obstacles qui peuvent se dédoubler (ceux qui occupent une voie et ne bougent pas). */
+// (pas la flaque de pastis : à plat sur le sol, son fantôme ne se remarquerait pas)
+export const GHOST_TYPES = ['barrique', 'radar', 'agent', 'cedez', 'manif', 'tracteur', 'rondpoint'];
+
+/** Ivresse ramenée entre 0 (au seuil) et 1 (au maximum). */
+function drunkLevel(drunk) {
+  return Math.min(1, Math.max(0, (drunk - MIRAGE.threshold) / (100 - MIRAGE.threshold)));
+}
+
+/** Chance qu'une rangée ait un fantôme, selon l'ivresse (0 → 100). */
 export function mirageChance(drunk) {
   if (drunk <= MIRAGE.threshold) return 0;
-  const t = (drunk - MIRAGE.threshold) / (100 - MIRAGE.threshold);
-  return MIRAGE.chanceAtThreshold + (MIRAGE.chanceAtMax - MIRAGE.chanceAtThreshold) * Math.min(1, t);
+  return MIRAGE.chanceAtThreshold + (MIRAGE.chanceAtMax - MIRAGE.chanceAtThreshold) * drunkLevel(drunk);
 }
 
-/** Une voie est-elle gênée par un vrai obstacle de la rangée ? */
-export function laneBlocked(row, lane) {
-  return row.some((o) => !o.mirage && Math.abs(o.x - LANES[lane]) < o.width / 2 + PLAYER.halfWidth);
-}
-
-/** Les voies libres (aucun vrai obstacle) d'une rangée. */
-export function freeLanes(row) {
-  return [0, 1, 2].filter((lane) => !laneBlocked(row, lane));
+/** Amplitude de l'oscillation en mètres (sans signe) : ½ voie au seuil → 1 voie à 100 %. */
+export function swayAmplitude(drunk, reduceFx = false) {
+  const lanes = MIRAGE.ampAtThreshold + (MIRAGE.ampAtMax - MIRAGE.ampAtThreshold) * drunkLevel(drunk);
+  return lanes * LANE_WIDTH * (reduceFx ? MIRAGE.reduceFxAmp : 1);
 }
 
 /**
- * Mirage isolé, dans l'espace vide juste AVANT une rangée (les 3 voies y sont libres :
- * le mirage en occupe une, les 2 autres restent visiblement libres).
- * Si la rangée qui suit n'a qu'une seule voie libre, le mirage ne se met jamais
- * devant elle : sinon le joueur croirait qu'il n'y a aucune solution.
- * @param {Array} nextRow la rangée qui suit le mirage
- * @returns {Array} [] ou [un mirage]
- */
-export function loneMirage(rand, at, drunk, nextRow = []) {
-  if (rand() >= mirageChance(drunk) * MIRAGE.loneFactor) return [];
-  if (nextRow.some((o) => o.vx)) return []; // une vache traverse : on ne complique pas
-  const free = freeLanes(nextRow);
-  const allowed = free.length === 1 ? [0, 1, 2].filter((l) => l !== free[0]) : [0, 1, 2];
-  const lane = allowed[Math.floor(rand() * allowed.length)];
-  const type = MIRAGE_TYPES[Math.floor(rand() * MIRAGE_TYPES.length)];
-  return [makeObstacle(type, lane, at, { mirage: true, effect: 'mirage' })];
-}
-
-/**
- * Ajoute peut-être des mirages à une rangée (renvoie seulement les nouveaux).
+ * Dédouble peut-être un vrai obstacle de la rangée (renvoie [] ou [le fantôme]).
  * @param {() => number} rand tirage au sort
  * @param {Array} row la rangée de vrais obstacles
  * @param {number} drunk ivresse (0 → 100)
- * @param {{ reduceFx?: boolean }} options reduceFx : mirage décalé, moins trompeur
+ * @param {{ reduceFx?: boolean }} options reduceFx : oscillation plus petite et plus lente
  */
 export function addMirages(rand, row, drunk, { reduceFx = false } = {}) {
   const chance = mirageChance(drunk);
-  if (chance <= 0 || !row.length) return [];
-  if (row.some((o) => o.vx)) return []; // une vache traverse : pas de mirage
-  const free = freeLanes(row);
-  if (free.length < 2) return []; // il faut garder une voie libre sans mirage
-  const mirages = [];
-  const available = [...free];
-  const max = Math.min(MIRAGE.maxPerRow, free.length - 1);
-  const at = Math.min(...row.map((o) => o.at)) + (reduceFx ? MIRAGE.reduceFxOffset : 0);
-  // On imite de préférence un vrai obstacle de la rangée (c'est une vision double !)
-  const realTypes = row.map((o) => o.type).filter((t) => MIRAGE_TYPES.includes(t));
-  for (let i = 0; i < max; i++) {
-    if (rand() >= chance) break;
-    const lane = available.splice(Math.floor(rand() * available.length), 1)[0];
-    const pool = realTypes.length ? realTypes : MIRAGE_TYPES;
-    const type = pool[Math.floor(rand() * pool.length)];
-    mirages.push(makeObstacle(type, lane, at, { mirage: true, effect: 'mirage' }));
-  }
-  return mirages;
+  if (chance <= 0 || rand() >= chance) return [];
+  const candidates = row.filter((o) => !o.mirage && !o.vx && o.lane !== null && GHOST_TYPES.includes(o.type));
+  if (!candidates.length) return [];
+  const original = candidates[Math.floor(rand() * candidates.length)];
+  // Vers quelle voie voisine ? Depuis un bord, vers le milieu ; depuis le milieu, au hasard
+  const dir = original.lane === 0 ? 1 : original.lane === 2 ? -1 : rand() < 0.5 ? -1 : 1;
+  const period = (MIRAGE.periodMin + rand() * (MIRAGE.periodMax - MIRAGE.periodMin)) * (reduceFx ? MIRAGE.reduceFxSlow : 1);
+  const ghost = makeObstacle(original.type, original.lane, original.at, {
+    mirage: true,
+    effect: 'mirage',
+    ghostOf: original.id,
+    baseX: original.x,
+    swayAmp: dir * swayAmplitude(drunk, reduceFx),
+    swayPhase: rand() * Math.PI * 2,
+    swayPeriod: period,
+  });
+  return [ghost];
+}
+
+/**
+ * Position du fantôme à l'instant t (secondes) : aller-retour entre la voie de
+ * l'original (baseX) et baseX + swayAmp. Toujours dans la rue.
+ */
+export function ghostX(o, t) {
+  if (!(o.swayPeriod > 0) || typeof o.baseX !== 'number') return o.x; // fantôme immobile
+  const k = 0.5 - 0.5 * Math.cos((2 * Math.PI * t) / o.swayPeriod + o.swayPhase); // 0 → 1 → 0
+  return o.baseX + o.swayAmp * k;
 }
