@@ -13,7 +13,7 @@ import { LANES } from '../config.js';
  */
 export const BONUS_KINDS = [
   { kind: 'cafe', weight: 3 },
-  { kind: 'vin', weight: 3 },
+  { kind: 'vin', weight: 6 }, // doublé en v1.1.1 : plus de verres pour profiter de la vision double
   { kind: 'croissant', weight: 1.3 },
   { kind: 'kepi', weight: 1.3 },
 ];
