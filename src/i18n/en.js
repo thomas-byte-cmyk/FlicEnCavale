@@ -86,6 +86,14 @@ export default {
     pauseRestart: '↻ Restart',
     multiplierLabel: 'Score multiplier',
     miragePop: 'Mirage!', // s'envole au-dessus de Gérard quand il traverse un fantôme
+    // v1.3: gesture hints, friend challenge
+    hint_jump: 'Swipe up',
+    hint_slide: 'Swipe down',
+    hint_left: 'Swipe left',
+    hint_right: 'Swipe right',
+    hint_lane: 'Switch lanes!',
+    challengeFlag: '🎯 To beat: {score}',
+    challengeBeatenFlag: '🏆 Beaten!',
   },
 
   tutorial: [

@@ -4,7 +4,7 @@
 // =========================================================
 
 import { buildShareUrl } from '../platform/challenge.js';
-import { t } from '../i18n/index.js';
+import { t, pack } from '../i18n/index.js';
 import { SettingsPanel } from './Settings.js';
 import { getSetting } from '../platform/settings.js';
 
@@ -52,6 +52,11 @@ export class UI {
       resume: $('btn-resume'),
       drunkFx: $('drunk-fx'),
       mirageTip: $('mirage-tip'),
+      gesture: $('gesture-hint'),
+      gestureHand: $('gesture-hand'),
+      gestureText: $('gesture-text'),
+      challengeFlag: $('hud-challenge'),
+      confetti: $('confetti'),
       mirageTipText: $('mirage-tip-text'),
     };
     this.settings = new SettingsPanel();
@@ -106,6 +111,10 @@ export class UI {
     this.lastHurt = 0;
     this.lastMult = 1;
     this.el.mult.classList.add('hidden');
+    this.challengeShown = null;
+    this.challengeDone = false;
+    this.el.challengeFlag.classList.add('hidden');
+    this.el.challengeFlag.classList.remove('beaten');
     this.clearMessages();
     this.setDanger(0);
   }
@@ -162,6 +171,16 @@ export class UI {
       if (mult > this.lastMult) this.retrigger(this.el.mult, 'levelup');
       this.lastMult = mult;
     }
+    // Score à battre (défi d'un ami) : petit drapeau, puis fête quand il est battu
+    const cs = game.challengeScore ?? null;
+    if (cs !== this.challengeShown) {
+      this.challengeShown = cs;
+      this.challengeDone = false;
+      this.el.challengeFlag.classList.toggle('hidden', cs == null);
+      this.el.challengeFlag.classList.remove('beaten');
+      if (cs != null) this.el.challengeFlag.textContent = t('challengeFlag', { score: this.formatNumber(cs) });
+    }
+    if (cs != null && !this.challengeDone && game.score > cs) this.celebrateChallenge();
     // Ambiance « vision double » : voile violet léger quand l'ivresse dépasse 60 %
     const dr = (game.drunk ?? 0) / 100;
     this.el.drunkFx.style.opacity = this.reduceFx ? '0' : String(Math.max(0, Math.min(1, (dr - 0.6) / 0.35)));
@@ -297,6 +316,61 @@ export class UI {
     }
   }
 
+  /** 1240 → « 1 240 » (FR) ou « 1,240 » (EN). */
+  formatNumber(n) {
+    try {
+      return Math.round(n).toLocaleString(pack().locale);
+    } catch {
+      return String(Math.round(n));
+    }
+  }
+
+  /**
+   * Score de l'ami battu (événement 'challenge-beaten', ou détecté ici) : drapeau qui
+   * passe au vert + confettis tricolores. Une seule fois par partie.
+   */
+  celebrateChallenge() {
+    if (this.challengeDone) return;
+    this.challengeDone = true;
+    const flag = this.el.challengeFlag;
+    flag.textContent = t('challengeBeatenFlag');
+    flag.classList.remove('hidden');
+    this.retrigger(flag, 'beaten');
+    if (this.reduceFx) return; // « Réduire les effets » : pas de confettis
+    const box = this.el.confetti;
+    box.innerHTML = '';
+    const colors = ['#1f3a93', '#ffffff', '#e63946', '#f6c945'];
+    for (let i = 0; i < 28; i++) {
+      const c = document.createElement('i');
+      c.style.left = `${10 + Math.random() * 80}%`;
+      c.style.background = colors[i % colors.length];
+      c.style.animationDelay = `${Math.random() * 0.25}s`;
+      c.style.setProperty('--dx', `${(Math.random() - 0.5) * 120}px`);
+      c.style.setProperty('--rot', `${Math.random() * 720 - 360}deg`);
+      box.append(c);
+    }
+    clearTimeout(this.confettiTimer);
+    this.confettiTimer = setTimeout(() => (box.innerHTML = ''), 1800);
+  }
+
+  /**
+   * Indice de geste (événement 'hint' {kind}) : une main animée + 3-4 mots, en bas, ~1,5 s.
+   * kind : 'jump' | 'slide' | 'left' | 'right' | 'lane' (gauche ou droite).
+   * Texte : clé i18n hint_<kind> (ou le texte donné).
+   */
+  showGestureHint(kind, text, duration = 1500) {
+    const HANDS = { jump: '👆', slide: '👇', left: '👈', right: '👉', lane: '👈' };
+    const DIRS = { jump: 'up', slide: 'down', left: 'left', right: 'right', lane: 'side' };
+    const g = this.el.gesture;
+    this.el.gestureHand.textContent = HANDS[kind] ?? '👆';
+    g.dataset.dir = DIRS[kind] ?? 'up';
+    this.el.gestureText.textContent = text ?? t(`hint_${kind}`);
+    g.classList.remove('hidden');
+    this.retrigger(g, 'show');
+    clearTimeout(this.gestureTimer);
+    this.gestureTimer = setTimeout(() => g.classList.add('hidden'), duration);
+  }
+
   /**
    * Bulle d'explication de la vision double (événement 'mirage-tip', 1re fois).
    * Grande bulle centrée, ~2,5 s, qui ne bloque pas les contrôles.
@@ -340,9 +414,10 @@ export class UI {
     const div = document.createElement('div');
     div.className = `popup ${kind}`;
     div.textContent = text;
+    // Une seule bulle visible à la fois : la nouvelle phrase remplace l'ancienne et la bulle des collègues
+    this.el.popups.innerHTML = '';
+    this.el.bubble.classList.add('hidden');
     this.el.popups.appendChild(div);
-    // Pas plus de 2 phrases à la fois
-    while (this.el.popups.children.length > 2) this.el.popups.firstChild.remove();
     setTimeout(() => div.remove(), 2400);
   }
 
@@ -350,6 +425,7 @@ export class UI {
   bubble(text, duration = 2600) {
     const b = this.el.bubble;
     b.textContent = text;
+    this.el.popups.innerHTML = ''; // une seule bulle à la fois
     b.classList.remove('hidden');
     // Relance l'animation d'apparition
     b.style.animation = 'none';
@@ -369,6 +445,9 @@ export class UI {
 
   clearMessages() {
     clearTimeout(this.mirageTipTimer);
+    clearTimeout(this.gestureTimer);
+    this.el.gesture?.classList.add('hidden');
+    if (this.el.confetti) this.el.confetti.innerHTML = '';
     this.el.mirageTip?.classList.add('hidden');
     this.el.popups.innerHTML = '';
     this.el.floaters.innerHTML = '';

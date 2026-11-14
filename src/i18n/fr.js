@@ -89,6 +89,14 @@ export default {
     pauseRestart: '↻ Recommencer',
     multiplierLabel: 'Multiplicateur de score',
     miragePop: 'Mirage !', // s'envole au-dessus de Gérard quand il traverse un fantôme
+    // v1.3 : indices de geste, défi d'un ami
+    hint_jump: 'Glisse vers le haut',
+    hint_slide: 'Glisse vers le bas',
+    hint_left: 'Glisse à gauche',
+    hint_right: 'Glisse à droite',
+    hint_lane: 'Change de voie !',
+    challengeFlag: '🎯 À battre : {score}',
+    challengeBeatenFlag: '🏆 Battu !',
   },
 
   // --- Tutoriel (dans l'ordre des 5 étapes) ---
