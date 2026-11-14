@@ -73,7 +73,7 @@ export const SPAWN = {
   minGap: 11, // écart minimum entre deux rangées d'obstacles (au départ)
   maxGap: 18, // écart maximum (au départ)
   despawnBehind: 12, // on supprime ce qui est à plus de 12 m derrière
-  bonusChance: 0.18, // chance qu'une rangée contienne un bonus
+  bonusChance: 0.24, // chance qu'une rangée contienne un bonus
   // Les rangées se resserrent avec la distance : -1 m d'écart tous les 250 m,
   // jusqu'à 5 m de moins au maximum
   tightenEvery: 250,
