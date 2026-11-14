@@ -22,11 +22,11 @@ describe('réglages', () => {
     expect(SETTING_KEYS.sort()).toEqual(['haptics', 'lang', 'reduceFx', 'sound']);
   });
 
-  it('valeurs par défaut : son et vibrations activés, effets normaux, langue non choisie', () => {
+  it('valeurs par défaut : son et vibrations activés, effets normaux, langue affichée', () => {
     expect(getSetting('sound')).toBe(true);
     expect(getSetting('haptics')).toBe(true);
     expect(getSetting('reduceFx')).toBe(false);
-    expect(getSetting('lang')).toBe(null);
+    expect(getSetting('lang')).toBe('fr'); // rien de choisi : la langue affichée (français par défaut)
   });
 
   it('setSetting sauvegarde et émet settings-change avec { key, value }', () => {

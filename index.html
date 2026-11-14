@@ -36,6 +36,9 @@
       <!-- Voile rouge sur les bords : les collègues sont tout près / choc -->
       <div id="vignette" class="vignette" aria-hidden="true"></div>
 
+      <!-- Voile violet léger quand Gérard est très ivre (désactivé par « Réduire les effets ») -->
+      <div id="drunk-fx" class="drunk-fx" aria-hidden="true"></div>
+
       <!-- HUD : informations affichées pendant la course -->
       <div id="hud" class="hud hidden">
         <div class="hud-top">
@@ -44,7 +47,7 @@
             <div id="hud-plate" class="hud-score plate">
               <div class="hud-label" data-i18n="hudScore">Score</div>
               <div id="hud-score" class="hud-value">0</div>
-              <div id="hud-mult" class="hud-mult hidden">×2</div>
+              <div id="hud-mult" class="hud-mult hidden" aria-live="polite" title="Multiplicateur de score" data-i18n-title="multiplierLabel">×2</div>
             </div>
             <div class="gauges">
               <div class="gauge" id="gauge-drunk-row">
@@ -83,6 +86,7 @@
       <section id="title-screen" class="screen screen-title">
         <!-- Choix de langue FR/EN (place : DESIGN ; clic branché dans main.js) -->
         <button id="btn-lang" class="lang-btn" data-i18n="langButton" data-i18n-aria="langButtonLabel" aria-label="Play in English">🇬🇧 EN</button>
+        <button id="btn-settings" class="gear-btn" aria-label="Réglages" data-i18n-aria="settings">⚙️</button>
         <header class="title-top">
           <h1 class="logo" aria-label="FlicEnCavale">
             <span class="logo-flic">Flic</span><span class="logo-en">en</span><span class="logo-cavale">Cavale</span>
@@ -162,8 +166,55 @@
           <div class="pause-title" data-i18n="pauseTitle">Pause</div>
           <p class="pause-text" data-i18n="pauseText">Gérard reprend son souffle derrière une barrique…</p>
           <button id="btn-resume" class="btn-primary" data-i18n="resume">▶ Reprendre</button>
+          <button id="btn-pause-restart" class="btn-secondary" data-i18n="pauseRestart">↻ Recommencer</button>
+          <button id="btn-pause-home" class="btn-secondary" data-i18n="home">Écran titre</button>
+          <button id="btn-pause-settings" class="btn-link" data-i18n="settingsOpen">⚙️ Réglages</button>
         </div>
         <div id="pause-count" class="pause-count hidden" aria-live="assertive"></div>
+      </section>
+
+      <!-- Panneau Réglages (ouvert depuis l'écran titre ou la pause) -->
+      <section id="settings-screen" class="screen hidden" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+        <div class="card settings-card">
+          <div id="settings-title" class="panel-title" data-i18n="settingsTitle">Réglages</div>
+          <div class="setting-row">
+            <span id="lbl-sound" data-i18n="setSound">🔊 Son</span>
+            <button id="set-sound" class="switch" role="switch" aria-checked="true" aria-labelledby="lbl-sound"><i></i></button>
+          </div>
+          <div class="setting-row">
+            <span id="lbl-haptics" data-i18n="setHaptics">📳 Vibrations</span>
+            <button id="set-haptics" class="switch" role="switch" aria-checked="true" aria-labelledby="lbl-haptics"><i></i></button>
+          </div>
+          <div class="setting-row">
+            <span><span id="lbl-reducefx" data-i18n="setReduceFx">🌀 Réduire les effets</span><small class="setting-hint" data-i18n="setReduceFxHint">Moins de tangage, mirages plus visibles</small></span>
+            <button id="set-reducefx" class="switch" role="switch" aria-checked="false" aria-labelledby="lbl-reducefx"><i></i></button>
+          </div>
+          <div class="setting-row">
+            <span id="lbl-lang" data-i18n="setLanguage">🌍 Langue</span>
+            <div class="seg" role="group" aria-labelledby="lbl-lang">
+              <button id="set-lang-fr" class="seg-btn" aria-pressed="true">FR</button>
+              <button id="set-lang-en" class="seg-btn" aria-pressed="false">EN</button>
+            </div>
+          </div>
+          <button id="set-fullscreen" class="btn-secondary hidden" data-i18n="setFullscreen">⛶ Plein écran</button>
+          <button id="btn-credits" class="btn-secondary" data-i18n="credits">📜 Crédits</button>
+          <button id="btn-settings-close" class="btn-primary" data-i18n="close">OK</button>
+        </div>
+      </section>
+
+      <!-- Crédits -->
+      <section id="credits-screen" class="screen hidden" role="dialog" aria-modal="true" aria-labelledby="credits-title">
+        <div class="card credits-card">
+          <div id="credits-title" class="panel-title" data-i18n="creditsTitle">Crédits</div>
+          <p class="credits-game">FlicEnCavale</p>
+          <ul class="credits-list">
+            <li data-i18n="creditsThree"><b>Three.js</b> — moteur 3D (licence MIT)</li>
+            <li data-i18n="creditsFont"><b>Lilita One</b> — police de Juan Montoreano (SIL Open Font License 1.1)</li>
+            <li data-i18n="creditsAi">Développé avec l’aide d’outils d’IA (Claude, Anthropic)</li>
+          </ul>
+          <p class="credits-file"><a href="CREDITS.txt" data-i18n="creditsFile">Tous les crédits et licences (CREDITS.txt)</a></p>
+          <button id="btn-credits-close" class="btn-primary" data-i18n="back">Retour</button>
+        </div>
       </section>
     </div>
 

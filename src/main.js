@@ -63,6 +63,9 @@ const ui = new UI({
   },
 });
 
+// Son du mirage : le rendu (DESIGN) détecte lui-même le moment où Gérard traverse le mirage
+renderer.onMiragePass = () => sound.play('mirage');
+
 // --- Réglages du joueur (panneau Réglages de DESIGN : voir src/platform/settings.js) ---
 /** Applique un réglage au jeu (au démarrage, puis à chaque changement). */
 function applySetting(key, value) {
@@ -238,9 +241,8 @@ function handleEvents(events) {
         ui.floatText(`+${ev.points}`, playerScreenX());
         vibrate(30);
         break;
-      case 'mirage-pass': // Gérard traverse un obstacle imaginaire
+      case 'mirage-pass': // Gérard traverse un obstacle imaginaire (le son est joué par le rendu, voir plus bas)
         ui.floatText(`+${ev.points}`, playerScreenX(), '#c4b5fd');
-        sound.play('oops');
         break;
       case 'flash':
         sound.play('flash');

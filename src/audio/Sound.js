@@ -170,6 +170,11 @@ export class Sound {
         this.tone({ type: 'sine', from: 520, to: 180, start: 0.3, dur: 0.7, vol: 0.22, vibrato: 45, vibratoRate: 6 });
         this.tone({ type: 'sine', from: 530, to: 186, start: 0.3, dur: 0.7, vol: 0.12, vibrato: 45, vibratoRate: 5.3 });
         break;
+      case 'mirage':
+        // Mirage traversé : « pschhh » doux et petite harpe qui descend
+        this.noise({ dur: 0.5, vol: 0.18, filter: 'bandpass', freq: 3000, freqTo: 900, q: 1.5 });
+        [88, 84, 79, 76].forEach((n, i) => this.tone({ type: 'sine', from: midiToHz(n), start: 0.05 + i * 0.06, dur: 0.35, vol: 0.09 }));
+        break;
       case 'croissant':
         [0, 4, 7, 12].forEach((n, i) => this.tone({ type: 'square', from: midiToHz(72 + n), start: i * 0.07, dur: 0.15, vol: 0.13 }));
         break;

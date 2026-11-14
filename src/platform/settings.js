@@ -12,23 +12,23 @@
 //   sound    (oui/non)   le son (même réglage que le bouton 🔊 du HUD)
 //   haptics  (oui/non)   les vibrations du téléphone
 //   reduceFx (oui/non)   « réduire les effets » : caméra qui tangue moins, mirages moins trompeurs
-//   lang     ('fr'|'en') la langue
+//   lang     ('fr'|'en') la langue (si le joueur n'a rien choisi : celle détectée et affichée)
 // =========================================================
 
 import { loadMuted, saveMuted, loadLang, saveLang, loadFlag, saveFlag } from './storage.js';
-import { PACKS } from '../i18n/index.js';
+import { PACKS, getLang } from '../i18n/index.js';
 
 /** Lecture / écriture de chaque réglage dans la sauvegarde du navigateur. */
 const STORE = {
   sound: { load: () => !loadMuted(), save: (v) => saveMuted(!v), valid: (v) => typeof v === 'boolean' },
   haptics: { load: () => loadFlag('haptics', true), save: (v) => saveFlag('haptics', v), valid: (v) => typeof v === 'boolean' },
   reduceFx: { load: () => loadFlag('reduceFx', false), save: (v) => saveFlag('reduceFx', v), valid: (v) => typeof v === 'boolean' },
-  lang: { load: () => loadLang(), save: (v) => saveLang(v), valid: (v) => typeof v === 'string' && v in PACKS },
+  lang: { load: () => (loadLang() in PACKS ? loadLang() : getLang()), save: (v) => saveLang(v), valid: (v) => typeof v === 'string' && v in PACKS },
 };
 
 export const SETTING_KEYS = Object.keys(STORE);
 
-/** Valeur actuelle d'un réglage (lang peut valoir null : jamais choisie, langue du navigateur). */
+/** Valeur actuelle d'un réglage (lang : la langue choisie, sinon celle affichée). */
 export function getSetting(key) {
   const entry = STORE[key];
   if (!entry) throw new Error(`Réglage inconnu : ${key}`);

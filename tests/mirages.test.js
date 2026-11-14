@@ -137,6 +137,33 @@ describe('vision double : dans le jeu', () => {
     expect(g.gap).toBeGreaterThanOrEqual(before);
   });
 
+  it("un mirage n'entre JAMAIS en collision, même avec le croissant (invincible)", () => {
+    const g = drunkGame(50);
+    g.nextRowAt = Infinity;
+    g.gap = CHASE.start;
+    g.invincibleTime = 10; // croissant
+    const mirage = makeObstacle('barrique', 1, g.distance + 3, { mirage: true, effect: 'mirage' });
+    g.obstacles = [mirage];
+    const before = g.bonusPoints;
+    const evs = run(g, 0.6);
+    const types = evs.map((e) => e.type);
+    expect(types).not.toContain('smash');
+    expect(types).not.toContain('hit');
+    expect(types).toContain('mirage-pass');
+    expect(mirage.hit).toBe(false);
+    // seul le petit bonus du mirage est gagné (pas les 20 points d'un obstacle écrasé)
+    expect(g.bonusPoints - before).toBe(MIRAGE.passPoints * g.totalMultiplier);
+  });
+
+  it('un mirage ne compte pas comme obstacle évité, ni ne siffle, ni ne flashe', () => {
+    const g = drunkGame(50);
+    g.nextRowAt = Infinity;
+    g.player.lane = 0;
+    g.obstacles = ['agent', 'radar', 'manif'].map((t, i) => makeObstacle(t, 1, g.distance + 10 + i * 4, { mirage: true, effect: 'mirage' }));
+    const types = run(g, 2).map((e) => e.type);
+    for (const t of ['pass', 'whistle', 'flash', 'chant']) expect(types).not.toContain(t);
+  });
+
   it('le café fait disparaître les mirages devant Gérard', () => {
     const g = drunkGame(90);
     g.nextRowAt = Infinity;
