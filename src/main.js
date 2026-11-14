@@ -257,6 +257,7 @@ function handleEvents(events) {
       case 'challenge-beaten': // score de l'ami battu (la phrase vient du narrateur)
         sound.play('kepi');
         vibrate([30, 40, 30]);
+        ui.celebrateChallenge(); // drapeau « Battu ! » et confettis (une fois par partie)
         break;
       case 'mirage-tip': {
         // Tout premier fantôme : petite explication (une seule fois par joueur) pendant un ralenti
@@ -283,8 +284,13 @@ function handleEvents(events) {
         ui.bubble(t('caught'), 1600);
         break;
       case 'hint': // consigne : entraînement, ou indice de la première partie (une fois par sorte d'obstacle)
-        ui.showHint(ev.icon, ev.text, ev.dir);
-        if (ev.kind) saveHintsSeen(game.hintsSeen);
+        if (ev.kind) {
+          // Indice de la première vraie partie : petite main animée (UI de DESIGN)
+          ui.showGestureHint(ev.kind === 'dodge' ? 'lane' : ev.kind, ev.text || undefined);
+          saveHintsSeen(game.hintsSeen);
+        } else {
+          ui.showHint(ev.icon, ev.text, ev.dir); // entraînement (« Refaire l'entraînement »)
+        }
         break;
       case 'hint-clear':
         ui.hideHint();
