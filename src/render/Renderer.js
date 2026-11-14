@@ -11,6 +11,8 @@ import { Chasers } from './Chasers.js';
 import { createItemModel, trapRingMaterial } from './itemModels.js';
 import { mat } from './shapes.js';
 import { Particles } from './Particles.js';
+import { makeMirage, updateMirage, disposeMirage } from './Mirage.js';
+import { getSetting } from '../platform/settings.js';
 import { Backdrop, makeSkyTexture } from './Backdrop.js';
 import { PALETTE } from './palette.js';
 
@@ -68,6 +70,11 @@ export class Renderer {
     this.time = 0;
     this.shake = 0; // secousse de la caméra après un choc
     this.dizzy = 0; // vertige bref après un verre de vin (1 → 0)
+    // Réglage « Réduire les effets » (mirages plus visibles, moins de tangage)
+    this.reduceFx = getSetting('reduceFx');
+    window.addEventListener('settings-change', () => (this.reduceFx = getSetting('reduceFx')));
+    /** Appelé quand Gérard traverse un mirage (main.js peut y brancher un son). */
+    this.onMiragePass = null;
 
     this.resize();
   }
@@ -145,6 +152,8 @@ export class Renderer {
         mesh = createObstacleModel(o.type);
         this.obstacleMeshes.set(o.id, mesh);
         this.scene.add(mesh);
+        // Mirage (« vision double ») : même modèle, mais estompable + 2 fantômes colorés
+        if (o.mirage ?? false) this.scene.add(makeMirage(mesh, o.type));
       }
       mesh.position.set(o.x, 0, -(o.at - game.distance));
 
@@ -165,6 +174,16 @@ export class Renderer {
           if (person.userData.placard) person.userData.placard.rotation.z = Math.sin(this.time * 5 + i) * 0.15;
         });
       }
+      // Mirage : indices de près, puis dissipation en volutes quand Gérard le traverse
+      if (mesh.userData.mirage) {
+        const ahead = o.at - game.distance;
+        if (updateMirage(mesh, o, ahead, { time: this.time, reduceFx: this.reduceFx, playerX: game.player.x })) {
+          const y = (o.yMin ?? 0) + 0.8;
+          this.particles.burst({ x: o.x, y, z: 0.3, count: 16, colors: ['#ffffff', '#e9d5ff', '#a5f3fc', '#fecdd3'], speed: 1.6, up: 1.4, size: 0.22, life: 0.9, drift: game.speed * 0.4 });
+          this.onMiragePass?.(o);
+        }
+        continue; // un mirage ne s'envole jamais (on ne le percute pas)
+      }
       // Obstacle percuté : il s'envole de façon comique
       if (o.hit) {
         const t = game.time - o.hitTime;
@@ -178,6 +197,7 @@ export class Renderer {
     for (const [id, mesh] of this.obstacleMeshes) {
       if (!alive.has(id)) {
         this.scene.remove(mesh);
+        disposeMirage(mesh);
         // L'agent est fabriqué à neuf à chaque fois : on libère sa mémoire
         if (mesh.userData.agent || mesh.userData.disposable) {
           mesh.traverse((n) => {
@@ -247,7 +267,8 @@ export class Renderer {
     this.backdrop.update(dt || 0.016);
     this.syncObstacles(game);
     this.syncItems(game);
-    const drunk = game.drunkRatio ?? 0;
+    // « Réduire les effets » : le tangage de l'ivresse est fortement atténué
+    const drunk = (game.drunkRatio ?? 0) * (this.reduceFx ? 0.3 : 1);
 
     // --- Gérard ---
     if (game.status === 'running') this.runPhase += dt * game.speed * 1.25;
