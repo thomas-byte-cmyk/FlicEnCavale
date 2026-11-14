@@ -1169,3 +1169,25 @@ summary:focus-visible {
   font-size: 36px;
   -webkit-text-stroke-width: 2px;
 }
+
+/* Âge conseillé : petite ligne discrète en bas de la carte de l'écran titre */
+.age-note {
+  margin: 6px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gris);
+}
+.age-badge {
+  display: inline-block;
+  padding: 1px 6px;
+  border: 2px solid var(--gris);
+  border-radius: 999px;
+  font-family: var(--police-titre);
+  font-size: 12px;
+  line-height: 1.2;
+  color: var(--gris);
+}
