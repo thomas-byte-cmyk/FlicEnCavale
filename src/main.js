@@ -17,6 +17,7 @@ import { UI } from './ui/UI.js';
 import { Sound } from './audio/Sound.js';
 import { vibrate } from './platform/haptics.js';
 import { QualityGovernor } from './platform/quality.js';
+import { registerServiceWorker } from './platform/pwa.js';
 import {
   initPortal,
   gameLoadingFinished,
@@ -365,6 +366,9 @@ reviveButton?.addEventListener('click', async () => {
   gameplayStart();
 });
 
+
+// --- Jeu installable et jouable hors ligne (version publiée seulement) ---
+window.addEventListener('load', () => registerServiceWorker());
 
 // --- Kit Poki : démarré tout de suite, sans jamais bloquer le jeu ---
 // (absent sur GitHub Pages ou avec un bloqueur de pub : le jeu marche pareil, sans pub)

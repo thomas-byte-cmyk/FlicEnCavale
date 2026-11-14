@@ -24,6 +24,7 @@ export default {
     bestScore: 'Meilleur score',
     missionsTitle: '🎯 Missions <span class="muted">(en une seule partie)</span>',
     play: 'C’est parti&nbsp;!',
+    ageNotice: 'Conseillé à partir de 12 ans',
     howto: 'Comment jouer&nbsp;?',
     ctrlLanes: '<span>👈 👉</span> Glisse pour changer de voie',
     ctrlJump: '<span>👆</span> Glisse vers le haut pour sauter',

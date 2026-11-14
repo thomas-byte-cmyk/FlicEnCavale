@@ -1,0 +1,32 @@
+# Fabrique le zip du jeu pour itch.io, Newgrounds et Game Jolt.
+# Ne se lance qu'à la main : onglet Actions → « Zip web (itch.io, Newgrounds) »
+# → bouton « Run workflow ».
+# Résultat : en bas de la page de l'exécution, rubrique « Artifacts », un
+# fichier FlicEnCavale-web à télécharger. C'est un .zip avec index.html à la
+# racine : c'est lui qu'on envoie sur ces sites (voir docs/PUBLIER-ITCH-NEWGROUNDS.md).
+name: Zip web (itch.io, Newgrounds)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  zip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      # Le contenu de dist/ est mis dans un zip téléchargeable (index.html à la racine)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: FlicEnCavale-web
+          path: dist/
+          retention-days: 30

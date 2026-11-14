@@ -11,7 +11,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "build:poki": "vite build --mode poki",
-    "zip:poki": "vite build --mode poki && node scripts/zip-poki.mjs"
+    "zip:poki": "vite build --mode poki && node scripts/make-zip.mjs dist-poki FlicEnCavale-poki.zip",
+    "zip:web": "vite build && node scripts/make-zip.mjs dist FlicEnCavale-web.zip"
   },
   "dependencies": {
     "@fontsource/lilita-one": "^5.3.0",

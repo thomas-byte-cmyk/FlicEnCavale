@@ -24,6 +24,7 @@ export default {
     bestScore: 'Best score',
     missionsTitle: '🎯 Missions <span class="muted">(in a single run)</span>',
     play: 'Let’s go!',
+    ageNotice: 'Recommended for ages 12+',
     howto: 'How to play?',
     ctrlLanes: '<span>👈 👉</span> Swipe to change lanes',
     ctrlJump: '<span>👆</span> Swipe up to jump',

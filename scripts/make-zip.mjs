@@ -1,19 +1,24 @@
 // =========================================================
-// Fabrique FlicEnCavale-poki.zip à partir du dossier dist-poki/
-// (lancé par « npm run zip:poki », après « npm run build:poki »).
+// Fabrique un .zip du jeu construit, prêt à envoyer sur un site de jeux.
+//   node scripts/make-zip.mjs <dossier> <fichier.zip>
+// Utilisé par « npm run zip:web » (dist → FlicEnCavale-web.zip, pour itch.io,
+// Newgrounds, Game Jolt) et « npm run zip:poki » (dist-poki → FlicEnCavale-poki.zip).
 // index.html est à la racine du zip, tous les chemins sont relatifs :
-// c'est le format attendu par Poki. Aucun outil à installer : juste Node.
+// c'est le format attendu par ces sites. Aucun outil à installer : juste Node.
 // =========================================================
 
 import { readdirSync, readFileSync, statSync, writeFileSync, existsSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 import { deflateRawSync } from 'node:zlib';
 
-const SOURCE = 'dist-poki';
-const OUTPUT = 'FlicEnCavale-poki.zip';
+const [SOURCE, OUTPUT] = process.argv.slice(2);
+if (!SOURCE || !OUTPUT) {
+  console.error('Utilisation : node scripts/make-zip.mjs <dossier> <fichier.zip>');
+  process.exit(1);
+}
 
 if (!existsSync(join(SOURCE, 'index.html'))) {
-  console.error(`❌ ${SOURCE}/index.html introuvable : lance d'abord « npm run build:poki ».`);
+  console.error(`❌ ${SOURCE}/index.html introuvable : construis d'abord le jeu (npm run build).`);
   process.exit(1);
 }
 
@@ -95,4 +100,4 @@ end.writeUInt32LE(offset, 16);
 
 const zip = Buffer.concat([...locals, ...centrals, end]);
 writeFileSync(OUTPUT, zip);
-console.log(`✅ ${OUTPUT} créé (${(zip.length / 1024).toFixed(0)} Ko, ${centrals.length / 2} fichiers). C'est ce fichier qu'il faut envoyer à Poki.`);
+console.log(`✅ ${OUTPUT} créé (${(zip.length / 1024).toFixed(0)} Ko, ${centrals.length / 2} fichiers). C'est ce fichier qu'il faut envoyer au site de jeux.`);
