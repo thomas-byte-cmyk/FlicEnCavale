@@ -7,7 +7,7 @@
       content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
     />
     <title>FlicEnCavale</title>
-    <meta name="description" content="Gérard, gendarme un peu pompette, fuit ses collègues dans une rue de village sans fin. Un jeu de course burlesque et tout public, gratuit sur téléphone et ordinateur." />
+    <meta name="description" content="Gérard, gendarme pompette, fuit ses collègues à travers village, marché, campagne, port et nuit. Plus il boit, plus il voit double : traverse les fantômes, évite les vrais obstacles. Jeu de course burlesque gratuit, conseillé dès 12 ans." />
     <meta name="theme-color" content="#1f3a93" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="mobile-web-app-capable" content="yes" />
@@ -20,13 +20,16 @@
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="fr_FR" />
     <meta property="og:title" content="FlicEnCavale — Cours, Gérard, cours !" />
-    <meta property="og:description" content="Gérard, gendarme un peu pompette, fuit ses collègues qui veulent lui faire souffler dans le ballon. Jeu gratuit, tout public." />
+    <meta property="og:description" content="Gérard, gendarme pompette, fuit ses collègues. Plus il boit, plus il voit double : les obstacles se dédoublent, à toi de repérer les fantômes ! Course burlesque gratuite sur téléphone et ordi, conseillée dès 12 ans." />
     <meta property="og:url" content="https://thomas-byte-cmyk.github.io/FlicEnCavale/" />
     <meta property="og:image" content="https://thomas-byte-cmyk.github.io/FlicEnCavale/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Gérard le gendarme au nez rouge court dans une rue de village, poursuivi par ses collègues." />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="FlicEnCavale — Cours, Gérard, cours !" />
+    <meta name="twitter:description" content="Un gendarme pompette, des collègues aux trousses et des obstacles qui se dédoublent. Repère les fantômes ! Gratuit, conseillé dès 12 ans." />
+    <meta name="twitter:image" content="https://thomas-byte-cmyk.github.io/FlicEnCavale/og-image.png" />
   </head>
   <body>
     <div id="app">
@@ -41,6 +44,8 @@
 
       <!-- HUD : informations affichées pendant la course -->
       <div id="hud" class="hud hidden">
+        <!-- Score à battre (défi d'un ami) : visible seulement quand game.challengeScore existe -->
+        <div id="hud-challenge" class="hud-challenge hidden" aria-live="polite"></div>
         <div class="hud-top">
           <div class="hud-left">
             <!-- Le score façon plaque de rue bleue -->
@@ -97,6 +102,14 @@
         </svg>
         <div id="mirage-tip-text" class="mirage-tip-text"></div>
       </div>
+
+      <!-- Indice de geste (main animée + 3-4 mots), en bas, ~1,5 s, ne bloque pas le jeu -->
+      <div id="gesture-hint" class="gesture-hint hidden" aria-live="polite">
+        <span id="gesture-hand" class="gesture-hand" aria-hidden="true">👆</span>
+        <span id="gesture-text" class="gesture-text"></span>
+      </div>
+      <!-- Confettis (score d'un ami battu) -->
+      <div id="confetti" class="confetti" aria-hidden="true"></div>
 
       <!-- Points qui s'envolent ("+10") -->
       <div id="floaters" class="floaters"></div>
