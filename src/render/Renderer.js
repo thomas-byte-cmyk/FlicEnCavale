@@ -247,7 +247,7 @@ export class Renderer {
     this.backdrop.update(dt || 0.016);
     this.syncObstacles(game);
     this.syncItems(game);
-    const drunk = game.drunkRatio ?? 0;
+    const drunk = game.fxDrunkRatio ?? game.drunkRatio ?? 0; // (réduit avec « réduire les effets »)
 
     // --- Gérard ---
     if (game.status === 'running') this.runPhase += dt * game.speed * 1.25;

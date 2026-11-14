@@ -2,7 +2,7 @@
 // Fabrique un .zip du jeu construit, prêt à envoyer sur un site de jeux.
 //   node scripts/make-zip.mjs <dossier> <fichier.zip>
 // Utilisé par « npm run zip:web » (dist → FlicEnCavale-web.zip, pour itch.io,
-// Newgrounds, Game Jolt) et « npm run zip:poki » (dist-poki → FlicEnCavale-poki.zip).
+// Newgrounds, Game Jolt).
 // index.html est à la racine du zip, tous les chemins sont relatifs :
 // c'est le format attendu par ces sites. Aucun outil à installer : juste Node.
 // =========================================================

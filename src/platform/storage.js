@@ -101,3 +101,21 @@ export function saveLang(code) {
     /* rien */
   }
 }
+
+/** Réglage oui/non (vibrations, réduire les effets…) ; `fallback` si rien n'est sauvegardé. */
+export function loadFlag(name, fallback) {
+  try {
+    const v = localStorage.getItem(`flicencavale.${name}`);
+    return v === null ? fallback : v === '1';
+  } catch {
+    return fallback;
+  }
+}
+
+export function saveFlag(name, value) {
+  try {
+    localStorage.setItem(`flicencavale.${name}`, value ? '1' : '0');
+  } catch {
+    /* rien */
+  }
+}

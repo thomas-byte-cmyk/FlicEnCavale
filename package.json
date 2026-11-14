@@ -1,7 +1,7 @@
 {
   "name": "flicencavale",
   "private": true,
-  "version": "0.1.0",
+  "version": "1.1.0",
   "type": "module",
   "description": "FlicEnCavale : un endless runner burlesque où Gérard, gendarme un peu pompette, fuit ses collègues.",
   "scripts": {
@@ -10,8 +10,6 @@
     "preview": "vite preview --host",
     "test": "vitest run",
     "test:watch": "vitest",
-    "build:poki": "vite build --mode poki",
-    "zip:poki": "vite build --mode poki && node scripts/make-zip.mjs dist-poki FlicEnCavale-poki.zip",
     "zip:web": "vite build && node scripts/make-zip.mjs dist FlicEnCavale-web.zip"
   },
   "dependencies": {
@@ -19,7 +17,7 @@
     "three": "^0.180.0"
   },
   "devDependencies": {
-    "vite": "^8.3.5",
+    "vite": "^8.3.8",
     "vitest": "^5.1.0"
   }
 }

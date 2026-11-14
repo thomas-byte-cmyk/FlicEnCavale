@@ -85,9 +85,10 @@ describe('langues', () => {
     expect(gradeFor(0).name).toBe('Trainee Gendarme');
     m.relabel();
     expect(m.active[0].text).toBe('Run 250 m');
-    expect(missionAt(26).text).toBe('Run 1,000 m');
+    const dist4 = Array.from({ length: 40 }, (_, i) => missionAt(i)).findIndex((m) => m.id === 'dist4');
+    expect(missionAt(dist4).text).toBe('Run 1,000 m');
     setLang('fr');
-    expect(missionAt(26).text).toBe('Cours 1 000 m');
+    expect(missionAt(dist4).text).toBe('Cours 1 000 m');
     off();
     expect(calls).toEqual(['en', 'fr']);
   });

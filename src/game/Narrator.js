@@ -97,6 +97,15 @@ export class Narrator {
           popup(`🪧 « ${this.pick(PROTEST_SLOGANS)} »`, '', true);
           if (this.random() < 0.5) out.push({ channel: 'popup', text: this.pick(MISC_LINES.chant), kind: '' });
           break;
+        case 'mirage-pass':
+          popup(this.pick(MISC_LINES.mirage), 'good');
+          break;
+        case 'mirages-cleared':
+          popup(this.pick(MISC_LINES.mirageClear), 'good');
+          break;
+        case 'multiplier-change':
+          if (ev.to > ev.from) popup(fill(this.pick(MISC_LINES.multUp), { m: ev.to }), 'good', true);
+          break;
         case 'moo':
           popup(this.pick(MISC_LINES.cow));
           break;
