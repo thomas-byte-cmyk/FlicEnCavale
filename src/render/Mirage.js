@@ -1,127 +1,205 @@
 // =========================================================
-// MIRAGES (« vision double ») : de faux obstacles que Gérard,
-// trop ivre, croit voir. On les traverse sans dommage.
+// VISION DOUBLE (v2) : un VRAI obstacle se dédouble, et sa copie
+// fantôme glisse et oscille vers la voie d'à côté.
 //
-// - De loin : ils ressemblent à un vrai obstacle (sinon pas de suspense).
-// - De près (derniers mètres) : indices pour l'œil attentif — l'objet
-//   devient un peu transparent, tremble, et se dédouble en rouge / cyan.
-// - Traversé : il se dissipe en volutes.
-// - Réglage « Réduire les effets » : mirage nettement plus transparent
-//   et dédoublé dès de loin (personne ne se fait piéger par surprise).
+// Le fantôme doit se reconnaître d'un coup d'œil :
+//   - même modèle que l'original, mais nettement TRANSPARENT ;
+//   - décalage chromatique rouge / cyan (effet « vision double ») ;
+//   - aucune ombre au sol (les vrais obstacles en ont une, voir Renderer) ;
+//   - léger tremblement ;
+//   - un « fil » de petites bulles ondule entre l'original et le fantôme.
+// Traversé : il se dissipe en volutes et « Mirage ! » s'envole.
+// « Réduire les effets » : ni tremblement ni flottement, décalage rouge/cyan réduit
+// (mais toujours transparent, pour rester lisible).
+// Aucune logique de jeu ici : la position vient de o.x (mis à jour par la logique).
 // =========================================================
 
 import * as THREE from 'three';
 import { createObstacleModel } from './obstacleModels.js';
 
-const NEAR_RANGE = 14; // distance (m) à partir de laquelle les indices apparaissent
-const NEAR_RANGE_REDUCED = 40; // avec « Réduire les effets » : visible de bien plus loin
+const GHOST_OPACITY = 0.45;
 const DISSIPATE_TIME = 0.55; // durée de la dissipation (s)
+const THREAD_DOTS = 9; // nombre de bulles du « fil » entre l'original et le fantôme
 
-/** Remplace les matériaux d'un objet par des copies transparentes (pour pouvoir les estomper). */
+/** Petite bulle ronde lumineuse (texture partagée). */
+let dotTexture = null;
+function getDotTexture() {
+  if (dotTexture) return dotTexture;
+  const c = document.createElement('canvas');
+  c.width = c.height = 64;
+  const ctx = c.getContext('2d');
+  const g = ctx.createRadialGradient(32, 32, 2, 32, 32, 30);
+  g.addColorStop(0, 'rgba(255,255,255,1)');
+  g.addColorStop(0.45, 'rgba(255,255,255,0.85)');
+  g.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, 64, 64);
+  dotTexture = new THREE.CanvasTexture(c);
+  return dotTexture;
+}
+
+/** Remplace les matériaux d'un objet par des copies transparentes. */
 function makeOwnTransparentMaterials(root) {
   const mats = [];
   root.traverse((n) => {
     if (!n.material) return;
     const m = n.material.clone();
     m.transparent = true;
+    m.opacity = GHOST_OPACITY;
+    m.depthWrite = false;
     n.material = m;
     mats.push(m);
   });
   return mats;
 }
 
-/** Un « fantôme » coloré du même obstacle (rouge ou cyan), pour l'effet de vision double. */
-function makeGhost(type, color) {
-  const ghost = createObstacleModel(type);
-  const mat = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0, depthWrite: false });
-  ghost.traverse((n) => {
+/** Une copie teintée (rouge ou cyan) du même obstacle, pour le décalage chromatique. */
+function makeTint(type, color) {
+  const tint = createObstacleModel(type);
+  const mat = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.28, depthWrite: false });
+  tint.traverse((n) => {
     if (n.material) n.material = mat;
   });
-  return { ghost, mat };
+  return { tint, mat };
 }
 
 /**
- * Transforme un modèle d'obstacle en mirage.
- * @param {THREE.Object3D} mesh le modèle déjà créé (il reste l'objet principal)
- * @param {string} type type d'obstacle (pour fabriquer les fantômes)
+ * Transforme un modèle d'obstacle en FANTÔME.
+ * @returns {THREE.Group} un groupe à ajouter à la scène (copies teintées + fil)
  */
 export function makeMirage(mesh, type) {
   const mats = makeOwnTransparentMaterials(mesh);
-  const red = makeGhost(type, '#ff3b3b');
-  const cyan = makeGhost(type, '#21e6f2');
+  const red = makeTint(type, '#ff3b3b');
+  const cyan = makeTint(type, '#21e6f2');
   const holder = new THREE.Group();
-  holder.add(red.ghost, cyan.ghost);
-  mesh.userData.mirage = { mats, red, cyan, holder, dissipateAt: null, puffed: false };
-  return holder;
+  holder.add(red.tint, cyan.tint);
+
+  // Le « fil » : des bulles alternativement rouges et cyan, de l'original au fantôme
+  const thread = new THREE.Group();
+  const dots = [];
+  for (let i = 0; i < THREAD_DOTS; i++) {
+    const mat = new THREE.SpriteMaterial({ map: getDotTexture(), color: i % 2 ? '#21e6f2' : '#ff5a7a', transparent: true, depthWrite: false });
+    const s = new THREE.Sprite(mat);
+    thread.add(s);
+    dots.push(s);
+  }
+  const extras = new THREE.Group();
+  extras.add(holder, thread);
+  mesh.userData.mirage = { mats, red, cyan, holder, thread, dots, extras, dissipateAt: null };
+  return extras;
 }
 
 /**
- * Anime un mirage à chaque image.
- * @param {THREE.Object3D} mesh
- * @param {object} o l'obstacle (logique)
- * @param {number} ahead distance entre Gérard et l'obstacle (m)
- * @param {object} env { time, reduceFx, playerX }
- * @returns {boolean} vrai au moment précis où Gérard le traverse (pour les volutes)
+ * Anime un fantôme à chaque image.
+ * @param {THREE.Object3D} mesh le fantôme
+ * @param {object} o l'obstacle fantôme (logique) : o.x bouge à chaque image
+ * @param {THREE.Object3D|undefined} original le modèle du vrai obstacle (o.ghostOf), s'il est encore là
+ * @param {object} env { time, reduceFx, playerX, ahead }
+ * @returns {boolean} vrai au moment précis où Gérard le traverse
  */
-export function updateMirage(mesh, o, ahead, { time, reduceFx, playerX }) {
+export function updateMirage(mesh, o, original, { time, reduceFx, playerX, ahead }) {
   const m = mesh.userData.mirage;
-  const range = reduceFx ? NEAR_RANGE_REDUCED : NEAR_RANGE;
-  // near : 0 loin → 1 tout près
-  const near = THREE.MathUtils.clamp(1 - (ahead - 1) / range, 0, 1);
-
-  let opacity = reduceFx ? 0.55 - near * 0.15 : 1 - near * near * 0.45;
-  let ghostOpacity = reduceFx ? 0.35 + near * 0.15 : near * near * 0.42;
-  let spread = reduceFx ? 0.3 + near * 0.1 : 0.05 + near * 0.2;
+  let opacity = GHOST_OPACITY;
+  let tintOpacity = 0.28;
+  let spread = reduceFx ? 0.05 : 0.14;
   let scale = 1;
 
   // Gérard le traverse : il se dissipe (une seule fois)
   let justPassed = false;
-  const overlaps = Math.abs((o.x ?? 0) - playerX) < (o.width ?? 1) / 2 + 0.35;
+  const overlaps = Math.abs(o.x - playerX) < (o.width ?? 1) / 2 + 0.35;
   if (m.dissipateAt === null && ahead < 0.4 && overlaps) {
     m.dissipateAt = time;
     justPassed = true;
   }
+  let fade = 1;
   if (m.dissipateAt !== null) {
     const k = Math.min(1, (time - m.dissipateAt) / DISSIPATE_TIME);
-    opacity *= 1 - k;
-    ghostOpacity *= 1 - k;
+    fade = 1 - k;
     spread += k * 0.6;
     scale = 1 + k * 0.5;
   }
+  opacity *= fade;
+  tintOpacity *= fade;
 
-  for (const mat of m.mats) {
-    mat.opacity = opacity;
-    mat.depthWrite = opacity > 0.97;
+  // Tremblement et léger « flou » (le fantôme vibre, ses copies respirent)
+  if (!reduceFx) {
+    mesh.position.x += Math.sin(time * 41 + o.id) * 0.03;
+    mesh.position.y += Math.abs(Math.sin(time * 3 + o.id)) * 0.08; // il flotte un peu
+    spread += Math.sin(time * 6 + o.id) * 0.04;
   }
-  m.red.mat.opacity = ghostOpacity;
-  m.cyan.mat.opacity = ghostOpacity;
-
-  // Léger tremblement de près (pas avec « Réduire les effets »)
-  const jitter = reduceFx ? 0 : Math.sin(time * 37 + o.id) * 0.035 * near;
-  mesh.position.x += jitter;
+  for (const mat of m.mats) mat.opacity = opacity;
+  m.red.mat.opacity = tintOpacity;
+  m.cyan.mat.opacity = tintOpacity;
   mesh.scale.setScalar(scale);
 
-  // Les deux fantômes encadrent l'objet, décalés à gauche (rouge) et à droite (cyan)
   m.holder.position.copy(mesh.position);
   m.holder.rotation.copy(mesh.rotation);
-  m.red.ghost.position.set(-spread, 0, 0);
-  m.cyan.ghost.position.set(spread, 0, 0);
-  m.red.ghost.scale.setScalar(scale);
-  m.cyan.ghost.scale.setScalar(scale);
-  m.holder.visible = ghostOpacity > 0.01;
+  m.red.tint.position.set(-spread, 0, 0);
+  m.cyan.tint.position.set(spread, 0, 0);
+  m.red.tint.scale.setScalar(scale);
+  m.cyan.tint.scale.setScalar(scale);
+  m.holder.visible = tintOpacity > 0.01;
+
+  // Le fil entre l'original et le fantôme : visible dès qu'ils se séparent
+  const sep = original ? Math.abs(mesh.position.x - original.position.x) : 0;
+  const threadAlpha = original ? Math.min(1, sep / 0.8) * fade : 0;
+  m.thread.visible = threadAlpha > 0.02;
+  if (m.thread.visible) {
+    const a = original.position;
+    const b = mesh.position;
+    m.dots.forEach((s, i) => {
+      const t = (i + 1) / (THREAD_DOTS + 1);
+      const wave = reduceFx ? 0 : Math.sin(t * Math.PI * 3 - time * 8) * 0.12;
+      s.position.set(a.x + (b.x - a.x) * t, 0.9 + Math.sin(t * Math.PI) * 0.35 + wave, a.z + (b.z - a.z) * t);
+      s.scale.setScalar(0.22 + 0.06 * Math.sin(time * 6 + i));
+      s.material.opacity = threadAlpha * 0.9;
+    });
+  }
   return justPassed;
 }
 
-/** Libère la mémoire d'un mirage (matériaux copiés, fantômes). */
+/** Libère la mémoire d'un fantôme. */
 export function disposeMirage(mesh) {
   const m = mesh.userData.mirage;
   if (!m) return;
   for (const mat of m.mats) mat.dispose();
   m.red.mat.dispose();
   m.cyan.mat.dispose();
-  // Agents et manifestants sont fabriqués à neuf : leurs formes doivent aussi être libérées
-  for (const g of [m.red.ghost, m.cyan.ghost]) {
+  for (const s of m.dots) s.material.dispose();
+  for (const g of [m.red.tint, m.cyan.tint]) {
     if (g.userData.agent || g.userData.disposable) g.traverse((n) => n.geometry?.dispose());
   }
-  m.holder.removeFromParent();
+  m.extras.removeFromParent();
+}
+
+// --- « Mirage ! » qui s'envole au-dessus de Gérard (texte dessiné, traduit) ---
+const popTextures = new Map();
+export function mirageTextSprite(text) {
+  if (!popTextures.has(text)) {
+    const c = document.createElement('canvas');
+    c.width = 512;
+    c.height = 160;
+    const ctx = c.getContext('2d');
+    ctx.font = '96px "Lilita One", "Arial Rounded MT Bold", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.lineJoin = 'round';
+    // Contour encre + remplissage blanc, ombre rouge/cyan décalée (vision double)
+    ctx.lineWidth = 16;
+    ctx.strokeStyle = '#1b1b2f';
+    ctx.strokeText(text, 256, 82);
+    ctx.fillStyle = '#ff3b3b';
+    ctx.fillText(text, 250, 80);
+    ctx.fillStyle = '#21e6f2';
+    ctx.fillText(text, 262, 80);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(text, 256, 80);
+    const tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    popTextures.set(text, tex);
+  }
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: popTextures.get(text), transparent: true, depthTest: false }));
+  s.scale.set(2.2, 0.69, 1);
+  s.renderOrder = 10;
+  return s;
 }

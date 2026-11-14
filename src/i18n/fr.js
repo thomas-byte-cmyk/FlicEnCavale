@@ -88,6 +88,7 @@ export default {
     creditsFile: 'Tous les crédits et licences (CREDITS.txt)',
     pauseRestart: '↻ Recommencer',
     multiplierLabel: 'Multiplicateur de score',
+    miragePop: 'Mirage !', // s'envole au-dessus de Gérard quand il traverse un fantôme
   },
 
   // --- Tutoriel (dans l'ordre des 5 étapes) ---
