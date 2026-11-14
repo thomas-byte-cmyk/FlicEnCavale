@@ -50,6 +50,8 @@ export class UI {
       pauseCount: $('pause-count'),
       resume: $('btn-resume'),
       drunkFx: $('drunk-fx'),
+      mirageTip: $('mirage-tip'),
+      mirageTipText: $('mirage-tip-text'),
     };
     this.settings = new SettingsPanel();
     this.lastMult = 1;
@@ -294,6 +296,20 @@ export class UI {
     }
   }
 
+  /**
+   * Bulle d'explication de la vision double (événement 'mirage-tip', 1re fois).
+   * Grande bulle centrée, ~2,5 s, qui ne bloque pas les contrôles.
+   * @param {string} [text] par défaut la clé i18n ui.mirageTip
+   */
+  showMirageTip(text = t('mirageTip'), duration = 2500) {
+    const tip = this.el.mirageTip;
+    this.el.mirageTipText.innerHTML = text;
+    tip.classList.remove('hidden');
+    this.retrigger(tip, 'show');
+    clearTimeout(this.mirageTipTimer);
+    this.mirageTipTimer = setTimeout(() => tip.classList.add('hidden'), duration);
+  }
+
   /** Consigne du tutoriel avec une flèche animée. dir = 'up' | 'down' | 'left' | 'right' | '' */
   showHint(icon, text, dir) {
     this.el.hintIcon.textContent = icon;
@@ -351,6 +367,8 @@ export class UI {
   }
 
   clearMessages() {
+    clearTimeout(this.mirageTipTimer);
+    this.el.mirageTip?.classList.add('hidden');
     this.el.popups.innerHTML = '';
     this.el.floaters.innerHTML = '';
     this.hideHint();
