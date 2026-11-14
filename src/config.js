@@ -87,8 +87,8 @@ export const SPAWN = {
  */
 export const MIRAGE = {
   threshold: 30, // ivresse à partir de laquelle Gérard voit double (sur 100)
-  chanceAtThreshold: 0.35, // chance qu'une rangée ait un fantôme, juste au-dessus du seuil (~1 rangée sur 3)
-  chanceAtMax: 0.55, // chance quand l'ivresse est au maximum (~1 rangée sur 2)
+  chanceAtThreshold: 0.5, // chance qu'une rangée « dédoublable » ait un fantôme, juste au-dessus du seuil
+  chanceAtMax: 0.75, // chance quand l'ivresse est au maximum
   ampAtThreshold: 0.5, // amplitude de l'oscillation au seuil, en voies (0,5 = une demi-voie)
   ampAtMax: 1, // amplitude à 100 % d'ivresse (une voie entière)
   periodMin: 1.2, // durée d'un aller-retour (secondes), tirée entre min et max
@@ -96,7 +96,7 @@ export const MIRAGE = {
   reduceFxAmp: 0.5, // « réduire les effets » : amplitude × 0,5…
   reduceFxSlow: 1.6, // … et oscillation 1,6 fois plus lente
   passPoints: 5, // petit bonus quand on traverse un fantôme (× multiplicateurs)
-  tipDistance: 25, // première fois : explication quand le premier fantôme est à 25 m
+  tipDistance: 40, // première fois : explication quand le premier fantôme est à 40 m (le temps de le voir)
   tipSlowmo: 0.35, // … avec un ralenti (vitesse × 0,35)
   tipDuration: 1.5, // … pendant 1,5 s (temps réel)
 };

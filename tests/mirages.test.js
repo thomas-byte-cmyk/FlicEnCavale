@@ -70,13 +70,13 @@ describe('vision double : les fantômes', () => {
     expect(addMirages(always, [makeObstacle('barrique', 1, 200)], MIRAGE.threshold)).toEqual([]);
   });
 
-  it('fréquence : environ une rangée sur 3 au seuil, une sur 2 à 100 %', () => {
+  it('fréquence : au moins une rangée dédoublable sur 2 au seuil, jamais toutes à 100 %', () => {
     expect(mirageChance(0)).toBe(0);
     expect(mirageChance(MIRAGE.threshold)).toBe(0);
     expect(mirageChance(MIRAGE.threshold + 0.01)).toBeCloseTo(MIRAGE.chanceAtThreshold, 2);
     expect(mirageChance(100)).toBeCloseTo(MIRAGE.chanceAtMax);
-    expect(mirageChance(MIRAGE.threshold + 0.01)).toBeGreaterThanOrEqual(1 / 3 - 0.01);
-    expect(mirageChance(100)).toBeLessThanOrEqual(0.6);
+    expect(mirageChance(MIRAGE.threshold + 0.01)).toBeGreaterThanOrEqual(0.5 - 0.01);
+    expect(mirageChance(100)).toBeLessThanOrEqual(0.8); // toujours des rangées « nettes » pour respirer
   });
 
   it('amplitude : grandit avec l\'ivresse, divisée par 2 avec « réduire les effets »', () => {
