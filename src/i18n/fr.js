@@ -31,7 +31,8 @@ export default {
     ctrlSlide: '<span>👇</span> Glisse vers le bas pour te baisser',
     ctrlKeys: '<span>⌨️</span> Sur ordi : les flèches',
     bonusCafe: '☕ <b>Café</b> : dessoûle et sème les collègues',
-    bonusVin: '🍷 <b>Verre de rouge</b> : des points… mais ça tourne',
+    bonusVin: '🍷 <b>Verre de rouge</b> : des points… mais ça tourne, et tu vois double : le fantôme transparent se traverse',
+    mirageTip: '🥴 Tu vois double ! Le fantôme transparent se traverse.',
     bonusCroissant: '🥐 <b>Croissant</b> : invincible un moment',
     bonusKepi: '🎖️ <b>Képi doré</b> : score multiplié',
     tutorialAgain: 'Refaire l’entraînement',
@@ -87,6 +88,7 @@ export default {
     creditsFile: 'Tous les crédits et licences (CREDITS.txt)',
     pauseRestart: '↻ Recommencer',
     multiplierLabel: 'Multiplicateur de score',
+    miragePop: 'Mirage !', // s'envole au-dessus de Gérard quand il traverse un fantôme
   },
 
   // --- Tutoriel (dans l'ordre des 5 étapes) ---

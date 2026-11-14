@@ -8,7 +8,7 @@
 import { LANES, PLAYER, SPEED, SCORE, SPAWN, CHASE, DRUNK, BONUS, MIRAGE, DRUNK_MULTIPLIER } from '../config.js';
 import { fillGap } from './items.js';
 import { buildRow, rowLength } from './obstacles.js';
-import { addMirages, loneMirage } from './mirages.js';
+import { addMirages, ghostX } from './mirages.js';
 import { GAME_OVER_PHRASES } from './texts.js';
 import { buildTutorial, TUTORIAL_END } from './tutorial.js';
 
@@ -32,6 +32,8 @@ export class Game {
     this.random = random;
     // Réglage « réduire les effets » (accessibilité) : gardé d'une partie à l'autre
     this.reduceFx = false;
+    // Le joueur a-t-il déjà eu l'explication des fantômes ? (sauvegardé par main.js)
+    this.mirageTipSeen = false;
     this.reset();
   }
 
@@ -71,7 +73,7 @@ export class Game {
     this.catchTimer = null; // compte à rebours du plaquage (ralenti)
     this.timeScale = 1; // 1 = vitesse normale, moins = ralenti
     this.lastChantAt = null; // dernier cortège de manifestants qui a scandé
-    this.freeGap = null; // espace libre avant la prochaine rangée (mirages isolés)
+    this.tipSlowmo = 0; // temps restant (réel) du ralenti de l'explication des fantômes
     this.multTier = 1; // dernier multiplicateur d'ivresse annoncé (pour l'événement 'multiplier-change')
   }
 
@@ -202,6 +204,11 @@ export class Game {
    * @returns {Array} les événements survenus pendant cette image
    */
   update(dt) {
+    // Fin du ralenti de l'explication des fantômes (compté en temps réel)
+    if (this.tipSlowmo > 0 && dt > 0) {
+      this.tipSlowmo -= dt / (this.timeScale || 1);
+      if (this.tipSlowmo <= 0 && this.catchTimer === null && this.status === 'running') this.timeScale = 1;
+    }
     if (this.status === 'running' && dt > 0) {
       // Découpe en petits pas égaux (voir MAX_STEP)
       const steps = Math.ceil(dt / MAX_STEP);
@@ -286,11 +293,6 @@ export class Game {
       this.obstacles.push(...row);
       // Vision double : faux obstacles sur une voie libre quand Gérard a bu
       this.obstacles.push(...addMirages(this.random, row, this.drunk, { reduceFx: this.reduceFx }));
-      // … et parfois un mirage isolé dans l'espace libre juste avant cette rangée
-      if (this.freeGap && this.freeGap.to - this.freeGap.from > 6) {
-        const mid = (this.freeGap.from + this.freeGap.to) / 2;
-        this.obstacles.push(...loneMirage(this.random, mid, this.drunk, row));
-      }
       // Plus on va vite, plus on espace les rangées (pour avoir le temps de réagir)
       const tighten = Math.min(SPAWN.tightenMax, this.distance / SPAWN.tightenEvery);
       const gap = SPAWN.minGap + this.random() * (SPAWN.maxGap - SPAWN.minGap) - tighten;
@@ -298,7 +300,6 @@ export class Game {
       this.nextRowAt += rowLength(row) + gap + this.speed * 0.3;
       // Médailles et bonus dans l'espace libre avant la rangée suivante
       this.items.push(...fillGap(this.random, rowEnd + 3, this.nextRowAt - 4, SPAWN.bonusChance));
-      this.freeGap = { from: rowEnd + 3, to: this.nextRowAt - 4 }; // (pour le mirage isolé suivant)
     }
   }
 
@@ -310,8 +311,16 @@ export class Game {
     for (const o of this.obstacles) {
       const ahead = o.at - this.distance; // distance entre Gérard et l'obstacle
 
-      // Mirage (vision double) : on le traverse sans dommage, avec un petit bonus
+      // Fantôme (vision double) : il oscille vers la voie voisine ; on le traverse sans dommage
       if (o.mirage) {
+        o.x = ghostX(o, this.time);
+        // Tout premier fantôme du joueur : explication + petit ralenti (une seule fois)
+        if (!this.mirageTipSeen && ahead > 0 && ahead < MIRAGE.tipDistance) {
+          this.mirageTipSeen = true;
+          this.tipSlowmo = MIRAGE.tipDuration;
+          if (this.catchTimer === null) this.timeScale = MIRAGE.tipSlowmo;
+          this.emit('mirage-tip', { obstacle: o });
+        }
         if (!o.done && Math.abs(ahead) < o.depth / 2 + PLAYER.halfDepth && Math.abs(o.x - p.x) < o.width / 2 + PLAYER.halfWidth) {
           o.done = true;
           const points = MIRAGE.passPoints * this.totalMultiplier;

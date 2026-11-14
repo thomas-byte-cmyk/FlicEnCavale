@@ -31,7 +31,8 @@ export default {
     ctrlSlide: '<span>👇</span> Swipe down to duck',
     ctrlKeys: '<span>⌨️</span> On a computer: arrow keys',
     bonusCafe: '☕ <b>Espresso</b>: sobers you up and shakes off the cops',
-    bonusVin: '🍷 <b>Glass of red</b>: lots of points… but the world starts spinning',
+    bonusVin: '🍷 <b>Glass of red</b>: lots of points… but the world spins and you see double: the see-through ghost is harmless',
+    mirageTip: '🥴 Seeing double! The see-through ghost is harmless.',
     bonusCroissant: '🥐 <b>Croissant</b>: invincible for a while',
     bonusKepi: '🎖️ <b>Golden kepi</b>: score multiplier',
     tutorialAgain: 'Replay the training',
@@ -84,6 +85,7 @@ export default {
     creditsFile: 'All credits and licenses (CREDITS.txt)',
     pauseRestart: '↻ Restart',
     multiplierLabel: 'Score multiplier',
+    miragePop: 'Mirage!', // s'envole au-dessus de Gérard quand il traverse un fantôme
   },
 
   tutorial: [

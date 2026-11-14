@@ -30,6 +30,8 @@ import {
   loadTutorialDone,
   saveTutorialDone,
   loadLang,
+  loadFlag,
+  saveFlag,
 } from './platform/storage.js';
 
 // Langue : celle choisie auparavant, sinon celle du navigateur
@@ -38,6 +40,7 @@ setLang(detectLang(loadLang(), [navigator.language, ...(navigator.languages ?? [
 translateDom(document);
 
 const game = new Game();
+game.mirageTipSeen = loadFlag('seenMirageTip', false); // explication des fantômes déjà vue ?
 const narrator = new Narrator();
 const missions = new Missions(loadMissions());
 const renderer = new Renderer(document.getElementById('scene'));
@@ -241,6 +244,14 @@ function handleEvents(events) {
         ui.floatText(`+${ev.points}`, playerScreenX());
         vibrate(30);
         break;
+      case 'mirage-tip': {
+        // Tout premier fantôme : petite explication (une seule fois par joueur) pendant un ralenti
+        saveFlag('seenMirageTip', true);
+        const text = t('mirageTip');
+        if (typeof ui.showMirageTip === 'function') ui.showMirageTip(text);
+        else ui.popup(text, 'good');
+        break;
+      }
       case 'mirage-pass': // Gérard traverse un obstacle imaginaire (le son est joué par le rendu, voir plus bas)
         ui.floatText(`+${ev.points}`, playerScreenX(), '#c4b5fd');
         break;

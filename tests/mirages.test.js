@@ -1,96 +1,88 @@
 import { describe, it, expect } from 'vitest';
 import { buildRow, makeObstacle } from '../src/game/obstacles.js';
-import { addMirages, loneMirage, mirageChance, freeLanes, laneBlocked } from '../src/game/mirages.js';
+import { addMirages, mirageChance, swayAmplitude, ghostX, GHOST_TYPES } from '../src/game/mirages.js';
 import { Game } from '../src/game/Game.js';
 import { LANES, PLAYER, MIRAGE, SCORE, BONUS, CHASE } from '../src/config.js';
 import { seeded, run } from './helpers.js';
 
-const JUMP_HEIGHT = PLAYER.jumpVelocity ** 2 / (2 * PLAYER.gravity);
+const LANE_WIDTH = LANES[1] - LANES[0];
 
-/** Une voie est-elle réellement praticable (libre, ou franchissable en sautant OU en glissant) ? */
-function lanePassable(row, lane) {
-  const b = row.filter((o) => !o.mirage && o.effect === 'hit' && Math.abs(o.x - LANES[lane]) < o.width / 2 + PLAYER.halfWidth);
-  if (!b.length) return true;
-  return b.every((o) => o.yMax < JUMP_HEIGHT) || b.every((o) => o.yMin >= PLAYER.slideHeight);
-}
-/** Voies qui ONT L'AIR libres : ni vrai obstacle, ni mirage. */
-const looksFree = (row, mirages) => freeLanes(row).filter((l) => !mirages.some((m) => m.lane === l));
-
-describe('vision double : garantie de solvabilité', () => {
+describe('vision double : les fantômes', () => {
   for (const reduceFx of [false, true]) {
-    it(`3000 rangées très ivres${reduceFx ? ' (réduire les effets)' : ''} : toujours une vraie solution, et une voie libre visible`, () => {
+    it(`3000 rangées${reduceFx ? ' (réduire les effets)' : ''} : chaque fantôme copie un vrai obstacle et reste dans la rue`, () => {
       const rand = seeded(11);
-      let withMirage = 0;
+      let ghosts = 0;
       for (let i = 0; i < 3000; i++) {
         const at = 30 + i * 3;
         const row = buildRow(rand, at);
+        const realBefore = row.map((o) => ({ ...o }));
         const drunk = 31 + (i % 70); // de 31 à 100 % d'ivresse
-        const mirages = addMirages(rand, row, drunk, { reduceFx });
-        const all = [...row, ...mirages];
-        const label = `${at} m : ${all.map((o) => `${o.mirage ? '~' : ''}${o.type}@${o.lane}`).join(', ')}`;
-        if (row.some((o) => o.vx)) {
-          expect(mirages, label).toHaveLength(0);
-          continue;
+        const added = addMirages(rand, row, drunk, { reduceFx });
+        expect(added.length).toBeLessThanOrEqual(1);
+        // Les vrais obstacles ne changent pas : ils restent des obstacles normaux
+        expect(row).toEqual(realBefore);
+        expect(row.every((o) => o.mirage === false)).toBe(true);
+        if (!added.length) continue;
+        ghosts++;
+        const g = added[0];
+        const original = row.find((o) => o.id === g.ghostOf);
+        const label = `${at} m : ${row.map((o) => `${o.type}@${o.lane}`).join(', ')}`;
+        // ghostOf désigne bien un vrai obstacle de la même rangée, du même type
+        expect(original, label).toBeTruthy();
+        expect(g.mirage).toBe(true);
+        expect(g.effect).toBe('mirage');
+        expect(g.type).toBe(original.type);
+        expect(g.at).toBe(original.at);
+        expect(g.baseX).toBe(original.x);
+        expect(GHOST_TYPES).toContain(g.type);
+        // Amplitude : ½ voie au seuil → 1 voie à 100 % (moitié avec « réduire les effets »)
+        const amp = Math.abs(g.swayAmp);
+        const factor = reduceFx ? MIRAGE.reduceFxAmp : 1;
+        expect(amp).toBeGreaterThanOrEqual(0.5 * LANE_WIDTH * factor - 1e-9);
+        expect(amp).toBeLessThanOrEqual(1 * LANE_WIDTH * factor + 1e-9);
+        expect(g.swayPeriod).toBeGreaterThanOrEqual(MIRAGE.periodMin * (reduceFx ? MIRAGE.reduceFxSlow : 1) - 1e-9);
+        expect(g.swayPeriod).toBeLessThanOrEqual(MIRAGE.periodMax * (reduceFx ? MIRAGE.reduceFxSlow : 1) + 1e-9);
+        // Oscillation bornée : entre la voie de l'original et la voie voisine, jamais hors de la rue
+        for (let t = 0; t < 4; t += 0.05) {
+          const x = ghostX(g, t);
+          expect(x).toBeGreaterThanOrEqual(Math.min(g.baseX, g.baseX + g.swayAmp) - 1e-9);
+          expect(x).toBeLessThanOrEqual(Math.max(g.baseX, g.baseX + g.swayAmp) + 1e-9);
+          expect(Math.abs(x)).toBeLessThanOrEqual(LANES[2] + 1e-9);
         }
-        // 1. La rangée reste réellement faisable (les mirages ne comptent pas)
-        expect([0, 1, 2].some((l) => lanePassable(all, l)), label).toBe(true);
-        if (!mirages.length) continue;
-        withMirage++;
-        for (const m of mirages) {
-          expect(m.mirage).toBe(true);
-          // 2. Un mirage n'est posé que sur une voie réellement libre
-          expect(laneBlocked(row, m.lane), label).toBe(false);
-          if (reduceFx) expect(m.at).toBeCloseTo(at + MIRAGE.reduceFxOffset);
-        }
-        // 3. Il reste toujours une voie libre SANS mirage (une solution visible et vraie)
-        expect(looksFree(row, mirages).length, label).toBeGreaterThanOrEqual(1);
-        // 4. Jamais plus de mirages que permis
-        expect(mirages.length).toBeLessThanOrEqual(MIRAGE.maxPerRow);
       }
-      expect(withMirage).toBeGreaterThan(150); // le test a bien porté sur des rangées avec mirages
+      expect(ghosts).toBeGreaterThan(600); // environ une rangée sur 2 ou 3 (hors rangées sans candidat)
     });
   }
 
-  it('mirage isolé : une seule voie occupée, deux voies visiblement libres', () => {
-    const rand = seeded(5);
-    let n = 0;
-    for (let i = 0; i < 2000; i++) {
-      const m = loneMirage(rand, 100, 90);
-      expect(m.length).toBeLessThanOrEqual(1);
-      if (m.length) {
-        n++;
-        expect(m[0].mirage).toBe(true);
-        expect([0, 1, 2]).toContain(m[0].lane);
-      }
-    }
-    expect(n).toBeGreaterThan(200);
-    expect(loneMirage(() => 0, 100, 20)).toEqual([]); // sobre : jamais
+  it("l'oscillation va bien d'une voie vers la voie voisine (aller-retour)", () => {
+    const g = addMirages(() => 0, [makeObstacle('barrique', 0, 100)], 100)[0];
+    expect(g.swayAmp).toBeCloseTo(LANE_WIDTH); // depuis le bord gauche, vers le milieu, une voie entière
+    const xs = Array.from({ length: 200 }, (_, i) => ghostX(g, (i * g.swayPeriod) / 200));
+    expect(Math.min(...xs)).toBeCloseTo(LANES[0], 1);
+    expect(Math.max(...xs)).toBeCloseTo(LANES[1], 1);
+    expect(ghostX(g, g.swayPeriod)).toBeCloseTo(ghostX(g, 0)); // périodique
   });
 
-  it("mirage isolé : jamais devant la seule voie libre de la rangée qui suit", () => {
-    const rand = seeded(6);
-    for (let i = 0; i < 3000; i++) {
-      const row = buildRow(rand, 200 + i * 3);
-      const free = freeLanes(row);
-      const m = loneMirage(rand, 150, 100, row);
-      if (m.length && free.length === 1) expect(m[0].lane, row.map((o) => `${o.type}@${o.lane}`).join()).not.toBe(free[0]);
-    }
+  it('pas de fantôme sans original possible (baguette, vache) ni sous le seuil', () => {
+    const always = () => 0;
+    expect(addMirages(always, [makeObstacle('baguette', null, 200)], 100)).toEqual([]);
+    expect(addMirages(always, [makeObstacle('vache', null, 200, { x: -5, vx: 2 })], 100)).toEqual([]);
+    expect(addMirages(always, [makeObstacle('barrique', 1, 200)], MIRAGE.threshold)).toEqual([]);
   });
 
-  it('pas de mirage quand toutes les voies sont prises (mur de barriques, baguette)', () => {
-    const wall = [0, 1, 2].map((l) => makeObstacle('barrique', l, 200));
-    const baguette = [makeObstacle('baguette', null, 200)];
-    const always = () => 0; // tirage qui dit toujours « oui »
-    expect(addMirages(always, wall, 100)).toEqual([]);
-    expect(addMirages(always, baguette, 100)).toEqual([]);
-  });
-
-  it("aucun mirage tant que Gérard n'a pas dépassé le seuil d'ivresse", () => {
+  it('fréquence : au moins une rangée dédoublable sur 2 au seuil, jamais toutes à 100 %', () => {
     expect(mirageChance(0)).toBe(0);
     expect(mirageChance(MIRAGE.threshold)).toBe(0);
-    expect(mirageChance(MIRAGE.threshold + 1)).toBeGreaterThan(0);
+    expect(mirageChance(MIRAGE.threshold + 0.01)).toBeCloseTo(MIRAGE.chanceAtThreshold, 2);
     expect(mirageChance(100)).toBeCloseTo(MIRAGE.chanceAtMax);
-    expect(mirageChance(60)).toBeLessThan(mirageChance(90));
+    expect(mirageChance(MIRAGE.threshold + 0.01)).toBeGreaterThanOrEqual(0.5 - 0.01);
+    expect(mirageChance(100)).toBeLessThanOrEqual(0.8); // toujours des rangées « nettes » pour respirer
+  });
+
+  it('amplitude : grandit avec l\'ivresse, divisée par 2 avec « réduire les effets »', () => {
+    expect(swayAmplitude(MIRAGE.threshold)).toBeCloseTo(0.5 * LANE_WIDTH);
+    expect(swayAmplitude(100)).toBeCloseTo(LANE_WIDTH);
+    expect(swayAmplitude(100, true)).toBeCloseTo(0.5 * LANE_WIDTH);
   });
 });
 
@@ -162,6 +154,75 @@ describe('vision double : dans le jeu', () => {
     g.obstacles = ['agent', 'radar', 'manif'].map((t, i) => makeObstacle(t, 1, g.distance + 10 + i * 4, { mirage: true, effect: 'mirage' }));
     const types = run(g, 2).map((e) => e.type);
     for (const t of ['pass', 'whistle', 'flash', 'chant']) expect(types).not.toContain(t);
+  });
+
+  /** Un vrai obstacle et son fantôme, à `ahead` mètres devant Gérard. */
+  function pairAhead(g, ahead, lane = 0) {
+    const original = makeObstacle('barrique', lane, g.distance + ahead);
+    const [ghost] = addMirages(() => 0, [original], 90);
+    g.nextRowAt = Infinity;
+    g.obstacles = [original, ghost];
+    return { original, ghost };
+  }
+
+  it('dans le jeu, le fantôme oscille (o.x change à chaque update) sans quitter ses bornes', () => {
+    const g = drunkGame(60);
+    g.mirageTipSeen = true;
+    const { ghost } = pairAhead(g, 80);
+    const xs = [];
+    for (let i = 0; i < 120; i++) {
+      g.update(1 / 60);
+      xs.push(ghost.x);
+    }
+    expect(Math.max(...xs) - Math.min(...xs)).toBeGreaterThan(1); // il bouge vraiment
+    for (const x of xs) {
+      expect(x).toBeGreaterThanOrEqual(Math.min(ghost.baseX, ghost.baseX + ghost.swayAmp) - 1e-9);
+      expect(x).toBeLessThanOrEqual(Math.max(ghost.baseX, ghost.baseX + ghost.swayAmp) + 1e-9);
+    }
+  });
+
+  it("l'original reste dangereux, son fantôme non", () => {
+    const g = drunkGame(60);
+    g.mirageTipSeen = true;
+    g.gap = CHASE.start;
+    const { original } = pairAhead(g, 3, 1);
+    expect(original.mirage).toBe(false);
+    const types = run(g, 0.5).map((e) => e.type);
+    expect(types).toContain('hit');
+  });
+
+  it("explication des fantômes : une seule fois, à 25 m, avec un ralenti d'environ 1,5 s", () => {
+    const g = drunkGame(60);
+    pairAhead(g, 60);
+    const tips = [];
+    let slowSeen = false;
+    for (let i = 0; i < 60 * 7; i++) {
+      for (const e of g.update((1 / 60) * g.timeScale)) if (e.type === 'mirage-tip') tips.push(e.obstacle.at - g.distance);
+      if (g.timeScale === MIRAGE.tipSlowmo) slowSeen = true;
+    }
+    expect(tips).toHaveLength(1);
+    expect(tips[0]).toBeLessThanOrEqual(MIRAGE.tipDistance);
+    expect(tips[0]).toBeGreaterThan(MIRAGE.tipDistance - 3);
+    expect(slowSeen).toBe(true);
+    expect(g.timeScale).toBe(1); // le ralenti est terminé
+    expect(g.mirageTipSeen).toBe(true);
+    // Un autre fantôme plus tard, ou une nouvelle partie : plus d'explication
+    g.reset();
+    g.start();
+    g.drunk = 60;
+    pairAhead(g, 40);
+    const again = [];
+    for (let i = 0; i < 60 * 3; i++) for (const e of g.update(1 / 60)) if (e.type === 'mirage-tip') again.push(e);
+    expect(again).toHaveLength(0);
+  });
+
+  it('pas d’explication si le joueur l’a déjà vue (sauvegarde)', () => {
+    const g = drunkGame(60);
+    g.mirageTipSeen = true;
+    pairAhead(g, 30);
+    const types = run(g, 2).map((e) => e.type);
+    expect(types).not.toContain('mirage-tip');
+    expect(g.timeScale).toBe(1);
   });
 
   it('le café fait disparaître les mirages devant Gérard', () => {
