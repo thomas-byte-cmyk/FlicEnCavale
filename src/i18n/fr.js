@@ -46,11 +46,6 @@ export default {
     missionsGo: '🎯 Missions —&nbsp;',
     replay: 'Rejouer',
     home: 'Écran titre',
-    // « Deuxième chance » (version Poki : pub récompensée, le joueur sait qu'il va voir une pub)
-    revive: '📺 Regarder une pub pour s’échapper',
-    reviveWaiting: '📺 Pub en cours…',
-    reviveFailed: '😕 Pas de pub disponible',
-    revived: 'Deuxième chance ! Cours, Gérard !',
     // « Défier un ami » (fin de partie)
     challenge: '📣 Défier un ami',
     challengeText: '🚔 J’ai fait {score} points à FlicEnCavale : Gérard a tenu {distance} m avant de se faire rattraper. Tu fais mieux ?',
@@ -72,6 +67,26 @@ export default {
     pauseText: 'Gérard reprend son souffle derrière une barrique…',
     resume: '▶ Reprendre',
     countdownGo: 'Cours !',
+    // Réglages et crédits (v1.1)
+    settings: 'Réglages',
+    settingsOpen: '⚙️ Réglages',
+    settingsTitle: 'Réglages',
+    setSound: '🔊 Son',
+    setHaptics: '📳 Vibrations',
+    setReduceFx: '🌀 Réduire les effets',
+    setReduceFxHint: 'Moins de tangage, mirages plus visibles',
+    setLanguage: '🌍 Langue',
+    setFullscreen: '⛶ Plein écran',
+    credits: '📜 Crédits',
+    close: 'OK',
+    back: 'Retour',
+    creditsTitle: 'Crédits',
+    creditsThree: '<b>Three.js</b> — moteur 3D (licence MIT)',
+    creditsFont: '<b>Lilita One</b> — police de Juan Montoreano (SIL Open Font License 1.1)',
+    creditsAi: 'Développé avec l’aide d’outils d’IA (Claude, Anthropic)',
+    creditsFile: 'Tous les crédits et licences (CREDITS.txt)',
+    pauseRestart: '↻ Recommencer',
+    multiplierLabel: 'Multiplicateur de score',
   },
 
   // --- Tutoriel (dans l'ordre des 5 étapes) ---
@@ -113,6 +128,9 @@ export default {
     noWine: 'Cours {n} m sans boire de vin',
     vin: 'Bois {n} verres de rouge (avec modération)',
     whistle: 'Fais-toi siffler par {n} gendarmes de la circulation',
+    miragePass: 'Traverse {n} mirages (vision double)',
+    reachX3: ['Atteins le multiplicateur ×3', 'Atteins le multiplicateur ×3 {n} fois'],
+    distX3: 'Cours {n} m en ×3',
     passBarrique: 'Passe {n} barriques sans les toucher',
     kepi: ['Trouve un képi doré', 'Trouve {n} képis dorés'],
     noHit: 'Cours {n} m sans rien percuter',
@@ -219,6 +237,17 @@ export default {
       slip: ['Ça glisse, le pastis !', 'Un pastis, sans glaçon ni équilibre.', 'Hop, glissade !'],
       oops: ['Oups, une voie de trop !', 'Je voulais aller là… non, là !', 'Le GPS de Gérard recalcule…'],
       smash: ['Rien ne résiste au croissant !', 'Pardon, pardon, pardon !'],
+      // Vision double : Gérard traverse un obstacle qui n'existait pas
+      mirage: [
+        'Ah ? Il n’était pas vraiment là, celui-là.',
+        'Je vois double… et je cours à travers !',
+        'Barrique fantôme ! Le pastis fait des miracles.',
+        'Même les obstacles ont trop bu, ce soir.',
+        'Tiens, un collègue imaginaire. Bonsoir, collègue !',
+      ],
+      mirageClear: ['Un café, et la rue arrête de se dédoubler.', 'Ah, ça va mieux : un seul tracteur à la fois.'],
+      // Le multiplicateur d'ivresse monte ({m} = 2 ou 3)
+      multUp: ['Vision double : points ×{m} !', 'Ça tangue, mais ça rapporte : ×{m} !', 'Gérard voit tout en ×{m}…'],
       whistle: ['Priorité à droite !', 'Circulez !', 'Stop ! Euh… non, rien.'],
       cow: ['Une vache traverse ! Ralentir… ou pas.', 'Meuuuh !'],
       chant: [

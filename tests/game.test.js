@@ -192,52 +192,6 @@ describe('Game : obstacles et poursuite', () => {
   });
 });
 
-describe('Game : deuxième chance', () => {
-  /** Partie perdue (sans tutoriel). */
-  function lostGame() {
-    const g = emptyGame();
-    run(g, 2);
-    g.gap = 0;
-    for (let i = 0; i < 600 && g.status === 'running'; i++) g.update((1 / 60) * g.timeScale);
-    expect(g.status).toBe('over');
-    return g;
-  }
-
-  it('repart avec le même score, les collègues repoussés et la rue dégagée', () => {
-    const g = lostGame();
-    const score = g.score;
-    g.obstacles.push(makeObstacle('barrique', 1, g.distance + 5), makeObstacle('barrique', 1, g.distance + 60));
-    expect(g.canRevive).toBe(true);
-    expect(g.revive()).toBe(true);
-    expect(types(g.update(0))).toContain('revive');
-    expect(g.status).toBe('running');
-    expect(g.score).toBe(score);
-    expect(g.gap).toBe(CHASE.start);
-    expect(g.timeScale).toBe(1);
-    expect(g.obstacles.map((o) => Math.round(o.at - g.distance))).toEqual([60]);
-    run(g, 1);
-    expect(g.score).toBeGreaterThan(score);
-  });
-
-  it('une seule fois par partie', () => {
-    const g = lostGame();
-    g.revive();
-    g.gap = 0;
-    for (let i = 0; i < 600 && g.status === 'running'; i++) g.update((1 / 60) * g.timeScale);
-    expect(g.status).toBe('over');
-    expect(g.canRevive).toBe(false);
-    expect(g.revive()).toBe(false);
-    g.start(); // nouvelle partie : la chance revient
-    expect(g.revived).toBe(false);
-  });
-
-  it("impossible tant que la partie n'est pas perdue", () => {
-    const g = emptyGame();
-    expect(g.canRevive).toBe(false);
-    expect(g.revive()).toBe(false);
-  });
-});
-
 describe('Game : bonus et ivresse', () => {
   const pickup = (kind) => {
     const g = emptyGame();
@@ -247,9 +201,10 @@ describe('Game : bonus et ivresse', () => {
     return { g, ev: evs.find((e) => e.type === 'pickup') };
   };
 
+  // (ces tests ramassent les objets à 50 % d'ivresse : multiplicateur d'ivresse ×2)
   it('médaille : des points', () => {
     const { ev } = pickup('coin');
-    expect(ev).toMatchObject({ kind: 'coin', points: SCORE.coin });
+    expect(ev).toMatchObject({ kind: 'coin', points: SCORE.coin * 2 });
   });
   it('café : dessoûle et éloigne les collègues', () => {
     const { g } = pickup('cafe');
@@ -259,7 +214,7 @@ describe('Game : bonus et ivresse', () => {
   it("vin : beaucoup de points mais l'ivresse monte", () => {
     const { g, ev } = pickup('vin');
     expect(SCORE.wine).toBe(75);
-    expect(ev.points).toBe(SCORE.wine);
+    expect(ev.points).toBe(SCORE.wine * 2);
     expect(g.drunk).toBeGreaterThan(50 + DRUNK.wine - 1);
   });
   it('képi : score doublé', () => {
@@ -267,7 +222,7 @@ describe('Game : bonus et ivresse', () => {
     expect(g.multiplier).toBe(BONUS.multiplier);
     g.items.push(makeItem('coin', 1, g.distance + 1));
     const ev = run(g, 0.3).find((e) => e.type === 'pickup');
-    expect(ev.points).toBe(SCORE.coin * BONUS.multiplier);
+    expect(ev.points).toBe(SCORE.coin * BONUS.multiplier * 2);
   });
   it("l'ivresse reste entre 0 et le maximum", () => {
     const g = emptyGame();

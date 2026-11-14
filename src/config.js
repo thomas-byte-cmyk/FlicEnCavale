@@ -79,3 +79,29 @@ export const SPAWN = {
   tightenEvery: 250,
   tightenMax: 5,
 };
+
+/**
+ * VISION DOUBLE : quand Gérard a bu, il voit des obstacles qui n'existent pas (« mirages »).
+ * Un mirage se traverse sans dommage. Il est toujours posé sur une voie VRAIMENT libre,
+ * et il reste toujours au moins une voie qui a l'air libre ET qui l'est.
+ */
+export const MIRAGE = {
+  threshold: 30, // ivresse à partir de laquelle les mirages apparaissent (sur 100)
+  chanceAtThreshold: 0.15, // chance qu'une rangée ait un mirage, juste au-dessus du seuil
+  chanceAtMax: 0.75, // chance quand l'ivresse est au maximum
+  maxPerRow: 1, // nombre maximum de mirages par rangée
+  loneFactor: 0.6, // mirage isolé entre deux rangées (où les 3 voies sont libres) : chance × 0.6
+  passPoints: 5, // petit bonus quand on traverse un mirage (× multiplicateurs)
+  reduceFxOffset: 1.8, // « réduire les effets » : mirage décalé de 1,8 m (il ne s'aligne plus sur la rangée)
+};
+
+/**
+ * MULTIPLICATEUR D'IVRESSE : plus Gérard est ivre, plus ça rapporte (et plus c'est dur).
+ * S'applique aux points de distance et aux objets, et se cumule avec le képi doré.
+ * min = ivresse minimale (sur 100) pour obtenir ce multiplicateur.
+ */
+export const DRUNK_MULTIPLIER = [
+  { min: 0, mult: 1 },
+  { min: 30, mult: 2 },
+  { min: 70, mult: 3 },
+];

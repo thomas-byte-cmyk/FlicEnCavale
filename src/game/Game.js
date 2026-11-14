@@ -5,9 +5,10 @@
 // que le rendu, l'interface et le son écoutent.
 // =========================================================
 
-import { LANES, PLAYER, SPEED, SCORE, SPAWN, CHASE, DRUNK, BONUS } from '../config.js';
+import { LANES, PLAYER, SPEED, SCORE, SPAWN, CHASE, DRUNK, BONUS, MIRAGE, DRUNK_MULTIPLIER } from '../config.js';
 import { fillGap } from './items.js';
 import { buildRow, rowLength } from './obstacles.js';
+import { addMirages, loneMirage } from './mirages.js';
 import { GAME_OVER_PHRASES } from './texts.js';
 import { buildTutorial, TUTORIAL_END } from './tutorial.js';
 
@@ -29,6 +30,8 @@ export class Game {
   /** @param {{ random?: () => number }} options */
   constructor({ random = Math.random } = {}) {
     this.random = random;
+    // Réglage « réduire les effets » (accessibilité) : gardé d'une partie à l'autre
+    this.reduceFx = false;
     this.reset();
   }
 
@@ -68,12 +71,33 @@ export class Game {
     this.catchTimer = null; // compte à rebours du plaquage (ralenti)
     this.timeScale = 1; // 1 = vitesse normale, moins = ralenti
     this.lastChantAt = null; // dernier cortège de manifestants qui a scandé
-    this.revived = false; // « Deuxième chance » déjà utilisée pendant cette partie ?
+    this.freeGap = null; // espace libre avant la prochaine rangée (mirages isolés)
+    this.multTier = 1; // dernier multiplicateur d'ivresse annoncé (pour l'événement 'multiplier-change')
   }
 
-  /** Multiplicateur de score actuel. */
+  /** Multiplicateur du képi doré (2 pendant le bonus, sinon 1). */
   get multiplier() {
     return this.multiplierTime > 0 ? BONUS.multiplier : 1;
+  }
+
+  /** Multiplicateur d'ivresse : 1, 2 ou 3 (voir DRUNK_MULTIPLIER dans config.js), sans le képi. */
+  get scoreMultiplier() {
+    let mult = 1;
+    for (const tier of DRUNK_MULTIPLIER) if (this.drunk > tier.min || tier.min === 0) mult = tier.mult;
+    return mult;
+  }
+
+  /** Multiplicateur total appliqué aux points : ivresse × képi (6 au maximum). */
+  get totalMultiplier() {
+    return this.scoreMultiplier * this.multiplier;
+  }
+
+  /**
+   * Ivresse « visuelle » (0 → 1) pour le tangage de la caméra et le titubement dessiné :
+   * fortement réduite avec le réglage « réduire les effets ».
+   */
+  get fxDrunkRatio() {
+    return this.drunkRatio * (this.reduceFx ? 0.3 : 1);
   }
 
   /** Ivresse entre 0 et 1 (pratique pour les calculs). */
@@ -197,7 +221,7 @@ export class Game {
     // Pas d'accélération pendant le tutoriel
     if (!this.inTutorial) this.speed = Math.min(SPEED.max, this.speed + SPEED.accel * dt);
     this.distance += this.speed * dt;
-    this.distancePoints += this.speed * dt * SCORE.perMeter * this.multiplier;
+    this.distancePoints += this.speed * dt * SCORE.perMeter * this.totalMultiplier;
 
     this.updatePendingActions(dt);
     this.updateDrunk(dt);
@@ -260,6 +284,13 @@ export class Game {
     while (this.nextRowAt < this.distance + SPAWN.lookAhead) {
       const row = buildRow(this.random, this.nextRowAt);
       this.obstacles.push(...row);
+      // Vision double : faux obstacles sur une voie libre quand Gérard a bu
+      this.obstacles.push(...addMirages(this.random, row, this.drunk, { reduceFx: this.reduceFx }));
+      // … et parfois un mirage isolé dans l'espace libre juste avant cette rangée
+      if (this.freeGap && this.freeGap.to - this.freeGap.from > 6) {
+        const mid = (this.freeGap.from + this.freeGap.to) / 2;
+        this.obstacles.push(...loneMirage(this.random, mid, this.drunk, row));
+      }
       // Plus on va vite, plus on espace les rangées (pour avoir le temps de réagir)
       const tighten = Math.min(SPAWN.tightenMax, this.distance / SPAWN.tightenEvery);
       const gap = SPAWN.minGap + this.random() * (SPAWN.maxGap - SPAWN.minGap) - tighten;
@@ -267,6 +298,7 @@ export class Game {
       this.nextRowAt += rowLength(row) + gap + this.speed * 0.3;
       // Médailles et bonus dans l'espace libre avant la rangée suivante
       this.items.push(...fillGap(this.random, rowEnd + 3, this.nextRowAt - 4, SPAWN.bonusChance));
+      this.freeGap = { from: rowEnd + 3, to: this.nextRowAt - 4 }; // (pour le mirage isolé suivant)
     }
   }
 
@@ -277,6 +309,17 @@ export class Game {
 
     for (const o of this.obstacles) {
       const ahead = o.at - this.distance; // distance entre Gérard et l'obstacle
+
+      // Mirage (vision double) : on le traverse sans dommage, avec un petit bonus
+      if (o.mirage) {
+        if (!o.done && Math.abs(ahead) < o.depth / 2 + PLAYER.halfDepth && Math.abs(o.x - p.x) < o.width / 2 + PLAYER.halfWidth) {
+          o.done = true;
+          const points = MIRAGE.passPoints * this.totalMultiplier;
+          this.bonusPoints += points;
+          this.emit('mirage-pass', { obstacle: o, points });
+        }
+        continue;
+      }
 
       // La vache se met à traverser quand Gérard approche
       if (o.vx && ahead < 45) {
@@ -344,8 +387,8 @@ export class Game {
     if (this.invincibleTime > 0) {
       o.hit = true;
       o.hitTime = this.time;
-      this.bonusPoints += 20 * this.multiplier;
-      this.emit('smash', { obstacle: o, points: 20 * this.multiplier });
+      this.bonusPoints += 20 * this.totalMultiplier;
+      this.emit('smash', { obstacle: o, points: 20 * this.totalMultiplier });
       return;
     }
     if (this.hurtTime > 0 || this.catchTimer !== null) return; // encore sonné par le choc précédent
@@ -392,37 +435,6 @@ export class Game {
     this.emit('gameover', { phrase });
   }
 
-  /** Peut-on offrir une « Deuxième chance » ? Une seule par partie, jamais pendant le tutoriel. */
-  get canRevive() {
-    return this.status === 'over' && !this.revived && !this.inTutorial;
-  }
-
-  /**
-   * « Deuxième chance » : Gérard s'échappe et la partie continue (même score, même distance).
-   * Les collègues sont repoussés, la rue juste devant est dégagée et Gérard
-   * clignote un moment (aucun choc possible) pour avoir le temps de repartir.
-   * @returns {boolean} vrai si la partie a repris
-   */
-  revive() {
-    if (!this.canRevive) return false;
-    this.revived = true;
-    this.status = 'running';
-    this.gap = CHASE.start;
-    this.catchTimer = null;
-    this.timeScale = 1;
-    this.hurtTime = 2; // clignote : pas de nouveau choc pendant 2 s
-    this.pendingActions = [];
-    const p = this.player;
-    p.y = 0;
-    p.vy = 0;
-    p.grounded = true;
-    p.slideTime = 0;
-    // On retire les obstacles des 30 prochains mètres
-    keepOnly(this.obstacles, (o) => o.at < this.distance - 2 || o.at > this.distance + 30);
-    this.emit('revive');
-    return true;
-  }
-
   // ---------------------------------------------------------
   // IVRESSE ET BONUS
   // ---------------------------------------------------------
@@ -444,6 +456,12 @@ export class Game {
     if (this.invincibleTime > 0) this.invincibleTime = Math.max(0, this.invincibleTime - dt);
     if (this.multiplierTime > 0) this.multiplierTime = Math.max(0, this.multiplierTime - dt);
     // Titubement : Gérard zigzague un peu, d'autant plus qu'il est ivre
+    // Multiplicateur d'ivresse : on prévient quand il change (×1 → ×2 → ×3…)
+    const tier = this.scoreMultiplier;
+    if (tier !== this.multTier) {
+      this.emit('multiplier-change', { from: this.multTier, to: tier });
+      this.multTier = tier;
+    }
     const r = this.drunkRatio;
     this.swayX = Math.sin(this.time * 1.9) * (0.08 + r * 0.3) + Math.sin(this.time * 3.3) * r * 0.07;
   }
@@ -472,7 +490,7 @@ export class Game {
   /** Gérard ramasse un objet. */
   collect(it) {
     it.taken = true;
-    const m = this.multiplier;
+    const m = this.totalMultiplier;
     const before = this.bonusPoints;
     switch (it.kind) {
       case 'coin':
@@ -482,6 +500,7 @@ export class Game {
         this.bonusPoints += SCORE.coffee * m;
         this.addDrunk(DRUNK.coffee);
         this.gap = Math.min(CHASE.max, this.gap + CHASE.coffeeBonus);
+        this.clearMirages(); // un café, et la vue s'éclaircit
         break;
       case 'vin': // beaucoup de points, mais l'ivresse monte
         this.bonusPoints += SCORE.wine * m;
@@ -497,6 +516,14 @@ export class Game {
         break;
     }
     this.emit('pickup', { kind: it.kind, points: Math.round(this.bonusPoints - before) });
+  }
+
+  /** Fait disparaître les mirages encore devant Gérard (le café dessoûle). */
+  clearMirages() {
+    const before = this.obstacles.length;
+    keepOnly(this.obstacles, (o) => !o.mirage || o.at < this.distance - 1);
+    const removed = before - this.obstacles.length;
+    if (removed) this.emit('mirages-cleared', { count: removed });
   }
 
   /** Flaque de pastis : ça glisse, Gérard part sur le côté. */

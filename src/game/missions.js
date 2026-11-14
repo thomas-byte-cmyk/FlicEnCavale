@@ -27,15 +27,18 @@ const BASE_MISSIONS = [
   { id: 'croissant1', stat: 'croissant', target: 1 },
   { id: 'nowine1', stat: 'noWine', target: 300 },
   { id: 'vin1', stat: 'vin', target: 2 },
+  { id: 'mirage1', stat: 'miragePass', target: 5 }, // vision double (v1.1)
   // (« Évite 5 verres de rouge », id dodgevin1, a existé un moment à cette place : un joueur
   //  qui l'a réussie la garde dans sa sauvegarde, elle compte toujours pour son grade)
   { id: 'barrique1', stat: 'passBarrique', target: 6 },
   { id: 'coin2', stat: 'coin', target: 40 },
   { id: 'kepi1', stat: 'kepi', target: 1 },
+  { id: 'triple1', stat: 'reachX3', target: 1 }, // atteindre le multiplicateur ×3 (v1.1)
   { id: 'nohit1', stat: 'noHit', target: 250 },
   { id: 'slip1', stat: 'slip', target: 2 },
   { id: 'vache1', stat: 'passVache', target: 2 },
   { id: 'dist3', stat: 'distance', target: 700 },
+  { id: 'x3dist1', stat: 'distX3', target: 200 }, // courir en ×3 (v1.1)
   { id: 'smash1', stat: 'smash', target: 2 },
   { id: 'cafe2', stat: 'cafe', target: 3 },
   { id: 'agent1', stat: 'passAgent', target: 3 },
@@ -94,7 +97,7 @@ export function gradeFor(count) {
 function newRunStats() {
   return {
     distance: 0, coin: 0, cafe: 0, vin: 0, croissant: 0, kepi: 0, jump: 0, slide: 0, smash: 0,
-    flash: 0, slip: 0, whistle: 0, passManif: 0, passBarrique: 0, passVache: 0, passAgent: 0,
+    flash: 0, slip: 0, whistle: 0, miragePass: 0, reachX3: 0, distX3: 0, lastDistance: 0, passManif: 0, passBarrique: 0, passVache: 0, passAgent: 0,
     noWine: 0, noHit: 0,
     lastHitAt: 0, wineDrunk: false,
   };
@@ -163,8 +166,13 @@ export class Missions {
         st.noHit = Math.max(st.noHit, game.distance - st.lastHitAt);
         st.lastHitAt = game.distance;
       }
+      if (ev.type === 'mirage-pass') st.miragePass++;
+      if (ev.type === 'multiplier-change' && ev.to === 3) st.reachX3++;
       if (ev.type === 'pass' && PASS_STATS[ev.obstacle.type]) st[PASS_STATS[ev.obstacle.type]]++;
     }
+    // Distance parcourue au multiplicateur d'ivresse ×3
+    if (game.scoreMultiplier === 3) st.distX3 += Math.max(0, game.distance - st.lastDistance);
+    st.lastDistance = game.distance;
     st.distance = game.distance;
     st.noWine = st.wineDrunk ? 0 : game.distance;
     st.noHit = Math.max(st.noHit, game.distance - st.lastHitAt);

@@ -15,38 +15,25 @@ import { Renderer } from './render/Renderer.js';
 import { Input } from './input/Input.js';
 import { UI } from './ui/UI.js';
 import { Sound } from './audio/Sound.js';
-import { vibrate } from './platform/haptics.js';
+import { vibrate, setHapticsEnabled } from './platform/haptics.js';
+import { getSetting, setSetting } from './platform/settings.js';
 import { QualityGovernor } from './platform/quality.js';
 import { registerServiceWorker } from './platform/pwa.js';
-import {
-  initPortal,
-  gameLoadingFinished,
-  gameplayStart,
-  gameplayStop,
-  commercialBreak,
-  rewardedBreak,
-  hasAds,
-  registerGame,
-  ALLOW_EXTERNAL_LINKS,
-} from './platform/portal.js';
 import { PauseController } from './game/pause.js';
 import { detectLang, setLang, getLang, t } from './i18n/index.js';
 import { translateDom } from './i18n/dom.js';
 import {
   loadBestScore,
   saveBestScore,
-  loadMuted,
-  saveMuted,
   loadMissions,
   saveMissions,
   loadTutorialDone,
   saveTutorialDone,
   loadLang,
-  saveLang,
 } from './platform/storage.js';
 
 // Langue : celle choisie auparavant, sinon celle du navigateur
-// (navigator.language d'abord : c'est aussi ce que demandent les portails comme Poki)
+// (navigator.language d'abord : la langue principale du navigateur)
 setLang(detectLang(loadLang(), [navigator.language, ...(navigator.languages ?? [])].filter(Boolean)));
 translateDom(document);
 
@@ -56,7 +43,6 @@ const missions = new Missions(loadMissions());
 const renderer = new Renderer(document.getElementById('scene'));
 const sound = new Sound();
 let best = loadBestScore();
-let muted = loadMuted();
 let sirenTimer = 0; // délai avant le prochain "pin-pon"
 let hidden = false; // page en arrière-plan (onglet caché, autre appli…)
 const pause = new PauseController(); // pause pendant la partie (avec 3-2-1 à la reprise)
@@ -66,35 +52,45 @@ let gameOverTimer = null; // délai avant l'écran de fin (annulable)
 const quality = new QualityGovernor(window.devicePixelRatio || 1);
 renderer.renderer.setPixelRatio(quality.ratio);
 
-sound.setMuted(muted);
-
 const ui = new UI({
-  onPlay: () => playWithBreak(),
-  onTutorial: () => playWithBreak({ tutorial: true }),
-  onHome: () => {
-    resetPause();
-    game.reset();
-    renderer.reset();
-    ui.showTitle(best, missions);
-  },
+  onPlay: () => startGame(),
+  onTutorial: () => startGame({ tutorial: true }),
+  onHome: () => goHome(),
   onToggleMute: () => {
-    setMuted(!muted);
+    // Le bouton 🔊 du HUD et le réglage « Son » sont le même réglage
+    setSetting('sound', !getSetting('sound'));
     sound.unlock();
   },
 });
 
-/** Coupe / remet le son (bouton du HUD, et plus tard le portail de jeux). */
-function setMuted(value) {
-  muted = value;
-  saveMuted(muted);
-  ui.setMuted(muted);
-  sound.setMuted(muted);
-}
-ui.setMuted(muted);
-ui.showTitle(best, missions);
+// Son du mirage : le rendu (DESIGN) détecte lui-même le moment où Gérard traverse le mirage
+renderer.onMiragePass = () => sound.play('mirage');
 
-// Bouton « Défier un ami » : c'est un partage vers l'extérieur, interdit sur certains portails
-if (!ALLOW_EXTERNAL_LINKS) document.getElementById('btn-challenge')?.classList.add('hidden');
+// --- Réglages du joueur (panneau Réglages de DESIGN : voir src/platform/settings.js) ---
+/** Applique un réglage au jeu (au démarrage, puis à chaque changement). */
+function applySetting(key, value) {
+  switch (key) {
+    case 'sound':
+      ui.setMuted(!value);
+      sound.setMuted(!value);
+      break;
+    case 'haptics':
+      setHapticsEnabled(value);
+      break;
+    case 'reduceFx':
+      game.reduceFx = value; // caméra qui tangue moins, mirages décalés (voir Game.fxDrunkRatio)
+      break;
+    case 'lang':
+      setLang(value);
+      translateDom(document);
+      missions.relabel();
+      if (!document.getElementById('title-screen')?.classList.contains('hidden')) ui.showTitle(best, missions);
+      break;
+  }
+}
+for (const key of ['sound', 'haptics', 'reduceFx']) applySetting(key, getSetting(key));
+window.addEventListener('settings-change', (e) => applySetting(e.detail.key, e.detail.value));
+ui.showTitle(best, missions);
 
 // Bouton pause du HUD
 const pauseButton = document.getElementById('btn-pause');
@@ -105,16 +101,20 @@ pauseButton?.addEventListener('click', () => pauseGame('user'));
 const langButton = document.getElementById('btn-lang');
 langButton?.classList.remove('hidden');
 langButton?.addEventListener('pointerdown', (e) => e.stopPropagation()); // pas de swipe
-langButton?.addEventListener('click', () => {
-  setLang(getLang() === 'fr' ? 'en' : 'fr');
-  saveLang(getLang());
-  translateDom(document);
-  missions.relabel();
-  ui.showTitle(best, missions);
-});
+langButton?.addEventListener('click', () => setSetting('lang', getLang() === 'fr' ? 'en' : 'fr'));
+
+// Boutons de l'écran de pause (ajoutés par DESIGN) : « Recommencer » et « Écran titre »
+for (const [id, action] of [
+  ['btn-pause-restart', () => restartRun()],
+  ['btn-pause-home', () => goHome()],
+]) {
+  const button = document.getElementById(id);
+  button?.addEventListener('pointerdown', (e) => e.stopPropagation()); // pas de swipe
+  button?.addEventListener('click', action);
+}
 
 // En mode développement uniquement : accès au jeu depuis la console du navigateur (pour tester)
-if (import.meta.env.DEV) Object.assign(window, { __game: game, __missions: missions });
+if (import.meta.env.DEV) Object.assign(window, { __game: game, __missions: missions, __restartRun: restartRun, __goHome: goHome });
 
 const input = new Input(document.getElementById('app'), (action) => {
   if (action === 'pause') {
@@ -129,7 +129,7 @@ const input = new Input(document.getElementById('app'), (action) => {
 // --- Pause ---
 
 /**
- * Met la partie en pause (onglet caché, touche Échap/P, et plus tard publicité).
+ * Met la partie en pause (onglet caché, bouton ⏸️, touche Échap/P).
  * L'écran de pause (session DESIGN) gère le bouton « Reprendre » et le 3-2-1,
  * puis appelle resumeGame(). Si on repasse en pause pendant le 3-2-1,
  * l'écran de pause réapparaît (le décompte est annulé).
@@ -138,7 +138,6 @@ function pauseGame(reason) {
   if (game.status !== 'running') return false;
   pause.pause(reason);
   sound.suspend(true);
-  gameplayStop();
   ui.showPause(() => resumeGame(), {
     // Un « bip » à chaque chiffre du décompte (le son revient pour l'occasion)
     onTick: () => {
@@ -168,41 +167,26 @@ function handlePauseEvents(events) {
     if (ev.type === 'resumed') {
       ui.popup(t('countdownGo'), 'good');
       sound.play('start');
-      gameplayStart();
     }
   }
 }
 
-/** Le joueur peut-il agir (gestes, clavier) ? Utilisé par le portail de jeux. */
-function setControlsEnabled(on) {
-  input.enabled = on && game.status === 'running';
+/** Nouvelle partie tout de suite (bouton « Recommencer » de l'écran de pause). */
+function restartRun() {
+  sound.suspend(hidden);
+  startGame({ tutorial: false });
 }
 
-// Commandes accessibles au futur SDK du portail (Poki…)
-registerGame({ pause: () => pauseGame('portal'), resume: resumeGame, setMuted, setControlsEnabled });
-
-/**
- * Lance une partie, avec une pause publicitaire possible avant
- * (sauf pour la toute première partie). Aujourd'hui, la pub ne fait rien.
- */
-let gamesStarted = 0;
-let starting = false;
-async function playWithBreak(options) {
-  if (starting) return; // double-clic sur « Rejouer »
-  starting = true;
-  try {
-    if (gamesStarted > 0) {
-      // Pendant la pub : son coupé, contrôles bloqués (le jeu est déjà à l'arrêt entre deux parties)
-      input.enabled = false;
-      sound.suspend(true);
-      await commercialBreak();
-    }
-  } finally {
-    sound.suspend(hidden); // le son revient, même si la pub a échoué
-    starting = false;
-  }
-  gamesStarted++;
-  startGame(options);
+/** Abandonne la partie en cours et revient à l'écran titre. */
+function goHome() {
+  clearTimeout(gameOverTimer);
+  resetPause();
+  input.enabled = false;
+  sound.stopMusic();
+  sound.suspend(hidden);
+  game.reset();
+  renderer.reset();
+  ui.showTitle(best, missions);
 }
 
 /** Lance une partie. Le tutoriel se joue automatiquement à la toute première partie. */
@@ -219,7 +203,6 @@ function startGame({ tutorial = !loadTutorialDone() } = {}) {
   sound.play('start');
   sound.startMusic();
   sirenTimer = 2;
-  gameplayStart();
   if (!tutorial) ui.popup(t('goGerard'), 'good');
 }
 
@@ -257,6 +240,9 @@ function handleEvents(events) {
       case 'smash':
         ui.floatText(`+${ev.points}`, playerScreenX());
         vibrate(30);
+        break;
+      case 'mirage-pass': // Gérard traverse un obstacle imaginaire (le son est joué par le rendu, voir plus bas)
+        ui.floatText(`+${ev.points}`, playerScreenX(), '#c4b5fd');
         break;
       case 'flash':
         sound.play('flash');
@@ -308,7 +294,6 @@ function handleMissions(events) {
 
 function endGame(ev) {
   input.enabled = false;
-  gameplayStop();
   sound.stopMusic();
   sound.play('gameover');
   const score = game.score;
@@ -321,58 +306,11 @@ function endGame(ev) {
   const distance = game.distance;
   gameOverTimer = setTimeout(() => {
     ui.showGameOver({ score, distance, best, newBest, phrase: ev.phrase ?? '', missions });
-    showReviveOffer();
   }, 1200);
 }
 
-// --- « Deuxième chance » (pub récompensée, version Poki uniquement) ---
-const reviveButton = document.getElementById('btn-revive');
-reviveButton?.addEventListener('pointerdown', (e) => e.stopPropagation()); // pas de swipe
-
-/** Affiche le bouton seulement si une pub est possible et que la chance n'a pas servi. */
-function showReviveOffer() {
-  if (!reviveButton) return;
-  reviveButton.disabled = false;
-  reviveButton.textContent = t('revive');
-  reviveButton.classList.toggle('hidden', !(hasAds() && game.canRevive));
-}
-
-let reviving = false;
-reviveButton?.addEventListener('click', async () => {
-  if (reviving || !game.canRevive) return;
-  reviving = true;
-  reviveButton.disabled = true;
-  reviveButton.textContent = t('reviveWaiting');
-  sound.suspend(true); // son coupé pendant la pub
-  let watched = false;
-  try {
-    watched = await rewardedBreak();
-  } finally {
-    sound.suspend(hidden);
-    reviving = false;
-  }
-  if (!watched || !game.revive()) {
-    // Pas de pub (ou pub interrompue) : pas de pénalité, l'écran de fin reste là
-    reviveButton.textContent = t('reviveFailed');
-    return;
-  }
-  reviveButton.classList.add('hidden');
-  input.enabled = true;
-  ui.showGame(best);
-  ui.popup(t('revived'), 'good');
-  sound.play('start');
-  sound.startMusic();
-  sirenTimer = 2;
-  gameplayStart();
-});
-
-
 // --- Jeu installable et jouable hors ligne (version publiée seulement) ---
 window.addEventListener('load', () => registerServiceWorker());
-
-// --- Kit Poki : démarré tout de suite, sans jamais bloquer le jeu ---
-// (absent sur GitHub Pages ou avec un bloqueur de pub : le jeu marche pareil, sans pub)
-initPortal(window);
 
 // --- Boucle principale ---
 let last = performance.now();
@@ -424,8 +362,6 @@ function frame(now) {
   renderer.render(game, dt);
 }
 requestAnimationFrame(frame);
-// Écran titre affiché et première image dessinée : on prévient Poki que le jeu est chargé
-requestAnimationFrame(() => requestAnimationFrame(() => gameLoadingFinished()));
 
 // --- Redimensionnement et rotation de l'écran ---
 // Sur téléphone, la taille de l'écran n'est pas toujours à jour au moment de

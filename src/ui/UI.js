@@ -4,6 +4,8 @@
 // =========================================================
 
 import { t } from '../i18n/index.js';
+import { SettingsPanel } from './Settings.js';
+import { getSetting } from '../platform/settings.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -47,7 +49,12 @@ export class UI {
       pauseCard: document.querySelector('#pause-screen .card'),
       pauseCount: $('pause-count'),
       resume: $('btn-resume'),
+      drunkFx: $('drunk-fx'),
     };
+    this.settings = new SettingsPanel();
+    this.lastMult = 1;
+    this.reduceFx = getSetting('reduceFx');
+    window.addEventListener('settings-change', () => (this.reduceFx = getSetting('reduceFx')));
     this.lastRun = { score: 0, distance: 0 };
     this.pauseTimer = null;
     this.onResume = null;
@@ -65,7 +72,7 @@ export class UI {
     this.el.challenge.addEventListener('click', () => this.challengeFriend());
     this.el.resume.addEventListener('click', () => this.startCountdown());
     // Les boutons par-dessus le jeu ne doivent pas déclencher de swipe
-    for (const b of [this.el.resume, this.el.challenge]) b.addEventListener('pointerdown', (e) => e.stopPropagation());
+    for (const b of [this.el.resume, this.el.challenge, $('btn-pause-restart'), $('btn-pause-home')]) b?.addEventListener('pointerdown', (e) => e.stopPropagation());
     // Le bouton son ne doit pas déclencher de swipe
     this.el.mute.addEventListener('pointerdown', (e) => e.stopPropagation());
   }
@@ -94,6 +101,8 @@ export class UI {
     this.el.best.textContent = best;
     this.lastScore = 0;
     this.lastHurt = 0;
+    this.lastMult = 1;
+    this.el.mult.classList.add('hidden');
     this.clearMessages();
     this.setDanger(0);
   }
@@ -140,9 +149,19 @@ export class UI {
     // Le score « saute » quand on ramasse quelque chose
     if (game.score >= this.lastScore + 10) this.retrigger(this.el.plate, 'bump');
     this.lastScore = game.score;
-    const mult = game.multiplier ?? 1;
-    this.el.mult.classList.toggle('hidden', mult <= 1);
-    this.el.mult.textContent = `×${mult}`;
+    // Multiplicateur total (ivresse × képi doré) : de ×1 à ×6. Rien d'affiché à ×1 (sobre).
+    const mult = game.totalMultiplier ?? game.multiplier ?? 1;
+    if (mult !== this.lastMult) {
+      this.el.mult.classList.toggle('hidden', mult <= 1);
+      this.el.mult.textContent = `×${mult}`;
+      this.el.mult.dataset.level = String(Math.min(mult, 6));
+      // Petite fête à chaque palier gagné
+      if (mult > this.lastMult) this.retrigger(this.el.mult, 'levelup');
+      this.lastMult = mult;
+    }
+    // Ambiance « vision double » : voile violet léger quand l'ivresse dépasse 60 %
+    const dr = (game.drunk ?? 0) / 100;
+    this.el.drunkFx.style.opacity = this.reduceFx ? '0' : String(Math.max(0, Math.min(1, (dr - 0.6) / 0.35)));
 
     // Petites étiquettes des bonus actifs avec le temps restant
     const chips = [];

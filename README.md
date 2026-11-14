@@ -34,6 +34,14 @@ Le jeu est publié automatiquement sur GitHub Pages à chaque mise à jour de la
 - **Ivresse** (jauge 🍷) : plus elle est haute, plus Gérard titube, plus la caméra tangue
   et plus ses réactions sont lentes et imprécises.
 
+- **Vision double** (v1.1) : au-dessus de 30 % d'ivresse, Gérard voit des **mirages** : de faux
+  obstacles posés sur une voie libre, qu'on traverse sans dommage (et avec un petit bonus).
+  Les vrais obstacles restent dangereux, et il reste toujours une voie libre visible.
+  Un café dissipe les mirages. En échange, l'ivresse **multiplie les points** : ×1 sous 30 %,
+  ×2 de 30 à 70 %, ×3 au-dessus (et encore ×2 avec le képi doré). Réglages : `MIRAGE` et
+  `DRUNK_MULTIPLIER` dans `src/config.js`.
+- **Réglages** : son, vibrations, « réduire les effets » (caméra qui tangue moins, mirages
+  décalés) et langue (`src/platform/settings.js`). Crédits et licences : `public/CREDITS.txt`.
 - **Missions** : 3 défis à la fois (« Bois 2 cafés », « Contourne 3 manifs »…) à réussir en une partie.
   Chaque mission réussie fait monter Gérard en grade, de Gendarme stagiaire jusqu'à Général.
   La liste des missions est dans `src/game/missions.js` (leurs textes dans `src/i18n/`).
@@ -69,7 +77,7 @@ src/
   input/         → les CONTRÔLES (swipe et clavier)
   audio/         → les SONS générés en code
   ui/            → l'INTERFACE (écrans, score, bulles)
-  platform/      → ce qui dépend du navigateur (sauvegarde, qualité d'image, futur portail Poki)
+  platform/      → ce qui dépend du navigateur (sauvegarde, réglages, qualité d'image, hors-ligne)
   i18n/          → les TEXTES dans chaque langue (fr.js, en.js)
 tests/           → les tests automatiques de la logique (npm test)
 ```
@@ -101,17 +109,6 @@ permettra plus tard de réutiliser le jeu dans une application mobile.
 - `npm run zip:web` fabrique `FlicEnCavale-web.zip` (la version normale, `index.html` à la racine).
 - Sans rien installer : onglet **Actions** → **Zip web (itch.io, Newgrounds)** → **Run workflow**.
 - Guide pas à pas : [docs/PUBLIER-ITCH-NEWGROUNDS.md](docs/PUBLIER-ITCH-NEWGROUNDS.md).
-
-### Version Poki (archivée)
-
-> Le projet ne vise plus Poki : leurs règles interdisent l'alcool, qui est au cœur du jeu.
-> Le code reste en place (il ne change rien à la version GitHub) au cas où.
-
-- `npm run build:poki` fabrique la version pour le portail de jeux Poki dans `dist-poki/`
-  (avec le kit Poki pour les publicités, sans le bouton « Défier un ami »).
-- `npm run zip:poki` fabrique en plus le fichier `FlicEnCavale-poki.zip` à envoyer à Poki.
-- Sans rien installer : onglet **Actions** → **Version Poki** → **Run workflow** (il ne se lance plus tout seul).
-- Guide complet pour envoyer le jeu : [docs/poki/SOUMISSION.md](docs/poki/SOUMISSION.md).
 
 `npm test` lance les tests automatiques de la logique du jeu (dossier `tests/`, avec
 [Vitest](https://vitest.dev)). Ils vérifient par exemple que chaque rangée d'obstacles

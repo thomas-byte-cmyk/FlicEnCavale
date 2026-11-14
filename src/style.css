@@ -1191,3 +1191,229 @@ summary:focus-visible {
   line-height: 1.2;
   color: var(--gris);
 }
+
+/* =========================================================
+   v1.1 « Vision double » + réglages (session DESIGN)
+   ========================================================= */
+
+/* --- Multiplicateur de score (×2 à ×6) : plus gros et plus chaud à chaque palier --- */
+.hud-mult {
+  font-size: 20px;
+  padding: 1px 8px 2px;
+  right: -22px;
+  top: -12px;
+}
+.hud-mult[data-level='3'],
+.hud-mult[data-level='4'] {
+  background: #ff8c42;
+  font-size: 23px;
+}
+.hud-mult[data-level='5'],
+.hud-mult[data-level='6'] {
+  background: #b5179e;
+  color: #fff;
+  font-size: 26px;
+  -webkit-text-stroke: 1px var(--encre);
+  paint-order: stroke fill;
+}
+.hud-mult.levelup {
+  animation: levelup 0.6s cubic-bezier(0.3, 1.8, 0.5, 1) both, pulse 0.5s 0.6s ease-in-out infinite alternate;
+}
+@keyframes levelup {
+  0% { transform: scale(0.4) rotate(-20deg); }
+  50% { transform: scale(1.7) rotate(20deg); }
+  100% { transform: scale(1) rotate(12deg); }
+}
+
+/* --- Ambiance très ivre : voile violet et coins légèrement décalés rouge/cyan --- */
+.drunk-fx {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s;
+  background:
+    radial-gradient(ellipse at 30% 50%, transparent 62%, rgba(230, 57, 70, 0.16) 100%),
+    radial-gradient(ellipse at 70% 50%, transparent 62%, rgba(0, 200, 220, 0.16) 100%),
+    radial-gradient(ellipse at center, transparent 55%, rgba(110, 40, 160, 0.3) 100%);
+  animation: drunksway 4s ease-in-out infinite alternate;
+}
+@keyframes drunksway {
+  from { transform: translateX(-6px) scale(1.02); }
+  to { transform: translateX(6px) scale(1.02); }
+}
+
+/* --- Bouton ⚙️ (coin haut gauche de l'écran titre) --- */
+.gear-btn {
+  position: absolute;
+  top: max(12px, env(safe-area-inset-top));
+  left: max(12px, env(safe-area-inset-left));
+  z-index: 2;
+  width: 48px;
+  height: 44px;
+  border: 2px solid var(--encre);
+  border-radius: 12px;
+  background: var(--creme);
+  font-size: 22px;
+  cursor: pointer;
+  box-shadow: 0 3px 0 var(--encre);
+  touch-action: manipulation;
+}
+.gear-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--encre);
+}
+@media (max-aspect-ratio: 1/1) {
+  .screen-title .title-top {
+    padding-top: 44px;
+  }
+}
+
+/* --- Écran de pause : boutons supplémentaires --- */
+.pause-card .btn-secondary {
+  margin-top: 10px;
+}
+.btn-link {
+  display: block;
+  margin: 10px auto 0;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: none;
+  background: none;
+  color: var(--bleu);
+  font-weight: 800;
+  font-size: 16px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+/* --- Panneaux Réglages et Crédits --- */
+#settings-screen,
+#credits-screen {
+  z-index: 5;
+  background: rgba(27, 27, 47, 0.6);
+}
+.settings-card,
+.credits-card {
+  max-width: 380px;
+  text-align: left;
+}
+.panel-title {
+  font-family: var(--police-titre);
+  font-size: 30px;
+  color: var(--bleu);
+  text-align: center;
+  margin-bottom: 8px;
+}
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 52px;
+  padding: 4px 2px;
+  border-bottom: 2px dashed rgba(27, 27, 47, 0.15);
+  font-size: 17px;
+  font-weight: 800;
+}
+.setting-hint {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gris);
+}
+/* Interrupteur on/off (grand, facile à toucher) */
+.switch {
+  flex: none;
+  position: relative;
+  width: 60px;
+  height: 34px;
+  border: 2px solid var(--encre);
+  border-radius: 999px;
+  background: #d6d6de;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.switch i {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--encre);
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.15s;
+}
+.switch[aria-checked='true'] {
+  background: var(--vert);
+}
+.switch[aria-checked='true'] i {
+  transform: translateX(26px);
+}
+/* Choix FR / EN */
+.seg {
+  flex: none;
+  display: flex;
+  border: 2px solid var(--encre);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.seg-btn {
+  min-width: 52px;
+  min-height: 40px;
+  border: none;
+  background: #fff;
+  font-family: var(--police-titre);
+  font-size: 17px;
+  color: var(--encre);
+  cursor: pointer;
+}
+.seg-btn + .seg-btn {
+  border-left: 2px solid var(--encre);
+}
+.seg-btn[aria-pressed='true'] {
+  background: var(--bleu);
+  color: #fff;
+}
+.settings-card .btn-secondary,
+.credits-card .btn-secondary {
+  margin-top: 12px;
+}
+.settings-card .btn-primary,
+.credits-card .btn-primary {
+  margin-top: 14px;
+  font-size: 20px;
+}
+.credits-game {
+  margin: 0 0 6px;
+  text-align: center;
+  font-family: var(--police-titre);
+  font-size: 24px;
+  color: var(--rouge);
+}
+.credits-list {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 15px;
+  line-height: 1.45;
+}
+.credits-list li {
+  margin-bottom: 6px;
+}
+.credits-file {
+  margin: 10px 0 0;
+  font-size: 15px;
+  text-align: center;
+}
+.credits-file a {
+  color: var(--bleu);
+  font-weight: 800;
+}
+@media (prefers-reduced-motion: reduce) {
+  .drunk-fx,
+  .hud-mult.levelup {
+    animation: none !important;
+  }
+}

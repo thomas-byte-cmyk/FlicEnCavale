@@ -51,6 +51,7 @@ export function makeObstacle(type, lane, at, extra = {}) {
     at, // position le long de la rue (en mètres depuis le départ)
     ...t,
     hit: false, // déjà percuté ?
+    mirage: false, // faux obstacle (vision double) : on le traverse sans dommage
     done: false, // effet déjà déclenché (pastis, radar, sifflet) ?
     ...extra,
   };

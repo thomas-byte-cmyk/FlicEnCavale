@@ -2,12 +2,14 @@ import { describe, it, expect } from 'vitest';
 import { Missions, missionAt, gradeFor, GRADES } from '../src/game/missions.js';
 
 /** Faux jeu minimal : les missions ne lisent que la distance. */
-const fakeGame = (distance = 0) => ({ distance });
+const fakeGame = (distance = 0, scoreMultiplier = 1) => ({ distance, scoreMultiplier });
+/** Nombre de missions de la liste de base (la liste recommence ensuite, plus dure). */
+const BASE_COUNT = Array.from({ length: 100 }, (_, i) => missionAt(i).id).indexOf('dist1-1');
 
 describe('missions', () => {
   it('missionAt : les missions ne finissent jamais et deviennent plus dures', () => {
     const first = missionAt(0);
-    const again = missionAt(27); // même mission, deuxième tour
+    const again = missionAt(BASE_COUNT); // même mission, deuxième tour
     expect(again.id).toBe(`${first.id}-1`);
     expect(again.target).toBeGreaterThan(first.target);
     expect(missionAt(500).text).not.toContain('{n}');
@@ -65,7 +67,7 @@ describe('missions', () => {
   });
 
   it('mission « Bois 2 verres de rouge » (vin1), revenue à sa place', () => {
-    const ids = Array.from({ length: 27 }, (_, i) => missionAt(i).id);
+    const ids = Array.from({ length: BASE_COUNT }, (_, i) => missionAt(i).id);
     expect(ids).not.toContain('dodgevin1');
     expect(ids.indexOf('vin1')).toBe(10); // même place qu'à l'origine (après nowine1)
     const before = ids.slice(0, ids.indexOf('vin1'));
@@ -88,7 +90,7 @@ describe('missions', () => {
   });
 
   it('mission : se faire siffler par les agents', () => {
-    const ids = Array.from({ length: 27 }, (_, i) => missionAt(i).id);
+    const ids = Array.from({ length: BASE_COUNT }, (_, i) => missionAt(i).id);
     expect(ids).toContain('whistle1');
     const before = ids.slice(0, ids.indexOf('whistle1'));
     const m = new Missions(before); // whistle1 est la prochaine mission
@@ -97,6 +99,37 @@ describe('missions', () => {
     const whistle = { type: 'whistle' };
     expect(m.update(fakeGame(0), [whistle, whistle]).done).toHaveLength(0);
     expect(m.update(fakeGame(0), [whistle]).done.map((d) => d.id)).toEqual(['whistle1']);
+  });
+
+  /** Missions actives = celle demandée en premier (toutes les précédentes déjà réussies). */
+  function missionsStartingWith(id) {
+    const ids = Array.from({ length: BASE_COUNT }, (_, i) => missionAt(i).id);
+    const m = new Missions(ids.slice(0, ids.indexOf(id)));
+    m.startRun();
+    expect(m.active[0].id).toBe(id);
+    return m;
+  }
+
+  it('vision double : « Traverse 5 mirages »', () => {
+    const m = missionsStartingWith('mirage1');
+    const pass = { type: 'mirage-pass' };
+    expect(m.update(fakeGame(0), [pass, pass, pass, pass]).done).toHaveLength(0);
+    expect(m.update(fakeGame(0), [pass]).done.map((d) => d.id)).toEqual(['mirage1']);
+  });
+
+  it('vision double : « Atteins le multiplicateur ×3 »', () => {
+    const m = missionsStartingWith('triple1');
+    expect(m.update(fakeGame(0), [{ type: 'multiplier-change', from: 1, to: 2 }]).done).toHaveLength(0);
+    expect(m.update(fakeGame(0), [{ type: 'multiplier-change', from: 2, to: 3 }]).done.map((d) => d.id)).toEqual(['triple1']);
+  });
+
+  it('vision double : « Cours 200 m en ×3 » (seuls les mètres en ×3 comptent)', () => {
+    const m = missionsStartingWith('x3dist1');
+    m.update(fakeGame(0, 1), []);
+    m.update(fakeGame(500, 2), []); // 500 m en ×2 : ne comptent pas
+    m.update(fakeGame(650, 3), []); // +150 m en ×3
+    expect(m.stats.distX3).toBe(150);
+    expect(m.update(fakeGame(700, 3), []).done.map((d) => d.id)).toEqual(['x3dist1']);
   });
 
   it('une ancienne sauvegarde avec « vin1 » garde son grade', () => {
