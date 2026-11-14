@@ -56,6 +56,9 @@ Pour régler la difficulté : tout est dans `src/config.js`.
 - [Three.js](https://threejs.org) pour la 3D (formes simples, aucune image ni modèle externe)
 - [Vite](https://vite.dev) pour lancer le jeu en local et préparer la version en ligne
 - Sons fabriqués en code (Web Audio), aucun fichier audio
+- Installable sur l'écran d'accueil et jouable hors ligne (service worker écrit à la main :
+  `scripts/sw-template.js`, enregistré par `src/platform/pwa.js`). Une nouvelle version publiée
+  est prise en compte au lancement suivant.
 
 ```
 src/
@@ -93,7 +96,13 @@ permettra plus tard de réutiliser le jeu dans une application mobile.
 
 `npm run build` fabrique la version finale dans le dossier `dist/`.
 
-### Version Poki (en sommeil)
+### Publier sur itch.io, Newgrounds, Game Jolt
+
+- `npm run zip:web` fabrique `FlicEnCavale-web.zip` (la version normale, `index.html` à la racine).
+- Sans rien installer : onglet **Actions** → **Zip web (itch.io, Newgrounds)** → **Run workflow**.
+- Guide pas à pas : [docs/PUBLIER-ITCH-NEWGROUNDS.md](docs/PUBLIER-ITCH-NEWGROUNDS.md).
+
+### Version Poki (archivée)
 
 > Le projet ne vise plus Poki : leurs règles interdisent l'alcool, qui est au cœur du jeu.
 > Le code reste en place (il ne change rien à la version GitHub) au cas où.

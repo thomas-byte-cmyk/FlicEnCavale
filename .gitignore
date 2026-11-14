@@ -17,3 +17,6 @@ coverage/
 # Version Poki (se régénère avec "npm run zip:poki")
 dist-poki/
 FlicEnCavale-poki.zip
+
+# Zip pour itch.io / Newgrounds / Game Jolt (se régénère avec "npm run zip:web")
+FlicEnCavale-web.zip
