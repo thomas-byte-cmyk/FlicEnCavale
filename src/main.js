@@ -248,7 +248,7 @@ function handleEvents(events) {
         // Tout premier fantôme : petite explication (une seule fois par joueur) pendant un ralenti
         saveFlag('seenMirageTip', true);
         const text = t('mirageTip');
-        if (typeof ui.showMirageTip === 'function') ui.showMirageTip(text);
+        if (typeof ui.showMirageTip === 'function') ui.showMirageTip(text, 2500);
         else ui.popup(text, 'good');
         break;
       }
