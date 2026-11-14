@@ -3,7 +3,7 @@ FlicEnCavale — Crédits et licences / Credits and licenses
 
 LE JEU / THE GAME
 -----------------
-FlicEnCavale (version 1.2.0)
+FlicEnCavale (version 1.3.0)
 © FlicEnCavale team. Tous droits réservés / All rights reserved.
 Graphismes en formes simples et sons fabriqués en code : aucune image,
 aucun modèle 3D et aucun fichier audio provenant de tiers.

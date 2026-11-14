@@ -89,6 +89,14 @@ export default {
     pauseRestart: '↻ Recommencer',
     multiplierLabel: 'Multiplicateur de score',
     miragePop: 'Mirage !', // s'envole au-dessus de Gérard quand il traverse un fantôme
+    // v1.3 : indices de geste, défi d'un ami
+    hint_jump: 'Glisse vers le haut',
+    hint_slide: 'Glisse vers le bas',
+    hint_left: 'Glisse à gauche',
+    hint_right: 'Glisse à droite',
+    hint_lane: 'Change de voie !',
+    challengeFlag: '🎯 À battre : {score}',
+    challengeBeatenFlag: '🏆 Battu !',
   },
 
   // --- Tutoriel (dans l'ordre des 5 étapes) ---
@@ -99,6 +107,13 @@ export default {
     'Glisse DEUX FOIS à GAUCHE !',
     'Attrape le café : il te dessoûle et sème les collègues',
   ],
+
+  // --- Indices pendant la première vraie partie (une fois par sorte d'obstacle) ---
+  hints: {
+    jump: 'Glisse vers le HAUT pour sauter',
+    slide: 'Glisse vers le BAS pour passer dessous',
+    dodge: 'Glisse à GAUCHE ou à DROITE pour l’éviter',
+  },
 
   // --- Grades de la gendarmerie (du plus bas au plus haut, 13 grades) ---
   grades: [
@@ -258,13 +273,16 @@ export default {
         'Manif en vue : on contourne !',
       ],
     },
-    /** Messages tous les 500 m. {d} = la distance. */
-    milestones: [
-      '{d} m ! Le major cherche son inhalateur.',
-      '{d} m ! Gérard bat le record du semi-marathon de la brigade.',
-      '{d} m ! Toujours en cavale !',
-      '{d} m ! On aperçoit le village voisin.',
-    ],
+    /** Entrée dans une nouvelle zone de décor (tous les 500 m). {d} = la distance. */
+    zones: {
+      village: ['{d} m ! Retour au village : la fanfare n’a toujours pas fini.', '{d} m ! Le clocher, encore. Gérard tourne en rond ?'],
+      marche: ['{d} m ! Jour de marché : attention aux étals de fromages !', '{d} m ! Le marché : « Elle est fraîche, ma cavale ! »'],
+      campagne: ['{d} m ! La campagne : vaches, tracteurs et pas un seul témoin.', '{d} m ! Plein champ : même les vaches se retournent.'],
+      port: ['{d} m ! Le port : ça sent l’iode… et le pastis.', '{d} m ! Le port : Gérard hésite à s’enfuir en pédalo.'],
+      nuit: ['{d} m ! Il fait nuit, et la fête continue.', '{d} m ! La nuit tombe : les collègues ont sorti les lampes de poche.'],
+    },
+    /** Le score d'un ami (lien de défi) vient d'être battu. */
+    challengeBeaten: ['Défi relevé ! Le collègue peut ranger son record.', 'Record du collègue battu ! Envoie-lui le procès-verbal.'],
     /** Radar. {kmh} = vitesse en km/h, {mph} = en miles/h. */
     flash: 'Flashé à {kmh} km/h… à pied !',
   },

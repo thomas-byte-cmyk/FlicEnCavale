@@ -5,11 +5,12 @@
 // que le rendu, l'interface et le son écoutent.
 // =========================================================
 
-import { LANES, PLAYER, SPEED, SCORE, SPAWN, CHASE, DRUNK, BONUS, MIRAGE, DRUNK_MULTIPLIER } from '../config.js';
-import { fillGap } from './items.js';
+import { LANES, PLAYER, SPEED, SCORE, SPAWN, CHASE, DRUNK, BONUS, MIRAGE, DRUNK_MULTIPLIER, ZONES, NARRATION, HINTS } from '../config.js';
+import { fillGap, makeItem } from './items.js';
 import { buildRow, rowLength } from './obstacles.js';
 import { addMirages, ghostX } from './mirages.js';
 import { GAME_OVER_PHRASES } from './texts.js';
+import { pack } from '../i18n/index.js';
 import { buildTutorial, TUTORIAL_END } from './tutorial.js';
 
 /**
@@ -34,6 +35,10 @@ export class Game {
     this.reduceFx = false;
     // Le joueur a-t-il déjà eu l'explication des fantômes ? (sauvegardé par main.js)
     this.mirageTipSeen = false;
+    // Indices déjà montrés à ce joueur ('jump', 'slide', 'dodge' ; sauvegardé par main.js)
+    this.hintsSeen = new Set();
+    // Défi d'un ami (?defi=1234) : score à battre, ou null (réglé par main.js)
+    this.challengeScore = null;
     this.reset();
   }
 
@@ -74,6 +79,12 @@ export class Game {
     this.timeScale = 1; // 1 = vitesse normale, moins = ralenti
     this.lastChantAt = null; // dernier cortège de manifestants qui a scandé
     this.tipSlowmo = 0; // temps restant (réel) du ralenti de l'explication des fantômes
+    this.zone = 0; // zone de décor : 0, 1, 2… (une tous les ZONES.length mètres)
+    this.wineGiven = false; // verre de rouge garanti déjà placé ?
+    this.withTutorial = false; // partie d'entraînement ?
+    this.activeHint = null; // indice affiché en ce moment { kind, at }
+    this.challengeBeaten = false; // score de l'ami déjà battu pendant cette partie ?
+    this.pointsBurst = { total: 0, idle: 0, age: 0 }; // « +points » regroupés
     this.multTier = 1; // dernier multiplicateur d'ivresse annoncé (pour l'événement 'multiplier-change')
   }
 
@@ -116,6 +127,7 @@ export class Game {
   start({ tutorial = false } = {}) {
     this.reset();
     this.status = 'running';
+    this.withTutorial = tutorial;
     if (tutorial) {
       this.tutorial = buildTutorial();
       for (const step of this.tutorial) {
@@ -124,6 +136,11 @@ export class Game {
       }
       this.nextRowAt = TUTORIAL_END + 20; // les vrais obstacles arrivent après
     }
+  }
+
+  /** Nom de la zone de décor actuelle ('village', 'marche', 'campagne', 'port', 'nuit'). */
+  get zoneName() {
+    return ZONES.cycle[this.zone % ZONES.cycle.length];
   }
 
   /** Vrai pendant le parcours d'entraînement. */
@@ -215,6 +232,7 @@ export class Game {
       const h = dt / steps;
       for (let i = 0; i < steps && this.status === 'running'; i++) this.step(h);
     }
+    this.flushPoints(dt);
     // On rend les événements accumulés (y compris ceux des actions du joueur) et on repart à zéro
     const events = this.events;
     this.events = [];
@@ -238,6 +256,68 @@ export class Game {
     this.updateItems();
     this.updateChase(dt);
     this.updateTutorial();
+    this.updateZone();
+    this.updateHints();
+    // Défi d'un ami : on prévient au moment où son score est dépassé
+    if (this.challengeScore !== null && !this.challengeBeaten && this.score > this.challengeScore) {
+      this.challengeBeaten = true;
+      this.emit('challenge-beaten', { score: this.challengeScore });
+    }
+  }
+
+  /** Zone de décor : change tous les ZONES.length mètres (événement 'zone-change'). */
+  updateZone() {
+    const zone = Math.floor(this.distance / ZONES.length);
+    if (zone !== this.zone) {
+      this.zone = zone;
+      this.emit('zone-change', { zone, name: this.zoneName });
+    }
+  }
+
+  /**
+   * Indices de la première vraie partie : le premier obstacle de chaque sorte
+   * (à sauter, à glisser, à contourner) affiche une consigne, une seule fois par joueur.
+   */
+  updateHints() {
+    if (this.inTutorial) return;
+    if (this.activeHint) {
+      if (this.distance > this.activeHint.at + 1.5) {
+        this.activeHint = null;
+        this.emit('hint-clear');
+      }
+      return;
+    }
+    for (const o of this.obstacles) {
+      if (o.mirage || o.hit) continue;
+      const ahead = o.at - this.distance;
+      if (ahead <= 0 || ahead > HINTS.distance) continue;
+      const kind = o.avoid;
+      if (!HINTS.kinds[kind] || this.hintsSeen.has(kind)) continue;
+      this.hintsSeen.add(kind);
+      this.activeHint = { kind, at: o.at };
+      const { icon, dir } = HINTS.kinds[kind];
+      this.emit('hint', { kind, icon, dir, text: pack().hints?.[kind] ?? '' });
+      return;
+    }
+  }
+
+  /** Ajoute des points à afficher : les gains rapprochés sont regroupés en un seul « +N ». */
+  addPointsFx(points) {
+    if (!(points > 0)) return;
+    this.pointsBurst.total += points;
+    this.pointsBurst.idle = 0;
+  }
+
+  /** Émet l'événement 'points' { points } quand un groupe de gains est terminé. */
+  flushPoints(dt) {
+    const b = this.pointsBurst;
+    if (b.total <= 0) return;
+    b.idle += dt;
+    b.age += dt;
+    if (b.idle >= NARRATION.pointsIdle || b.age >= NARRATION.pointsMaxAge || this.status !== 'running') {
+      this.events.push({ type: 'points', points: Math.round(b.total) });
+      this.pointsBurst = { total: 0, idle: 0, age: 0 };
+    }
   }
 
   /** Affiche / efface les consignes du tutoriel au bon moment. */
@@ -289,7 +369,7 @@ export class Game {
   /** Prépare des rangées d'obstacles devant Gérard. */
   spawnAhead() {
     while (this.nextRowAt < this.distance + SPAWN.lookAhead) {
-      const row = buildRow(this.random, this.nextRowAt);
+      const row = buildRow(this.random, this.nextRowAt, ZONES.cycle[Math.floor(this.nextRowAt / ZONES.length) % ZONES.cycle.length]);
       this.obstacles.push(...row);
       // Vision double : faux obstacles sur une voie libre quand Gérard a bu
       this.obstacles.push(...addMirages(this.random, row, this.drunk, { reduceFx: this.reduceFx }));
@@ -299,8 +379,25 @@ export class Game {
       const rowEnd = this.nextRowAt + rowLength(row) / 2;
       this.nextRowAt += rowLength(row) + gap + this.speed * 0.3;
       // Médailles et bonus dans l'espace libre avant la rangée suivante
-      this.items.push(...fillGap(this.random, rowEnd + 3, this.nextRowAt - 4, SPAWN.bonusChance));
+      const gapItems = fillGap(this.random, rowEnd + 3, this.nextRowAt - 4, SPAWN.bonusChance);
+      this.items.push(...gapItems);
+      this.placeGuaranteedWine(rowEnd + 3, this.nextRowAt - 4, gapItems);
     }
+  }
+
+  /**
+   * Verre de rouge garanti vers SPAWN.guaranteedWineAt (une fois par partie, pas en
+   * entraînement), dans un espace libre, sur une voie sans médailles ni bonus.
+   */
+  placeGuaranteedWine(from, to, gapItems) {
+    if (this.wineGiven || this.withTutorial || to < SPAWN.guaranteedWineAt) return;
+    if (to - from < 2) return;
+    const at = Math.min(to - 1, Math.max(from + 1, SPAWN.guaranteedWineAt));
+    const used = new Set(gapItems.map((it) => it.lane));
+    const lanes = [0, 1, 2].filter((l) => !used.has(l));
+    const lane = lanes.length ? lanes[Math.floor(this.random() * lanes.length)] : 1;
+    this.items.push(makeItem('vin', lane, at));
+    this.wineGiven = true;
   }
 
   updateObstacles(dt) {
@@ -325,6 +422,7 @@ export class Game {
           o.done = true;
           const points = MIRAGE.passPoints * this.totalMultiplier;
           this.bonusPoints += points;
+          this.addPointsFx(points);
           this.emit('mirage-pass', { obstacle: o, points });
         }
         continue;
@@ -397,6 +495,7 @@ export class Game {
       o.hit = true;
       o.hitTime = this.time;
       this.bonusPoints += 20 * this.totalMultiplier;
+      this.addPointsFx(20 * this.totalMultiplier);
       this.emit('smash', { obstacle: o, points: 20 * this.totalMultiplier });
       return;
     }
@@ -524,7 +623,9 @@ export class Game {
         this.multiplierTime = BONUS.multiplierDuration;
         break;
     }
-    this.emit('pickup', { kind: it.kind, points: Math.round(this.bonusPoints - before) });
+    const points = Math.round(this.bonusPoints - before);
+    this.addPointsFx(points);
+    this.emit('pickup', { kind: it.kind, points });
   }
 
   /** Fait disparaître les mirages encore devant Gérard (le café dessoûle). */

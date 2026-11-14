@@ -15,7 +15,8 @@ import { makeMirage, updateMirage, disposeMirage, mirageTextSprite } from './Mir
 import { LANES } from '../config.js';
 import { t } from '../i18n/index.js';
 import { getSetting } from '../platform/settings.js';
-import { Backdrop, makeSkyTexture } from './Backdrop.js';
+import { Backdrop, makeSkyTexture, drawSky } from './Backdrop.js';
+import { ZONE_LOOKS } from './zones.js';
 import { PALETTE } from './palette.js';
 
 // Ombre ronde sous les VRAIS obstacles (les fantômes n'en ont pas : c'est un indice)
@@ -45,14 +46,24 @@ export class Renderer {
     this.camera = new THREE.PerspectiveCamera(70, 1, 0.1, 200);
 
     // Lumières : une lumière d'ambiance ciel/sol + un soleil
-    this.scene.add(new THREE.HemisphereLight('#e3f2ff', '#a07a52', 1.5));
+    this.hemi = new THREE.HemisphereLight('#e3f2ff', '#a07a52', 1.5);
+    this.scene.add(this.hemi);
     // Soleil de fin d'après-midi, un peu doré, qui vient de côté (volumes plus lisibles)
     const sun = new THREE.DirectionalLight('#ffe9c2', 1.8);
     sun.position.set(-6, 12, 4);
     this.scene.add(sun);
+    this.sun = sun;
 
     this.world = new World(this.scene);
     this.backdrop = new Backdrop(this.scene);
+    // Ambiance de la zone (ciel, brouillard, lumière) : transition douce quand la zone change
+    this.zone = 0;
+    this.look = { ...ZONE_LOOKS[0] };
+    this.lookFrom = null;
+    this.lookT = 1;
+    this.lookDur = 1;
+    this.tmpA = new THREE.Color();
+    this.tmpB = new THREE.Color();
 
     // Gérard : nez bien rouge et ventre de bon vivant
     this.player = makeGendarme({ nose: '#e0282e', belly: 1.12, mustache: '#3a2414' });
@@ -112,6 +123,10 @@ export class Renderer {
   /** Remet le décor à zéro pour une nouvelle partie. */
   reset() {
     this.world.reset();
+    this.zone = 0;
+    this.look = { ...ZONE_LOOKS[0] };
+    this.lookT = 1;
+    this.applyLook();
     this.chasers.reset();
     this.particles.clear();
     for (const p of this.miragePops ?? []) p.sprite.removeFromParent();
@@ -156,6 +171,39 @@ export class Renderer {
     }
     if (ev.type === 'hit') this.shake = 0.35;
     if (ev.type === 'slip') this.shake = 0.15;
+  }
+
+  /** Suit game.zone : nouveau décor depuis l'horizon + ciel et lumière qui changent en ~50 m. */
+  updateZone(game, dt) {
+    const zone = Math.max(0, Math.min(ZONE_LOOKS.length - 1, game.zone ?? 0));
+    if (zone !== this.zone) {
+      this.zone = zone;
+      this.world.setZone(zone);
+      this.lookFrom = { ...this.look };
+      this.lookT = 0;
+      this.lookDur = THREE.MathUtils.clamp(50 / Math.max(1, game.speed ?? 12), 1.5, 4.5);
+    }
+    if (this.lookT >= 1) return;
+    this.lookT = Math.min(1, this.lookT + (dt || 0.016) / this.lookDur);
+    const k = this.lookT * this.lookT * (3 - 2 * this.lookT); // démarrage et fin en douceur
+    const to = ZONE_LOOKS[this.zone];
+    const from = this.lookFrom;
+    const mix = (key) => '#' + this.tmpA.set(from[key]).lerp(this.tmpB.set(to[key]), k).getHexString();
+    for (const key of ['skyTop', 'skyMid', 'horizon', 'hemiSky', 'hemiGround', 'sun']) this.look[key] = mix(key);
+    for (const key of ['hemi', 'sunI', 'night']) this.look[key] = from[key] + (to[key] - from[key]) * k;
+    this.applyLook();
+  }
+
+  applyLook() {
+    const l = this.look;
+    drawSky(this.scene.background, l.skyTop, l.skyMid, l.horizon);
+    this.scene.fog.color.set(l.horizon);
+    this.hemi.color.set(l.hemiSky);
+    this.hemi.groundColor.set(l.hemiGround);
+    this.hemi.intensity = l.hemi;
+    this.sun.color.set(l.sun);
+    this.sun.intensity = l.sunI;
+    this.backdrop.setNight(l.night);
   }
 
   /** « Mirage ! » qui s'envole au-dessus de Gérard quand il traverse un fantôme. */
@@ -307,6 +355,7 @@ export class Renderer {
     this.time += dt;
     const p = game.player;
 
+    this.updateZone(game, dt);
     this.world.update(game.distance);
     // Anneau des verres de vin : passe de l'or (tentant) au violet (dangereux)
     const pulse = 0.5 + 0.5 * Math.sin(this.time * 5);

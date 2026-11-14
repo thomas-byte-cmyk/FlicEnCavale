@@ -119,3 +119,23 @@ export function saveFlag(name, value) {
     /* rien */
   }
 }
+
+const HINTS_KEY = 'flicencavale.hintsSeen';
+
+/** Indices déjà montrés au joueur (['jump', 'slide', 'dodge']…). */
+export function loadHintsSeen() {
+  try {
+    const list = JSON.parse(localStorage.getItem(HINTS_KEY) || '[]');
+    return Array.isArray(list) ? list.filter((k) => typeof k === 'string') : [];
+  } catch {
+    return [];
+  }
+}
+
+export function saveHintsSeen(list) {
+  try {
+    localStorage.setItem(HINTS_KEY, JSON.stringify([...list]));
+  } catch {
+    /* rien */
+  }
+}

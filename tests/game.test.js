@@ -79,7 +79,7 @@ describe('Game : obstacles et poursuite', () => {
     g.obstacles.push(makeObstacle('barrique', 1, g.distance + 3));
     const evs = run(g, 0.5);
     expect(types(evs)).toContain('hit');
-    expect(g.gap).toBeLessThan(CHASE.start - CHASE.hitPenalty + 0.2);
+    expect(g.gap).toBeLessThan(CHASE.start - CHASE.hitPenalty + CHASE.recovery * 0.6);
     expect(g.speed).toBeLessThan(20);
   });
 

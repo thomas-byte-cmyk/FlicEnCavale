@@ -17,9 +17,9 @@
 import * as THREE from 'three';
 import { createObstacleModel } from './obstacleModels.js';
 
-const GHOST_OPACITY = 0.45;
+const GHOST_OPACITY = 0.34; // v1.3 : plus transparent, pour trancher avec le vrai obstacle
 const DISSIPATE_TIME = 0.55; // durée de la dissipation (s)
-const THREAD_DOTS = 9; // nombre de bulles du « fil » entre l'original et le fantôme
+const THREAD_DOTS = 11; // nombre de bulles du « fil » entre l'original et le fantôme
 
 /** Petite bulle ronde lumineuse (texture partagée). */
 let dotTexture = null;
@@ -63,6 +63,16 @@ function makeTint(type, color) {
   return { tint, mat };
 }
 
+/** Contour lumineux : une copie un peu plus grande, vue de l'intérieur (BackSide), blanc bleuté. */
+function makeOutline(type) {
+  const shell = createObstacleModel(type);
+  const mat = new THREE.MeshBasicMaterial({ color: '#dffbff', transparent: true, opacity: 0.75, side: THREE.BackSide, depthWrite: false, blending: THREE.AdditiveBlending });
+  shell.traverse((n) => {
+    if (n.material) n.material = mat;
+  });
+  return { shell, mat };
+}
+
 /**
  * Transforme un modèle d'obstacle en FANTÔME.
  * @returns {THREE.Group} un groupe à ajouter à la scène (copies teintées + fil)
@@ -71,8 +81,9 @@ export function makeMirage(mesh, type) {
   const mats = makeOwnTransparentMaterials(mesh);
   const red = makeTint(type, '#ff3b3b');
   const cyan = makeTint(type, '#21e6f2');
+  const outline = makeOutline(type);
   const holder = new THREE.Group();
-  holder.add(red.tint, cyan.tint);
+  holder.add(red.tint, cyan.tint, outline.shell);
 
   // Le « fil » : des bulles alternativement rouges et cyan, de l'original au fantôme
   const thread = new THREE.Group();
@@ -85,7 +96,7 @@ export function makeMirage(mesh, type) {
   }
   const extras = new THREE.Group();
   extras.add(holder, thread);
-  mesh.userData.mirage = { mats, red, cyan, holder, thread, dots, extras, dissipateAt: null };
+  mesh.userData.mirage = { mats, red, cyan, outline, holder, thread, dots, extras, dissipateAt: null };
   return extras;
 }
 
@@ -130,6 +141,10 @@ export function updateMirage(mesh, o, original, { time, reduceFx, playerX, ahead
   for (const mat of m.mats) mat.opacity = opacity;
   m.red.mat.opacity = tintOpacity;
   m.cyan.mat.opacity = tintOpacity;
+  // Contour lumineux qui « respire » (fixe avec « Réduire les effets ») : visible de loin
+  m.outline.mat.opacity = (reduceFx ? 0.6 : 0.45 + 0.3 * Math.sin(time * 5 + o.id)) * fade;
+  m.outline.shell.scale.setScalar(scale * 1.09);
+  m.outline.shell.position.set(0, -0.04, 0);
   mesh.scale.setScalar(scale);
 
   m.holder.position.copy(mesh.position);
@@ -142,7 +157,7 @@ export function updateMirage(mesh, o, original, { time, reduceFx, playerX, ahead
 
   // Le fil entre l'original et le fantôme : visible dès qu'ils se séparent
   const sep = original ? Math.abs(mesh.position.x - original.position.x) : 0;
-  const threadAlpha = original ? Math.min(1, sep / 0.8) * fade : 0;
+  const threadAlpha = original ? Math.min(1, sep / 0.4) * fade : 0;
   m.thread.visible = threadAlpha > 0.02;
   if (m.thread.visible) {
     const a = original.position;
@@ -151,8 +166,8 @@ export function updateMirage(mesh, o, original, { time, reduceFx, playerX, ahead
       const t = (i + 1) / (THREAD_DOTS + 1);
       const wave = reduceFx ? 0 : Math.sin(t * Math.PI * 3 - time * 8) * 0.12;
       s.position.set(a.x + (b.x - a.x) * t, 0.9 + Math.sin(t * Math.PI) * 0.35 + wave, a.z + (b.z - a.z) * t);
-      s.scale.setScalar(0.22 + 0.06 * Math.sin(time * 6 + i));
-      s.material.opacity = threadAlpha * 0.9;
+      s.scale.setScalar(0.34 + 0.08 * Math.sin(time * 6 + i));
+      s.material.opacity = threadAlpha;
     });
   }
   return justPassed;
@@ -165,8 +180,9 @@ export function disposeMirage(mesh) {
   for (const mat of m.mats) mat.dispose();
   m.red.mat.dispose();
   m.cyan.mat.dispose();
+  m.outline.mat.dispose();
   for (const s of m.dots) s.material.dispose();
-  for (const g of [m.red.tint, m.cyan.tint]) {
+  for (const g of [m.red.tint, m.cyan.tint, m.outline.shell]) {
     if (g.userData.agent || g.userData.disposable) g.traverse((n) => n.geometry?.dispose());
   }
   m.extras.removeFromParent();

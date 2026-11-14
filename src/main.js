@@ -17,6 +17,7 @@ import { UI } from './ui/UI.js';
 import { Sound } from './audio/Sound.js';
 import { vibrate, setHapticsEnabled } from './platform/haptics.js';
 import { getSetting, setSetting } from './platform/settings.js';
+import { parseChallenge } from './platform/challenge.js';
 import { QualityGovernor } from './platform/quality.js';
 import { registerServiceWorker } from './platform/pwa.js';
 import { PauseController } from './game/pause.js';
@@ -27,8 +28,9 @@ import {
   saveBestScore,
   loadMissions,
   saveMissions,
-  loadTutorialDone,
   saveTutorialDone,
+  loadHintsSeen,
+  saveHintsSeen,
   loadLang,
   loadFlag,
   saveFlag,
@@ -41,6 +43,9 @@ translateDom(document);
 
 const game = new Game();
 game.mirageTipSeen = loadFlag('seenMirageTip', false); // explication des fantômes déjà vue ?
+game.hintsSeen = new Set(loadHintsSeen()); // indices de la première partie déjà vus
+// Défi d'un ami : …/?defi=1234 dans l'adresse (null si absent ou invalide)
+game.challengeScore = parseChallenge(location.search);
 const narrator = new Narrator();
 const missions = new Missions(loadMissions());
 const renderer = new Renderer(document.getElementById('scene'));
@@ -192,8 +197,12 @@ function goHome() {
   ui.showTitle(best, missions);
 }
 
-/** Lance une partie. Le tutoriel se joue automatiquement à la toute première partie. */
-function startGame({ tutorial = !loadTutorialDone() } = {}) {
+/**
+ * Lance une partie. Depuis la v1.3, plus d'entraînement obligatoire : la première vraie
+ * partie affiche des indices (événement 'hint'). L'entraînement reste disponible depuis
+ * « Comment jouer ? » (bouton « Refaire l'entraînement »).
+ */
+function startGame({ tutorial = false } = {}) {
   clearTimeout(gameOverTimer); // au cas où un écran de fin était encore en attente
   resetPause();
   sound.unlock(); // le son ne peut démarrer qu'après un clic de l'utilisateur
@@ -206,7 +215,7 @@ function startGame({ tutorial = !loadTutorialDone() } = {}) {
   sound.play('start');
   sound.startMusic();
   sirenTimer = 2;
-  if (!tutorial) ui.popup(t('goGerard'), 'good');
+  if (!tutorial) narrator.say(t('goGerard'), { kind: 'good', priority: true });
 }
 
 /** Sons associés aux événements du jeu. */
@@ -237,12 +246,18 @@ function handleEvents(events) {
     switch (ev.type) {
       case 'pickup':
         sound.play(ev.kind); // coin, cafe, vin, croissant, kepi
-        if (ev.points) ui.floatText(`+${ev.points}`, playerScreenX(), ev.kind === 'coin' ? '' : '#4ade80');
         if (ev.kind !== 'coin') vibrate(25);
         break;
       case 'smash':
-        ui.floatText(`+${ev.points}`, playerScreenX());
         vibrate(30);
+        break;
+      case 'points': // « +N » : les gains rapprochés sont déjà regroupés par la logique
+        ui.floatText(`+${ev.points}`, playerScreenX());
+        break;
+      case 'challenge-beaten': // score de l'ami battu (la phrase vient du narrateur)
+        sound.play('kepi');
+        vibrate([30, 40, 30]);
+        ui.celebrateChallenge(); // drapeau « Battu ! » et confettis (une fois par partie)
         break;
       case 'mirage-tip': {
         // Tout premier fantôme : petite explication (une seule fois par joueur) pendant un ralenti
@@ -252,9 +267,6 @@ function handleEvents(events) {
         else ui.popup(text, 'good');
         break;
       }
-      case 'mirage-pass': // Gérard traverse un obstacle imaginaire (le son est joué par le rendu, voir plus bas)
-        ui.floatText(`+${ev.points}`, playerScreenX(), '#c4b5fd');
-        break;
       case 'flash':
         sound.play('flash');
         ui.flash();
@@ -271,8 +283,14 @@ function handleEvents(events) {
         vibrate([60, 50, 250]);
         ui.bubble(t('caught'), 1600);
         break;
-      case 'hint':
-        ui.showHint(ev.icon, ev.text, ev.dir);
+      case 'hint': // consigne : entraînement, ou indice de la première partie (une fois par sorte d'obstacle)
+        if (ev.kind) {
+          // Indice de la première vraie partie : petite main animée (UI de DESIGN)
+          ui.showGestureHint(ev.kind === 'dodge' ? 'lane' : ev.kind, ev.text || undefined);
+          saveHintsSeen(game.hintsSeen);
+        } else {
+          ui.showHint(ev.icon, ev.text, ev.dir); // entraînement (« Refaire l'entraînement »)
+        }
         break;
       case 'hint-clear':
         ui.hideHint();
@@ -294,11 +312,12 @@ function handleMissions(events) {
   const { done, promoted } = missions.update(game, events);
   if (!done.length) return;
   saveMissions(missions.toSave());
-  for (const m of done) ui.popup(t('missionDone', { text: m.text }), 'good');
+  // Messages essentiels : affichés même à grande vitesse (une phrase à la fois)
+  for (const m of done) narrator.say(t('missionDone', { text: m.text }), { kind: 'good', essential: true });
   sound.play('croissant');
   vibrate([30, 40, 30]);
   if (promoted) {
-    ui.popup(t('promoted', { name: promoted.name }), 'good');
+    narrator.say(t('promoted', { name: promoted.name }), { kind: 'good', essential: true });
     sound.play('kepi');
   }
 }
@@ -353,12 +372,11 @@ function frame(now) {
   handleEvents(events);
   if (game.status === 'running' || events.some((e) => e.type === 'gameover')) handleMissions(events);
 
-  // Phrases drôles (pas pendant le tutoriel, pour ne pas surcharger l'écran)
-  if (!game.inTutorial) {
-    for (const msg of narrator.update(dt, game, events)) {
-      if (msg.channel === 'popup') ui.popup(msg.text, msg.kind);
-      else ui.bubble(msg.text);
-    }
+  // Phrases : une seule à la fois, aucune au-delà de 20 m/s sauf les essentielles
+  // (pendant l'entraînement, le narrateur se tait de lui-même)
+  for (const msg of narrator.update(dt, game, events)) {
+    if (msg.channel === 'popup') ui.popup(msg.text, msg.kind);
+    else ui.bubble(msg.text);
   }
 
   if (game.status === 'running') {

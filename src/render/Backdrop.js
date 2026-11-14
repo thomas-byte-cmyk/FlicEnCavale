@@ -14,17 +14,23 @@ export function makeSkyTexture() {
   const c = document.createElement('canvas');
   c.width = 4;
   c.height = 256;
-  const ctx = c.getContext('2d');
-  const grad = ctx.createLinearGradient(0, 0, 0, 256);
-  grad.addColorStop(0, PALETTE.skyTop);
-  grad.addColorStop(0.5, PALETTE.skyMid);
-  grad.addColorStop(0.62, PALETTE.horizon);
-  grad.addColorStop(1, PALETTE.horizon);
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, 4, 256);
   const tex = new THREE.CanvasTexture(c);
   tex.colorSpace = THREE.SRGBColorSpace;
+  drawSky(tex, PALETTE.skyTop, PALETTE.skyMid, PALETTE.horizon);
   return tex;
+}
+
+/** Redessine le dégradé du ciel (appelé seulement pendant un changement de zone). */
+export function drawSky(tex, top, mid, horizon) {
+  const ctx = tex.image.getContext('2d');
+  const grad = ctx.createLinearGradient(0, 0, 0, 256);
+  grad.addColorStop(0, top);
+  grad.addColorStop(0.5, mid);
+  grad.addColorStop(0.62, horizon);
+  grad.addColorStop(1, horizon);
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 4, 256);
+  tex.needsUpdate = true;
 }
 
 /** L'église du village : nef, clocher carré, flèche d'ardoise et coq doré. */
@@ -76,6 +82,20 @@ export class Backdrop {
 
     // Les nuages ne doivent pas être grisés par le brouillard
     const cloudMat = new THREE.MeshBasicMaterial({ color: '#ffffff', fog: false });
+    this.cloudMat = cloudMat;
+
+    // La nuit : une lune et des étoiles (invisibles le jour)
+    this.moon = new THREE.Mesh(new THREE.SphereGeometry(4, 16, 10), new THREE.MeshBasicMaterial({ color: '#fff4c2', fog: false, transparent: true, opacity: 0 }));
+    this.moon.position.set(-28, 42, -120);
+    this.group.add(this.moon);
+    const starPos = [];
+    let r = 99;
+    const rnd = () => ((r = (r * 16807) % 2147483647) / 2147483647);
+    for (let i = 0; i < 90; i++) starPos.push(-90 + rnd() * 180, 30 + rnd() * 60, -125 - rnd() * 10);
+    const starGeo = new THREE.BufferGeometry();
+    starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starPos, 3));
+    this.stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: '#ffffff', size: 0.7, fog: false, transparent: true, opacity: 0 }));
+    this.group.add(this.stars);
     let s = 7;
     const rand = () => ((s = (s * 16807) % 2147483647) / 2147483647);
     this.clouds = [];
@@ -87,6 +107,15 @@ export class Backdrop {
       this.clouds.push(m);
       this.group.add(m);
     }
+  }
+
+  /** Part de nuit (0 = jour, 1 = pleine nuit) : lune, étoiles et nuages assombris. */
+  setNight(k) {
+    this.moon.material.opacity = k;
+    this.moon.visible = k > 0.01;
+    this.stars.material.opacity = k;
+    this.stars.visible = k > 0.01;
+    this.cloudMat.color.setRGB(1 - k * 0.6, 1 - k * 0.55, 1 - k * 0.4);
   }
 
   /** Suit Gérard le long de la rue ; les nuages dérivent doucement. */
