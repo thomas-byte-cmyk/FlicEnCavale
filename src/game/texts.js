@@ -24,10 +24,12 @@ export let PROTEST_SLOGANS;
 export let PICKUP_LINES;
 /** Autres petites situations. */
 export let MISC_LINES;
-/** Messages tous les 500 m ({d} = distance). */
-export let MILESTONE_LINES;
+/** Répliques à l'entrée de chaque zone de décor ({d} = distance), par zone. */
+export let ZONE_LINES;
 /** Message du radar ({kmh} ou {mph}). */
 export let FLASH_LINE;
+/** Le score d'un ami (lien de défi) vient d'être battu. */
+export let CHALLENGE_LINES;
 
 function load(p) {
   const j = p.jokes;
@@ -39,8 +41,9 @@ function load(p) {
   PROTEST_SLOGANS = j.slogans;
   PICKUP_LINES = j.pickup;
   MISC_LINES = j.misc;
-  MILESTONE_LINES = j.milestones;
+  ZONE_LINES = j.zones;
   FLASH_LINE = j.flash;
+  CHALLENGE_LINES = j.challengeBeaten;
 }
 load(pack());
 onLangChange(load);

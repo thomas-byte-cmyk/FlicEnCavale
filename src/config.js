@@ -24,16 +24,20 @@ export const PLAYER = {
 export const SPEED = {
   start: 11, // vitesse au départ
   max: 30, // vitesse maximale
-  accel: 0.25, // gain de vitesse par seconde
-  hitSlowdown: 0.85, // la vitesse est multipliée par ce chiffre quand on percute un obstacle
+  accel: 0.2, // gain de vitesse par seconde (v1.3 : 0,25 → 0,2 ; 20 m/s vers 45 s, 30 m/s vers 1 min 35)
+  hitSlowdown: 0.97, // la vitesse est multipliée par ce chiffre quand on percute un obstacle (v1.3 : presque plus de ralentissement)
 };
 
-/** Les collègues poursuivants. "gap" = avance de Gérard sur eux. */
+/**
+ * Les collègues poursuivants. "gap" = avance de Gérard sur eux.
+ * Réglage v1.3 vérifié par simulation (tests/balance.test.js) : un joueur moyen
+ * (réaction 0,75 s, 1 erreur sur 5) tient ~70 s ; un bon joueur dépasse 3 min.
+ */
 export const CHASE = {
-  start: 5, // avance au départ
+  start: 7, // avance au départ (v1.3 : 5 → 7, plus d'indulgence)
   max: 9, // avance maximale
-  hitPenalty: 3.2, // avance perdue à chaque obstacle percuté
-  recovery: 0.13, // avance regagnée par seconde quand tout va bien
+  hitPenalty: 2.2, // avance perdue à chaque obstacle percuté (v1.3 : 3,2 → 2,2)
+  recovery: 0.5, // avance regagnée par seconde quand tout va bien (v1.3 : 0,13 → 0,5)
   coffeeBonus: 3, // avance gagnée avec un café
 };
 
@@ -45,8 +49,8 @@ export const DRUNK = {
   wine: 22, // hausse avec un verre de rouge
   coffee: -25, // baisse avec un café
   pastis: 12, // hausse en marchant dans une flaque de pastis
-  // Au-delà de ce seuil, les commandes deviennent imprécises
-  sloppyThreshold: 30,
+  // Au-delà de ce seuil, les commandes deviennent imprécises (v1.3 : 30 → 70, gestes fiables en dessous)
+  sloppyThreshold: 70,
 };
 
 /** Bonus. */
@@ -78,6 +82,9 @@ export const SPAWN = {
   // jusqu'à 5 m de moins au maximum
   tightenEvery: 250,
   tightenMax: 5,
+  // v1.3 : un verre de rouge GARANTI vers 150 m (~12 s de jeu), pour que chaque joueur
+  // découvre la vision double (premier fantôme vers 15-25 s)
+  guaranteedWineAt: 150,
 };
 
 /**
@@ -111,3 +118,51 @@ export const DRUNK_MULTIPLIER = [
   { min: 30, mult: 2 },
   { min: 70, mult: 3 },
 ];
+
+/**
+ * ZONES DE DÉCOR (v1.3) : la rue change de quartier tous les 500 m, en boucle.
+ * La logique donne seulement le numéro de zone (game.zone) : le rendu (DESIGN) fait le décor.
+ * weights : multiplie la fréquence de certains modèles de rangées dans cette zone.
+ */
+export const ZONES = {
+  length: 500,
+  cycle: ['village', 'marche', 'campagne', 'port', 'nuit'],
+  weights: {
+    village: {},
+    marche: { manif: 1.6, baguette: 1.8, cedez: 1.3 },
+    campagne: { vache: 2.5, tracteur: 2, 'mur-de-barriques': 0.6 },
+    port: { 'rond-point': 1.6, double: 1.2, manif: 0.7 },
+    nuit: { 'mur-de-barriques': 1.4, baguette: 1.4, vache: 0.6 },
+  },
+};
+
+/** Moins de texte pendant la course (v1.3). */
+export const NARRATION = {
+  minGap: 2.5, // au moins 2,5 s entre deux phrases (une seule à la fois)
+  maxSpeed: 20, // au-delà de 20 m/s, plus de phrases (sauf les messages essentiels)
+  maxAge: 4, // une phrase qui attend depuis plus de 4 s n'est plus d'actualité : on l'oublie
+  pointsIdle: 0.35, // les « +points » rapprochés sont regroupés (fin du groupe après 0,35 s sans gain…)
+  pointsMaxAge: 1, // … ou au bout d'1 s)
+};
+
+/**
+ * Indices pendant la première vraie partie (v1.3, remplace l'entraînement obligatoire) :
+ * le premier obstacle de chaque sorte affiche une consigne, une seule fois par joueur.
+ */
+export const HINTS = {
+  distance: 28, // l'indice apparaît quand l'obstacle est à 28 m
+  kinds: {
+    jump: { icon: '👆', dir: 'up' },
+    slide: { icon: '👇', dir: 'down' },
+    dodge: { icon: '👈👉', dir: 'right' },
+  },
+};
+
+/** Défi entre amis (v1.3) : bornes du score lu dans ?defi=… */
+export const CHALLENGE = { min: 1, max: 10000000 };
+
+/**
+ * Adresse publique du jeu, utilisée pour le lien « Défier un ami » quand le jeu tourne
+ * dans une iframe (itch.io, Newgrounds…), où l'adresse de la page n'est pas la bonne.
+ */
+export const SHARE_URL = 'https://thomas-byte-cmyk.github.io/FlicEnCavale/';

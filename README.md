@@ -45,8 +45,16 @@ Le jeu est publié automatiquement sur GitHub Pages à chaque mise à jour de la
 - **Missions** : 3 défis à la fois (« Bois 2 cafés », « Contourne 3 manifs »…) à réussir en une partie.
   Chaque mission réussie fait monter Gérard en grade, de Gendarme stagiaire jusqu'à Général.
   La liste des missions est dans `src/game/missions.js` (leurs textes dans `src/i18n/`).
-- **Première partie** : un petit entraînement montre les gestes. On peut le refaire depuis
-  « Comment jouer ? » sur l'écran titre.
+- **Première partie** (v1.3) : pas d'entraînement obligatoire. Pendant la première vraie course,
+  le premier obstacle de chaque sorte (à sauter, à glisser, à contourner) affiche une consigne,
+  une seule fois. Un verre de rouge est toujours placé vers 12 s de jeu, pour que chacun découvre
+  la vision double. L'entraînement reste disponible depuis « Comment jouer ? ».
+- **Défi entre amis** (v1.3) : « Défier un ami » partage un lien `…/?defi=1234`. L'ami qui l'ouvre
+  voit le score à battre, et le jeu le félicite quand il le dépasse.
+- **Quartiers** (v1.3) : tous les 500 m, Gérard change de quartier (village, marché, campagne,
+  port, nuit), avec des obstacles un peu différents (plus de vaches à la campagne…).
+- **Difficulté** (v1.3) : plus indulgente au début. Réglée par simulation (`tests/sim.js`,
+  `tests/balance.test.js`) : un joueur moyen tient environ 1 minute, un bon joueur plus de 3.
 
 - **Pause** : si on quitte l'appli ou l'onglet (appel, notification…), la partie se met en pause.
   Elle reprend quand on appuie sur « Reprendre », après un compte à rebours 3-2-1.

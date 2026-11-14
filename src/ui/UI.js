@@ -3,6 +3,7 @@
 // Tout ce qui est du texte affiché par-dessus la 3D passe par ici.
 // =========================================================
 
+import { buildShareUrl } from '../platform/challenge.js';
 import { t } from '../i18n/index.js';
 import { SettingsPanel } from './Settings.js';
 import { getSetting } from '../platform/settings.js';
@@ -182,7 +183,7 @@ export class UI {
    */
   async challengeFriend() {
     const { score, distance } = this.lastRun;
-    const url = location.origin + location.pathname;
+    const url = buildShareUrl(score); // …/?defi=<score> (adresse publique si le jeu est dans une iframe)
     const text = t('challengeText', { score, distance });
     if (navigator.share) {
       try {

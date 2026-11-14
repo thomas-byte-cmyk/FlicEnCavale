@@ -96,6 +96,12 @@ export default {
     'Grab the espresso: it sobers you up and slows the cops',
   ],
 
+  hints: {
+    jump: 'Swipe UP to jump',
+    slide: 'Swipe DOWN to slide under',
+    dodge: 'Swipe LEFT or RIGHT to dodge',
+  },
+
   // French gendarmerie ranks, in plain English
   grades: [
     'Trainee Gendarme',
@@ -243,12 +249,14 @@ export default {
         'Protest ahead: going round!',
       ],
     },
-    milestones: [
-      '{d} m! The old major is looking for his inhaler.',
-      '{d} m! Gérard just beat the station’s half-marathon record.',
-      '{d} m! Still on the run!',
-      '{d} m! The next village is in sight.',
-    ],
+    zones: {
+      village: ['{d} m! Back in the village: the brass band still hasn’t stopped.', '{d} m! The church tower again. Is Gérard running in circles?'],
+      marche: ['{d} m! Market day: mind the cheese stalls!', '{d} m! The market: “Fresh escape, get your fresh escape!”'],
+      campagne: ['{d} m! The countryside: cows, tractors, and not a single witness.', '{d} m! Open fields: even the cows turn to stare.'],
+      port: ['{d} m! The harbour: it smells of sea salt… and pastis.', '{d} m! The harbour: Gérard considers escaping by pedalo.'],
+      nuit: ['{d} m! Night has fallen, and the party goes on.', '{d} m! It’s dark now: the cops brought torches.'],
+    },
+    challengeBeaten: ['Challenge beaten! Your friend can retire that record.', 'Friend’s record smashed! Send them the official report.'],
     flash: 'Clocked at {mph} mph… on foot!',
   },
 };

@@ -5,7 +5,7 @@
 // (une voie libre, un saut ou une glissade).
 // =========================================================
 
-import { LANES } from '../config.js';
+import { LANES, ZONES } from '../config.js';
 
 /**
  * Types d'obstacles.
@@ -68,7 +68,7 @@ const ROW_PATTERNS = [
     name: 'seul',
     minDistance: 0,
     weight: 2,
-    build: (rand, at) => [makeObstacle(pick(rand, ['barrique', 'radar', 'agent', 'pastis', 'barrique']), pick(rand, [0, 1, 2]), at)],
+    build: (rand, at) => [makeObstacle(pick(rand, ['barrique', 'radar', 'agent', 'pastis', 'cedez']), pick(rand, [0, 1, 2]), at)],
   },
   {
     // Deux voies bouchées, une seule libre
@@ -77,7 +77,7 @@ const ROW_PATTERNS = [
     weight: 3,
     build: (rand, at) => {
       const lanes = shuffle(rand, [0, 1, 2]).slice(0, 2);
-      return lanes.map((l) => makeObstacle(pick(rand, ['barrique', 'agent', 'radar', 'barrique']), l, at));
+      return lanes.map((l) => makeObstacle(pick(rand, ['barrique', 'agent', 'radar', 'manif']), l, at));
     },
   },
   {
@@ -96,14 +96,14 @@ const ROW_PATTERNS = [
     // Barriques sur les 3 voies : il faut sauter !
     name: 'mur-de-barriques',
     minDistance: 120,
-    weight: 1.5,
+    weight: 1,
     build: (_rand, at) => [0, 1, 2].map((l) => makeObstacle('barrique', l, at)),
   },
   {
     // Baguette géante en travers de la rue : il faut glisser !
     name: 'baguette',
     minDistance: 90,
-    weight: 1.5,
+    weight: 2.5,
     build: (_rand, at) => [makeObstacle('baguette', null, at)],
   },
   {
@@ -122,7 +122,7 @@ const ROW_PATTERNS = [
     // Rond-point au milieu : on le contourne par la gauche ou la droite
     name: 'rond-point',
     minDistance: 70,
-    weight: 1.5,
+    weight: 2.5,
     build: (rand, at) => {
       const row = [makeObstacle('rondpoint', 1, at)];
       if (rand() < 0.75) row.push(makeObstacle(pick(rand, ['barrique', 'cedez', 'manif']), pick(rand, [0, 2]), at));
@@ -133,7 +133,7 @@ const ROW_PATTERNS = [
     // Une vache traverse la route tranquillement
     name: 'vache',
     minDistance: 40,
-    weight: 2,
+    weight: 2.5,
     build: (rand, at) => {
       const fromLeft = rand() < 0.5;
       return [
@@ -151,7 +151,7 @@ const ROW_PATTERNS = [
     weight: 2.5,
     build: (rand, at) => {
       const [a, b] = shuffle(rand, [0, 1, 2]);
-      return [makeObstacle('barrique', a, at), makeObstacle('cedez', b, at)];
+      return [makeObstacle(pick(rand, ['barrique', 'radar']), a, at), makeObstacle('cedez', b, at)];
     },
   },
   {
@@ -175,7 +175,7 @@ const ROW_PATTERNS = [
     build: (rand, at) => {
       const [a, b, c] = shuffle(rand, [0, 1, 2]);
       return [
-        makeObstacle('barrique', a, at),
+        makeObstacle(pick(rand, ['barrique', 'radar']), a, at),
         makeObstacle('cedez', b, at),
         makeObstacle(pick(rand, ['agent', 'manif', 'radar']), c, at),
       ];
@@ -183,13 +183,18 @@ const ROW_PATTERNS = [
   },
 ];
 
-/** Tire au sort une rangée adaptée à la distance parcourue. */
-export function buildRow(rand, at) {
+/**
+ * Tire au sort une rangée adaptée à la distance parcourue et à la zone de décor
+ * (ex. plus de vaches et de tracteurs à la campagne : voir ZONES.weights dans config.js).
+ */
+export function buildRow(rand, at, zone = 'village') {
+  const boost = ZONES.weights[zone] ?? {};
   const options = ROW_PATTERNS.filter((p) => at >= p.minDistance);
-  const total = options.reduce((s, p) => s + p.weight, 0);
+  const weightOf = (p) => p.weight * (boost[p.name] ?? 1);
+  const total = options.reduce((s, p) => s + weightOf(p), 0);
   let r = rand() * total;
   for (const p of options) {
-    r -= p.weight;
+    r -= weightOf(p);
     if (r <= 0) return p.build(rand, at);
   }
   return options[0].build(rand, at);
