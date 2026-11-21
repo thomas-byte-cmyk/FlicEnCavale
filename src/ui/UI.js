@@ -202,7 +202,7 @@ export class UI {
    */
   async challengeFriend() {
     const { score, distance } = this.lastRun;
-    const url = buildShareUrl(score); // …/?defi=<score> (adresse publique si le jeu est dans une iframe)
+    const url = buildShareUrl(); // page itch.io du jeu (le score est dans le texte)
     const text = t('challengeText', { score, distance });
     if (navigator.share) {
       try {

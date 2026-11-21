@@ -1,12 +1,11 @@
 // =========================================================
 // DÉFI ENTRE AMIS (v1.3).
-// « Défier un ami » partage un lien …/?defi=1234 ; l'ami qui l'ouvre voit le
-// score à battre (game.challengeScore, affiché par DESIGN), et l'événement
-// 'challenge-beaten' part quand il le dépasse.
+// « Défier un ami » partage la page itch.io du jeu, avec le score dans le texte.
+// Un lien …/?defi=1234 (version GitHub Pages) affiche encore le score à battre
+// (game.challengeScore, affiché par DESIGN) et 'challenge-beaten' part quand il est dépassé.
 // =========================================================
 
 import { CHALLENGE, SHARE_URL } from '../config.js';
-import { isInIframe } from './pwa.js';
 
 /**
  * Lit le score à battre dans l'adresse (?defi=1234).
@@ -26,22 +25,11 @@ export function parseChallenge(search = '') {
 }
 
 /**
- * Adresse à partager pour défier un ami avec ce score.
- * Construite à partir de l'adresse de la page (GitHub Pages, ordinateur…), sauf dans
- * une iframe (itch.io, Newgrounds…), où l'on utilise l'adresse publique SHARE_URL.
+ * Adresse à partager pour défier un ami : toujours la page publique du jeu (SHARE_URL,
+ * la page itch.io). Le score à battre est écrit dans le texte du message : itch.io
+ * affiche le jeu dans un cadre et ne lui transmet pas « ?defi=… ». Les anciens liens
+ * …/?defi=1234 vers la version GitHub Pages restent lus par parseChallenge.
  */
-export function buildShareUrl(score, win = globalThis) {
-  let base = SHARE_URL;
-  try {
-    const loc = win.location;
-    if (!isInIframe(win) && loc && /^https?:$/.test(loc.protocol)) base = loc.origin + loc.pathname;
-  } catch {
-    /* adresse inaccessible : on garde SHARE_URL */
-  }
-  const url = new URL(base);
-  url.search = '';
-  url.hash = '';
-  const s = Math.max(0, Math.floor(Number(score) || 0));
-  if (s >= CHALLENGE.min) url.searchParams.set('defi', String(Math.min(s, CHALLENGE.max)));
-  return url.toString();
+export function buildShareUrl() {
+  return SHARE_URL;
 }

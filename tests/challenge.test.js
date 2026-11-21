@@ -3,14 +3,6 @@ import { parseChallenge, buildShareUrl } from '../src/platform/challenge.js';
 import { SHARE_URL, CHALLENGE } from '../src/config.js';
 import { Game } from '../src/game/Game.js';
 
-/** Fausse fenêtre affichée seule (pas d'iframe). */
-function win(href) {
-  const u = new URL(href);
-  const w = { location: { protocol: u.protocol, origin: u.origin, pathname: u.pathname } };
-  w.self = w;
-  w.top = w;
-  return w;
-}
 
 describe('défi entre amis', () => {
   it('lit ?defi=… : entier borné, sinon ignoré', () => {
@@ -21,20 +13,10 @@ describe('défi entre amis', () => {
     expect(parseChallenge(`?defi=${CHALLENGE.max + 1}`)).toBe(null);
   });
 
-  it("l'adresse partagée contient ?defi=<score> et suit la page (GitHub Pages, ordinateur…)", () => {
-    expect(buildShareUrl(1234, win('https://quelquun.github.io/FlicEnCavale/?defi=50#x'))).toBe('https://quelquun.github.io/FlicEnCavale/?defi=1234');
-    expect(buildShareUrl(77, win('http://localhost:5173/'))).toBe('http://localhost:5173/?defi=77');
-  });
-
-  it("dans une iframe (itch.io…), on partage l'adresse publique SHARE_URL", () => {
-    const framed = win('https://html-classic.itch.zone/html/123/index.html');
-    framed.top = {};
-    expect(buildShareUrl(900, framed)).toBe(`${SHARE_URL}?defi=900`);
-    expect(buildShareUrl(900, { location: { protocol: 'file:' }, self: 1, top: 1 })).toBe(`${SHARE_URL}?defi=900`);
-  });
-
-  it('score nul : lien sans défi', () => {
-    expect(buildShareUrl(0, win('https://a.b/c/'))).toBe('https://a.b/c/');
+  it("l'adresse partagée est toujours la page publique du jeu (itch.io), sans paramètre", () => {
+    expect(SHARE_URL).toBe('https://tom42gaming.itch.io/flic-en-cavale');
+    expect(buildShareUrl()).toBe(SHARE_URL);
+    expect(new URL(buildShareUrl()).search).toBe('');
   });
 
   it("challenge-beaten part une seule fois, quand le score dépasse celui de l'ami", () => {
