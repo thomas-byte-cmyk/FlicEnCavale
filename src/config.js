@@ -162,7 +162,8 @@ export const HINTS = {
 export const CHALLENGE = { min: 1, max: 10000000 };
 
 /**
- * Adresse publique du jeu, utilisée pour le lien « Défier un ami » quand le jeu tourne
- * dans une iframe (itch.io, Newgrounds…), où l'adresse de la page n'est pas la bonne.
+ * Page publique du jeu, partagée par « Défier un ami » (choix de l'utilisateur : la page
+ * itch.io, pour que les amis y jouent, commentent et notent). Le score à battre est dans
+ * le texte du message : itch.io ne transmet pas « ?defi=… » au jeu, qui tourne dans un cadre.
  */
-export const SHARE_URL = 'https://thomas-byte-cmyk.github.io/FlicEnCavale/';
+export const SHARE_URL = 'https://tom42gaming.itch.io/flic-en-cavale';

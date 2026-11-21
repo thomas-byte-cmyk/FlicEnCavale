@@ -10,6 +10,9 @@ Le jeu est publié automatiquement sur GitHub Pages à chaque mise à jour de la
 
 **https://thomas-byte-cmyk.github.io/FlicEnCavale/**
 
+Le jeu est aussi publié sur itch.io : **https://tom42gaming.itch.io/flic-en-cavale**
+(c'est cette page que partage le bouton « Défier un ami »).
+
 (La première fois, il faut activer GitHub Pages : voir plus bas.)
 
 ## 🎮 Commandes
