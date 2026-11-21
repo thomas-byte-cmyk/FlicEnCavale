@@ -24,10 +24,19 @@ Le fichier à envoyer s'appelle **`FlicEnCavale-web.zip`**. GitHub le fabrique q
    - Une **croix rouge ❌** veut dire qu'un test a échoué : ne publie pas, et transmets la page à
      la session CODE.
 6. Descends tout en bas, jusqu'à la rubrique **Artifacts**, et clique sur **FlicEnCavale-web**.
-   Un fichier `FlicEnCavale-web.zip` est téléchargé.
+   GitHub télécharge un premier zip **qui contient** le fichier `FlicEnCavale-web.zip`.
+   - Si ton navigateur l'a ouvert tout seul (Safari le fait), tu obtiens un dossier
+     `FlicEnCavale-web` : `FlicEnCavale-web.zip` est dedans.
+   - Sinon, double-clique sur le fichier téléchargé pour l'ouvrir : `FlicEnCavale-web.zip` est dedans.
 
-✅ **Ne décompresse pas ce zip** : c'est lui qu'on envoie tel quel. Si tu l'ouvres par curiosité,
-tu dois voir `index.html` directement à l'intérieur, sans dossier autour.
+✅ **C'est `FlicEnCavale-web.zip` qu'on envoie tel quel, sans le décompresser.** Si tu l'ouvres par
+curiosité, tu dois voir `index.html` directement à l'intérieur, sans dossier autour.
+
+> **Si tu as un dossier avec `index.html`, `assets`… au lieu d'un zip** (ancienne version du
+> workflow, ou zip décompressé par erreur) : ouvre ce dossier, sélectionne **tout son contenu**
+> (Cmd+A sur Mac, Ctrl+A sur Windows), puis clic droit → **Compresser** (Mac) ou **Envoyer vers →
+> Dossier compressé** (Windows). Compresse bien le **contenu**, pas le dossier : `index.html` doit
+> être à la racine du zip. Renomme le résultat `FlicEnCavale-web.zip`.
 
 > Le zip disponible dans Actions reste téléchargeable 30 jours. Après une mise à jour du jeu,
 > refais simplement l'étape 1 pour en avoir un neuf.
